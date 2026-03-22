@@ -1,0 +1,6 @@
+index,feature_name,description
+1,sleeve_volume_estimate,π × (sleeve_diameter/2)² × sleeve_length
+2,fill_volume_ratio,(sleeve_fill_percentage/100) × (fill_time/cycle_time)
+3,weighted_velocity,piston_velocity_phase1 × (sleeve_fill_percentage/100)
+4,total_process_time,cycle_time (redundant; kept for compatibility)
+5,process_efficiency,fill_time / cycle_time

@@ -1,0 +1,11 @@
+feature_category,count,description
+Original variables,15,Raw process measurements from sensors.
+Ratio features,6,Proportional relationships (velocity, time, pressure ratios).
+Product features,3,Multiplicative interactions (energy, distance, thermal).
+Difference features,2,Gradients between related variables.
+Distance features,30,Normalized distances from ideal operating ranges.
+Binary range features,45,Categorical position relative to ideal ranges.
+Statistical aggregation,4,Summary measures of overall process state.
+Domain-specific features,5,Casting-specific calculations (volume, efficiency).
+Mathematical transformations,5,Logarithmic and quadratic transformations.
+Total features,115,

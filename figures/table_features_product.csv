@@ -1,0 +1,4 @@
+index,feature_name,formula
+1,intensification_energy,intensification_pressure × intensification_time_phase3
+2,temp_solidification,sleeve_temperature × solidification_time
+3,weighted_velocity,piston_velocity_phase1 × (sleeve_fill_percentage / 100)

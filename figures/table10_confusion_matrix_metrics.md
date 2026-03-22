@@ -1,0 +1,41 @@
+# Table 10. Confusion Matrix Metrics per Defect Type (Test Set, n=5,000)
+
+**Acronyms:**
+- **TP (True Positives):** Correctly predicted defects.
+- **TN (True Negatives):** Correctly predicted non-defects.
+- **FP (False Positives):** Type I error — non-defects predicted as defects.
+- **FN (False Negatives):** Type II error — defects predicted as non-defects.
+- **Recall:** TP / (TP + FN); proportion of actual defects correctly identified (sensitivity).
+- **Precision:** TP / (TP + FP); proportion of positive predictions that are correct (positive predictive value).
+
+| Defect Type | TP | TN | FP | FN | Recall | Precision |
+|-------------|----|----|----|----|--------|-----------|
+| Blisters Post Treatment | 92 | 4815 | 93 | 0 | 1.000 | 0.497 |
+| Surface Blisters | 91 | 4795 | 112 | 2 | 0.978 | 0.448 |
+| Die Sticking | 54 | 4879 | 66 | 1 | 0.982 | 0.450 |
+| Flow Lines | 50 | 4887 | 63 | 0 | 1.000 | 0.442 |
+| Surface Streaks | 7 | 4979 | 14 | 0 | 1.000 | 0.333 |
+| Cold Shut | 138 | 4767 | 95 | 0 | 1.000 | 0.592 |
+| Heat Cracks | 8 | 4971 | 21 | 0 | 1.000 | 0.276 |
+| Ejector Pin Marks | 0 | 5000 | 0 | 0 | 0.000 | 0.000 |
+| Die Soldering | 66 | 4864 | 69 | 1 | 0.985 | 0.489 |
+| Surface Oxide Inclusions | 38 | 4904 | 56 | 2 | 0.950 | 0.404 |
+| Low Tensile Strength | 77 | 4848 | 72 | 3 | 0.962 | 0.517 |
+| Low Elongation | 82 | 4845 | 71 | 2 | 0.976 | 0.536 |
+| Low Ultimate Strength | 68 | 4849 | 81 | 2 | 0.971 | 0.456 |
+| Low Fatigue Resistance | 74 | 4864 | 60 | 2 | 0.974 | 0.552 |
+| Low Surface Hardness | 63 | 4893 | 42 | 2 | 0.969 | 0.600 |
+| Density Deviation | 140 | 4767 | 93 | 0 | 1.000 | 0.601 |
+| Incomplete Fill | 104 | 4797 | 98 | 1 | 0.990 | 0.515 |
+| Flash | 46 | 4864 | 87 | 3 | 0.939 | 0.346 |
+| Warpage | 35 | 4889 | 74 | 2 | 0.946 | 0.321 |
+| Shrinkage Porosity | 17 | 4962 | 18 | 3 | 0.850 | 0.486 |
+| Volumetric Variation | 79 | 4864 | 52 | 5 | 0.940 | 0.603 |
+| Dimensional Deviation | 81 | 4862 | 55 | 2 | 0.976 | 0.596 |
+| Gas Porosity | 140 | 4739 | 120 | 1 | 0.993 | 0.538 |
+| Gas Bubbles | 129 | 4764 | 107 | 0 | 1.000 | 0.547 |
+| Internal Shrinkage | 42 | 4907 | 51 | 0 | 1.000 | 0.452 |
+| Cracks | 27 | 4940 | 29 | 4 | 0.871 | 0.482 |
+| Hard Inclusions | 17 | 4948 | 31 | 4 | 0.810 | 0.354 |
+| Oxide Inclusions | 44 | 4893 | 58 | 5 | 0.898 | 0.431 |
+| Overall (micro-avg) | 1809 | 136356 | 1788 | 47 | 0.975 | 0.503 |

@@ -1,0 +1,3 @@
+index,feature_name,formula
+1,temp_diff,sleeve_temperature − plunger_temperature
+2,cycle_fill_diff,cycle_time − fill_time

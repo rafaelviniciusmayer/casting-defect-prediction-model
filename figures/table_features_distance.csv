@@ -1,0 +1,31 @@
+index,feature_name,type,description
+1,piston_velocity_phase1_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+2,metal_velocity_gate_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+3,fill_time_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+4,phase_transition_position_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+5,intensification_time_phase3_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+6,intensification_pressure_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+7,solidification_time_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+8,cycle_time_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+9,sleeve_fill_percentage_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+10,sleeve_diameter_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+11,sleeve_length_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+12,plunger_lubricant_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+13,plunger_sleeve_clearance_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+14,sleeve_temperature_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+15,plunger_temperature_distance_from_center,distance_from_center,Absolute distance from value to center of ideal (defect-free) range.
+16,piston_velocity_phase1_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+17,metal_velocity_gate_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+18,fill_time_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+19,phase_transition_position_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+20,intensification_time_phase3_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+21,intensification_pressure_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+22,solidification_time_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+23,cycle_time_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+24,sleeve_fill_percentage_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+25,sleeve_diameter_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+26,sleeve_length_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+27,plunger_lubricant_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+28,plunger_sleeve_clearance_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+29,sleeve_temperature_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.
+30,plunger_temperature_distance_from_range,distance_from_range,Distance outside ideal range: 0 if within range; positive if below min or above max.

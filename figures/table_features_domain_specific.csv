@@ -1,0 +1,6 @@
+index,feature_name,description
+1,sleeve_volume_estimate,π × (sleeve_diameter/2)² × sleeve_length
+2,fill_volume_ratio,(sleeve_fill_percentage/100) × (fill_time/cycle_time)
+3,process_efficiency,fill_time / cycle_time
+4,velocity_distance,Sum of distances to ideal center for piston and metal velocities
+5,pressure_deviation,Distance of intensification_pressure from ideal range

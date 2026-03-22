@@ -1,0 +1,46 @@
+index,feature_name,type,description
+1,piston_velocity_phase1_in_range,in_range,1 if within defect-free range, else 0.
+2,metal_velocity_gate_in_range,in_range,1 if within defect-free range, else 0.
+3,fill_time_in_range,in_range,1 if within defect-free range, else 0.
+4,phase_transition_position_in_range,in_range,1 if within defect-free range, else 0.
+5,intensification_time_phase3_in_range,in_range,1 if within defect-free range, else 0.
+6,intensification_pressure_in_range,in_range,1 if within defect-free range, else 0.
+7,solidification_time_in_range,in_range,1 if within defect-free range, else 0.
+8,cycle_time_in_range,in_range,1 if within defect-free range, else 0.
+9,sleeve_fill_percentage_in_range,in_range,1 if within defect-free range, else 0.
+10,sleeve_diameter_in_range,in_range,1 if within defect-free range, else 0.
+11,sleeve_length_in_range,in_range,1 if within defect-free range, else 0.
+12,plunger_lubricant_in_range,in_range,1 if within defect-free range, else 0.
+13,plunger_sleeve_clearance_in_range,in_range,1 if within defect-free range, else 0.
+14,sleeve_temperature_in_range,in_range,1 if within defect-free range, else 0.
+15,plunger_temperature_in_range,in_range,1 if within defect-free range, else 0.
+16,piston_velocity_phase1_above_range,above_range,1 if above max of defect-free range, else 0.
+17,metal_velocity_gate_above_range,above_range,1 if above max of defect-free range, else 0.
+18,fill_time_above_range,above_range,1 if above max of defect-free range, else 0.
+19,phase_transition_position_above_range,above_range,1 if above max of defect-free range, else 0.
+20,intensification_time_phase3_above_range,above_range,1 if above max of defect-free range, else 0.
+21,intensification_pressure_above_range,above_range,1 if above max of defect-free range, else 0.
+22,solidification_time_above_range,above_range,1 if above max of defect-free range, else 0.
+23,cycle_time_above_range,above_range,1 if above max of defect-free range, else 0.
+24,sleeve_fill_percentage_above_range,above_range,1 if above max of defect-free range, else 0.
+25,sleeve_diameter_above_range,above_range,1 if above max of defect-free range, else 0.
+26,sleeve_length_above_range,above_range,1 if above max of defect-free range, else 0.
+27,plunger_lubricant_above_range,above_range,1 if above max of defect-free range, else 0.
+28,plunger_sleeve_clearance_above_range,above_range,1 if above max of defect-free range, else 0.
+29,sleeve_temperature_above_range,above_range,1 if above max of defect-free range, else 0.
+30,plunger_temperature_above_range,above_range,1 if above max of defect-free range, else 0.
+31,piston_velocity_phase1_below_range,below_range,1 if below min of defect-free range, else 0.
+32,metal_velocity_gate_below_range,below_range,1 if below min of defect-free range, else 0.
+33,fill_time_below_range,below_range,1 if below min of defect-free range, else 0.
+34,phase_transition_position_below_range,below_range,1 if below min of defect-free range, else 0.
+35,intensification_time_phase3_below_range,below_range,1 if below min of defect-free range, else 0.
+36,intensification_pressure_below_range,below_range,1 if below min of defect-free range, else 0.
+37,solidification_time_below_range,below_range,1 if below min of defect-free range, else 0.
+38,cycle_time_below_range,below_range,1 if below min of defect-free range, else 0.
+39,sleeve_fill_percentage_below_range,below_range,1 if below min of defect-free range, else 0.
+40,sleeve_diameter_below_range,below_range,1 if below min of defect-free range, else 0.
+41,sleeve_length_below_range,below_range,1 if below min of defect-free range, else 0.
+42,plunger_lubricant_below_range,below_range,1 if below min of defect-free range, else 0.
+43,plunger_sleeve_clearance_below_range,below_range,1 if below min of defect-free range, else 0.
+44,sleeve_temperature_below_range,below_range,1 if below min of defect-free range, else 0.
+45,plunger_temperature_below_range,below_range,1 if below min of defect-free range, else 0.

@@ -1,0 +1,5 @@
+index,feature_name,description
+1,n_vars_in_range,Number of process variables within ideal range (0-15)
+2,n_vars_out_of_range,Number of variables out of ideal range
+3,avg_distance_from_ideal,Mean of 15 distances to ideal center
+4,max_distance_from_ideal,Max of 15 distances to ideal center

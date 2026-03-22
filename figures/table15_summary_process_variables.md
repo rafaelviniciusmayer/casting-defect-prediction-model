@@ -1,0 +1,10 @@
+# Table 15. Summary Statistics for Key Process Variables (*n* = 25,000)
+
+*Defect-free zone: interval from `aluminum_diecasting_dataset_metadata.json` (`defect_free_range`) for each variable.*
+
+| Variable | Mean | Std Dev | Min | Max | % in Defect-free Zone |
+|----------|------|---------|-----|-----|------------------------|
+| Metal velocity at gate (m/s) | 3.65 | 0.1 | 2.8 | 4.5 | 99.3% |
+| Fill time (ms) | 35.03 | 3.03 | 20.26 | 49.98 | 99.3% |
+| Intensification pressure (MPa) | 100.07 | 11.78 | 60.02 | 139.84 | 99.4% |
+| Solidification time (s) | 20.02 | 2.99 | 10.04 | 34.98 | 99.4% |

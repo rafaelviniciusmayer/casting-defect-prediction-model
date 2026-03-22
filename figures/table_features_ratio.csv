@@ -1,0 +1,7 @@
+index,feature_name,formula
+1,velocity_ratio,piston_velocity_phase1 / metal_velocity_gate
+2,fill_time_ratio,fill_time / cycle_time
+3,solidification_ratio,solidification_time / cycle_time
+4,pressure_time_ratio,intensification_pressure × intensification_time_phase3
+5,temp_ratio,sleeve_temperature / plunger_temperature
+6,sleeve_aspect_ratio,sleeve_length / sleeve_diameter

@@ -1,0 +1,10 @@
+Defect Type,Optimal Threshold,Recall,Precision,F1-Score
+Gas Porosity,0.21,0.993,0.538,0.698
+Density Deviation,0.18,1.000,0.601,0.751
+Cold Shut,0.31,1.000,0.592,0.744
+Gas Bubbles,0.11,1.000,0.547,0.707
+Incomplete Fill,0.24,0.990,0.515,0.677
+Shrinkage Porosity,0.10,0.850,0.486,0.618
+Low Tensile Strength,0.21,0.962,0.517,0.672
+Warpage,0.15,0.946,0.321,0.479
+Ejector Pin Marks,0.50,0.000,0.000,—

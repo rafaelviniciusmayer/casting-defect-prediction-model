@@ -1,0 +1,47 @@
+{
+  "comparison": {
+    "PyTorch NN": {
+      "metrics": {
+        "f1_micro": 0.670823399963323,
+        "f1_macro": 0.6194062529365719,
+        "precision_micro": 0.508479288295802,
+        "recall_micro": 0.9854525862068966,
+        "accuracy": 0.9422
+      },
+      "train_time_sec": 68.55,
+      "inference_time_ms_per_100": 0.29
+    },
+    "XGBoost": {
+      "metrics": {
+        "f1_micro": 0.6833333333333333,
+        "f1_macro": 0.6327891609161611,
+        "precision_micro": 0.5408291457286433,
+        "recall_micro": 0.927801724137931,
+        "accuracy": 0.9422
+      },
+      "train_time_sec": 48.91,
+      "inference_time_ms_per_100": 19.76
+    },
+    "Random Forest": {
+      "metrics": {
+        "f1_micro": 0.6669101533966398,
+        "f1_macro": 0.6162942581496217,
+        "precision_micro": 0.5044198895027624,
+        "recall_micro": 0.9838362068965517,
+        "accuracy": 0.939
+      },
+      "train_time_sec": 204.11,
+      "inference_time_ms_per_100": 1346.37
+    }
+  },
+  "best_f1_micro": "XGBoost",
+  "best_recall": "PyTorch NN",
+  "justification": [
+    "O PyTorch NN apresentou o maior Recall, essencial para minimizar falsos negativos (defeitos que passam despercebidos)."
+  ],
+  "config": {
+    "train_test_split": "80/20",
+    "random_state": 42,
+    "threshold_optimization": "maximize_recall_per_defect"
+  }
+}

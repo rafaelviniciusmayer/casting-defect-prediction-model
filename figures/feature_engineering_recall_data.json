@@ -1,0 +1,45 @@
+{
+  "recall_15": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.9761904761904762,
+    1.0
+  ],
+  "recall_110": [
+    1.0,
+    1.0,
+    1.0,
+    1.0,
+    0.9904761904761905,
+    0.989247311827957,
+    0.9523809523809523,
+    1.0
+  ],
+  "labels": [
+    "Gas Porosity",
+    "Cold Shut",
+    "Density Deviation",
+    "Gas Bubbles",
+    "Incomplete Fill",
+    "Surface Blisters",
+    "Volumetric Variation",
+    "Blisters Post Treatment"
+  ],
+  "n_110": 110,
+  "metrics_15": {
+    "f1_micro": 0.6042455158795458,
+    "f1_macro": 0.5537606975697114,
+    "precision_micro": 0.4349680170575693,
+    "recall_micro": 0.9892241379310345
+  },
+  "metrics_110": {
+    "f1_micro": 0.6665451230628988,
+    "f1_macro": 0.6101542841465919,
+    "precision_micro": 0.5037200330669606,
+    "recall_micro": 0.9849137931034483
+  }
+}

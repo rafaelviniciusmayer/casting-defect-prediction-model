@@ -1,0 +1,803 @@
+{
+  "version": "1.0",
+  "description": "Synthetic dataset for defect prediction in aluminum die casting",
+  "source": "Expert mapping from die casting process engineers",
+  "dataset_philosophy": "Each row represents a produced part snapshot - only observable data",
+  "columns": {
+    "process_variables": [
+      "piston_velocity_phase1",
+      "metal_velocity_gate",
+      "fill_time",
+      "phase_transition_position",
+      "intensification_time_phase3",
+      "intensification_pressure",
+      "solidification_time",
+      "cycle_time",
+      "sleeve_fill_percentage",
+      "sleeve_diameter",
+      "sleeve_length",
+      "plunger_lubricant",
+      "plunger_sleeve_clearance",
+      "sleeve_temperature",
+      "plunger_temperature"
+    ],
+    "defects": [
+      "blisters_post_treatment",
+      "surface_blisters",
+      "die_sticking",
+      "flow_lines",
+      "surface_streaks",
+      "cold_shut",
+      "heat_cracks",
+      "ejector_pin_marks",
+      "die_soldering",
+      "surface_oxide_inclusions",
+      "low_tensile_strength",
+      "low_elongation",
+      "low_ultimate_strength",
+      "low_fatigue_resistance",
+      "low_surface_hardness",
+      "density_deviation",
+      "incomplete_fill",
+      "flash",
+      "warpage",
+      "shrinkage_porosity",
+      "volumetric_variation",
+      "dimensional_deviation",
+      "gas_porosity",
+      "gas_bubbles",
+      "internal_shrinkage",
+      "cracks",
+      "hard_inclusions",
+      "oxide_inclusions"
+    ],
+    "summary": [
+      "total_defects",
+      "has_defect"
+    ]
+  },
+  "generation_config": {
+    "variable_ranges": {
+      "piston_velocity_phase1": {
+        "name": "Piston injection velocity during 1st phase",
+        "stage": "Injection Phase 1",
+        "sensor": "Position/Velocity Sensor (PLC)",
+        "unit": "m/s",
+        "defect_free_range": [
+          0.2,
+          0.25
+        ],
+        "defect_prone_range": [
+          0.15,
+          0.3
+        ],
+        "defect_chance_pct": [
+          10,
+          25
+        ],
+        "type": "continuous"
+      },
+      "metal_velocity_gate": {
+        "name": "Liquid metal velocity at gate entrance",
+        "stage": "Injection Phase 1",
+        "sensor": "Position/Flow Velocity Sensor (PLC)",
+        "unit": "m/s",
+        "defect_free_range": [
+          3.5,
+          3.8
+        ],
+        "defect_prone_range": [
+          2.8,
+          4.5
+        ],
+        "defect_chance_pct": [
+          12,
+          28
+        ],
+        "type": "continuous"
+      },
+      "fill_time": {
+        "name": "Cavity fill time",
+        "stage": "Injection Phase 1",
+        "sensor": "Timer/Chronometer (PLC)",
+        "unit": "ms",
+        "defect_free_range": [
+          30,
+          40
+        ],
+        "defect_prone_range": [
+          20,
+          50
+        ],
+        "defect_chance_pct": [
+          8,
+          22
+        ],
+        "type": "continuous"
+      },
+      "phase_transition_position": {
+        "name": "Phase 1 to Phase 2 transition position",
+        "stage": "Phase Transition 1-2",
+        "sensor": "Piston Position Sensor (PLC)",
+        "unit": "mm",
+        "defect_free_range": [
+          170,
+          180
+        ],
+        "defect_prone_range": [
+          160,
+          190
+        ],
+        "defect_chance_pct": [
+          5,
+          15
+        ],
+        "type": "continuous"
+      },
+      "intensification_time_phase3": {
+        "name": "Intensification pressure rise time (Phase 3)",
+        "stage": "Intensification Phase 3",
+        "sensor": "Timer/Chronometer (PLC)",
+        "unit": "s",
+        "defect_free_range": [
+          5,
+          8
+        ],
+        "defect_prone_range": [
+          3,
+          10
+        ],
+        "defect_chance_pct": [
+          4,
+          12
+        ],
+        "type": "continuous"
+      },
+      "intensification_pressure": {
+        "name": "Intensification pressure (Phase 3)",
+        "stage": "Intensification Phase 3",
+        "sensor": "Pressure Sensor/Manometer (PLC)",
+        "unit": "MPa",
+        "defect_free_range": [
+          80,
+          120
+        ],
+        "defect_prone_range": [
+          60,
+          140
+        ],
+        "defect_chance_pct": [
+          6,
+          18
+        ],
+        "type": "continuous"
+      },
+      "solidification_time": {
+        "name": "Solidification time",
+        "stage": "Cooling",
+        "sensor": "Timer/Chronometer (PLC)",
+        "unit": "s",
+        "defect_free_range": [
+          15,
+          25
+        ],
+        "defect_prone_range": [
+          10,
+          35
+        ],
+        "defect_chance_pct": [
+          3,
+          10
+        ],
+        "type": "continuous"
+      },
+      "cycle_time": {
+        "name": "Total cycle time",
+        "stage": "Complete Cycle",
+        "sensor": "Timer/Chronometer (PLC)",
+        "unit": "s",
+        "defect_free_range": [
+          60,
+          90
+        ],
+        "defect_prone_range": [
+          55,
+          100
+        ],
+        "defect_chance_pct": [
+          2,
+          8
+        ],
+        "type": "continuous"
+      },
+      "sleeve_fill_percentage": {
+        "name": "Shot sleeve fill percentage",
+        "stage": "Setup/Maintenance",
+        "sensor": "Level Meter/Visual Inspection (Calculated)",
+        "unit": "%",
+        "defect_free_range": [
+          40,
+          50
+        ],
+        "defect_prone_range": [
+          30,
+          60
+        ],
+        "defect_chance_pct": [
+          3,
+          10
+        ],
+        "type": "continuous"
+      },
+      "sleeve_diameter": {
+        "name": "Shot sleeve diameter",
+        "stage": "Setup/Maintenance",
+        "sensor": "Caliper/Micrometer",
+        "unit": "mm",
+        "defect_free_range": [
+          45,
+          50
+        ],
+        "defect_prone_range": [
+          42,
+          52
+        ],
+        "defect_chance_pct": [
+          2,
+          8
+        ],
+        "type": "continuous"
+      },
+      "sleeve_length": {
+        "name": "Shot sleeve length",
+        "stage": "Setup/Maintenance",
+        "sensor": "Caliper/Steel Ruler",
+        "unit": "mm",
+        "defect_free_range": [
+          120,
+          130
+        ],
+        "defect_prone_range": [
+          115,
+          135
+        ],
+        "defect_chance_pct": [
+          2,
+          7
+        ],
+        "type": "continuous"
+      },
+      "plunger_lubricant": {
+        "name": "Plunger lubrication condition",
+        "stage": "Setup/Maintenance",
+        "sensor": "Timer (PLC) and Visual Inspection",
+        "unit": "category",
+        "defect_chance_pct": [
+          8,
+          20
+        ],
+        "type": "categorical"
+      },
+      "plunger_sleeve_clearance": {
+        "name": "Plunger-sleeve clearance",
+        "stage": "Setup/Maintenance",
+        "sensor": "Caliper/Micrometer/Ruler",
+        "unit": "mm",
+        "defect_free_range": [
+          0.08,
+          0.12
+        ],
+        "defect_prone_range": [
+          0.05,
+          0.18
+        ],
+        "defect_chance_pct": [
+          15,
+          35
+        ],
+        "type": "continuous"
+      },
+      "sleeve_temperature": {
+        "name": "Shot sleeve temperature",
+        "stage": "Setup/Maintenance",
+        "sensor": "Thermocouple/Pyrometer/Thermal Camera",
+        "unit": "°C",
+        "defect_free_range": [
+          180,
+          200
+        ],
+        "defect_prone_range": [
+          150,
+          220
+        ],
+        "defect_chance_pct": [
+          7,
+          18
+        ],
+        "type": "continuous"
+      },
+      "plunger_temperature": {
+        "name": "Plunger tip temperature",
+        "stage": "Setup/Maintenance",
+        "sensor": "Thermocouple/Pyrometer/Thermal Camera",
+        "unit": "°C",
+        "defect_free_range": [
+          160,
+          180
+        ],
+        "defect_prone_range": [
+          120,
+          200
+        ],
+        "defect_chance_pct": [
+          6,
+          16
+        ],
+        "type": "continuous"
+      }
+    },
+    "influence_matrix": {
+      "piston_velocity_phase1": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        0,
+        1
+      ],
+      "metal_velocity_gate": [
+        2,
+        2,
+        2,
+        1,
+        0,
+        2,
+        0,
+        0,
+        1,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2,
+        0,
+        0,
+        0,
+        2
+      ],
+      "fill_time": [
+        0,
+        0,
+        0,
+        2,
+        1,
+        3,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        3,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "phase_transition_position": [
+        0,
+        0,
+        1,
+        2,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "intensification_time_phase3": [
+        2,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        2,
+        0,
+        1,
+        1,
+        0,
+        2,
+        2,
+        2,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "intensification_pressure": [
+        3,
+        1,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        1,
+        1,
+        1,
+        1,
+        0,
+        2,
+        0,
+        1,
+        1,
+        0,
+        3,
+        3,
+        3,
+        2,
+        2,
+        0,
+        0,
+        0
+      ],
+      "solidification_time": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        2,
+        0,
+        2,
+        2,
+        1,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "cycle_time": [
+        0,
+        1,
+        1,
+        1,
+        0,
+        2,
+        1,
+        0,
+        2,
+        0,
+        1,
+        1,
+        1,
+        0,
+        1,
+        0,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        1,
+        0,
+        0,
+        2,
+        0,
+        0
+      ],
+      "sleeve_fill_percentage": [
+        2,
+        2,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sleeve_diameter": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sleeve_length": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        0,
+        1
+      ],
+      "plunger_lubricant": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        2,
+        0,
+        0,
+        2,
+        2
+      ],
+      "plunger_sleeve_clearance": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "sleeve_temperature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0
+      ],
+      "plunger_temperature": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0
+      ]
+    },
+    "influence_weights": {
+      "0": 0.0,
+      "1": 0.33,
+      "2": 0.67,
+      "3": 1.0
+    }
+  },
+  "n_samples": 25000,
+  "statistics": {
+    "defect_rate": 0.05632,
+    "avg_defects_per_sample": 0.34532
+  }
+}

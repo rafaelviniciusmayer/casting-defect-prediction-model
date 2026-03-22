@@ -1,0 +1,7 @@
+index,feature_name,description
+1,intensification_energy,intensification_pressure × intensification_time_phase3
+2,velocity_distance,Sum of distances to ideal center for piston_velocity and metal_velocity_gate
+3,temp_solidification,sleeve_temperature × solidification_time
+4,temp_diff,sleeve_temperature − plunger_temperature
+5,cycle_fill_diff,cycle_time − fill_time
+6,pressure_deviation,Distance of intensification_pressure from defect_free_range

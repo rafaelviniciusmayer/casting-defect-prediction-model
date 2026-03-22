@@ -1,0 +1,3 @@
+index,feature_name,formula
+1,intensification_pressure_log,log1p(max(intensification_pressure, 0))
+2,cycle_time_log,log1p(max(cycle_time, 0))

@@ -1,0 +1,9 @@
+Variable,Unit,Defect-Free Range,Defect-Prone Range
+Piston Velocity Phase 1,m/s,0.20 - 0.25,0.15 - 0.30
+Metal Velocity at Gate,m/s,3.5 - 3.8,2.8 - 4.5
+Fill Time,ms,30 - 40,20 - 50
+Phase Transition Position,mm,170 - 180,160 - 190
+Intensification Time Phase 3,s,5 - 8,3 - 10
+Intensification Pressure,MPa,80 - 120,60 - 140
+Solidification Time,s,15 - 25,10 - 35
+Cycle Time,s,60 - 90,55 - 100

@@ -1,0 +1,13 @@
+Process Variable,Defect,Correlation
+Metal Velocity Gate,Gas Porosity,0.00
+Metal Velocity Gate,Density Deviation,0.01
+Metal Velocity Gate,Volumetric Variation,0.02
+Metal Velocity Gate,Cold Shut,0.02
+Intensification Pressure,Gas Porosity,-0.01
+Intensification Pressure,Density Deviation,-0.00
+Intensification Pressure,Volumetric Variation,-0.01
+Intensification Pressure,Cold Shut,-0.01
+Fill Time,Gas Porosity,0.02
+Fill Time,Density Deviation,0.02
+Fill Time,Volumetric Variation,0.01
+Fill Time,Cold Shut,0.02

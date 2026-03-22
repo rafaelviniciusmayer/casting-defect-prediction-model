@@ -1,0 +1,10 @@
+Defect Type,TP,TN,FP,FN,Recall,Precision
+Gas Porosity,140,4739,120,1,0.993,0.538
+Density Deviation,140,4767,93,0,1.0,0.601
+Cold Shut,138,4767,95,0,1.0,0.592
+Gas Bubbles,129,4764,107,0,1.0,0.547
+Incomplete Fill,104,4797,98,1,0.99,0.515
+Surface Blisters,91,4795,112,2,0.978,0.448
+Blisters Post Treatment,92,4815,93,0,1.0,0.497
+Low Elongation,82,4845,71,2,0.976,0.536
+Overall (micro-avg),1809,136356,1788,47,0.975,0.503

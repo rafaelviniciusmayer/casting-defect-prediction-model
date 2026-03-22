@@ -1,0 +1,16 @@
+index,feature_name,description
+1,piston_velocity_phase1,Piston injection velocity during 1st phase (m/s)
+2,metal_velocity_gate,Liquid metal velocity at gate entrance (m/s)
+3,fill_time,Cavity fill time (ms)
+4,phase_transition_position,Phase 1 to Phase 2 transition position (mm)
+5,intensification_time_phase3,Intensification pressure rise time - Phase 3 (s)
+6,intensification_pressure,Intensification pressure - Phase 3 (MPa)
+7,solidification_time,Solidification time (s)
+8,cycle_time,Total cycle time (s)
+9,sleeve_fill_percentage,Shot sleeve fill percentage (%)
+10,sleeve_diameter,Shot sleeve diameter (mm)
+11,sleeve_length,Shot sleeve length (mm)
+12,plunger_lubricant,Plunger lubrication condition
+13,plunger_sleeve_clearance,Plunger-sleeve clearance (mm)
+14,sleeve_temperature,Shot sleeve temperature (°C)
+15,plunger_temperature,Plunger tip temperature (°C)
