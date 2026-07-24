@@ -2,13 +2,13 @@
 ML-Based Workflow for Defect Prediction in Casting Processes
 ============================================================
 
-Este script implementa o workflow ML completo para predição de defeitos em fundição:
-- 3.3. Data Preparation: Preparação e limpeza dos dados
-- 3.5. Feature Engineering: Engenharia de features
-- 3.6. Model Training and Selection: Treinamento e seleção do modelo
+This script implements the complete ML workflow for defect prediction in casting:
+- 3.3. Data Preparation: Data preparation and cleaning
+- 3.5. Feature Engineering: Feature engineering
+- 3.6. Model Training and Selection: Model training and selection
 
-Objetivo: Maximizar a acurácia de predição para reduzir riscos industriais.
-Cada peça com defeito que passar representa um risco para o cliente.
+Objective: Maximize prediction accuracy to reduce industrial risks.
+Each defective part that passes through represents a risk to the customer.
 
 Execute: python train_model.py
 """
@@ -31,37 +31,37 @@ import matplotlib.pyplot as plt
 import warnings
 warnings.filterwarnings('ignore')
 
-# SMOTE para balanceamento
+# SMOTE for class balancing
 try:
     from imblearn.over_sampling import SMOTE
     SMOTE_AVAILABLE = True
 except ImportError:
     SMOTE_AVAILABLE = False
-    print("[AVISO] imbalanced-learn não instalado. Execute: pip install imbalanced-learn")
+    print("[WARNING] imbalanced-learn not installed. Run: pip install imbalanced-learn")
 
 
 # =============================================================================
-# 3.3. DATA PREPARATION - Preparação e Limpeza dos Dados
+# 3.3. DATA PREPARATION - Data Preparation and Cleaning
 # =============================================================================
 
 def load_and_prepare_data():
     """
-    Etapa 3.3: Carregar e preparar dados brutos.
+    Step 3.3: Load and prepare raw data.
     
     Output: Clean and structured dataset
     """
     print("\n" + "="*70)
-    print("3.3. DATA PREPARATION - Preparação e Limpeza dos Dados")
+    print("3.3. DATA PREPARATION - Data Preparation and Cleaning")
     print("="*70)
     
-    print("\n[*] Carregando dataset...")
+    print("\n[*] Loading dataset...")
     
-    # Tentar carregar dataset com features primeiro
+    # Try to load dataset with features first
     try:
         df = pd.read_csv('aluminum_diecasting_dataset_with_features.csv')
-        print("    [OK] Dataset com features carregado")
+        print("    [OK] Dataset with features loaded")
         
-        # Identificar defeitos
+        # Identify defects
         defect_prefixes = [
             'blisters', 'surface', 'die', 'flow', 'cold', 'heat', 'ejector',
             'low', 'density', 'incomplete', 'flash', 'warpage', 'shrinkage',
@@ -70,15 +70,15 @@ def load_and_prepare_data():
         defect_cols = [col for col in df.columns 
                       if any(col.startswith(prefix) for prefix in defect_prefixes)]
         
-        # Features são todas as colunas exceto defeitos e metadados
+        # Features are all columns except defects and metadata
         feature_cols = [col for col in df.columns 
                        if col not in defect_cols + ['id', 'total_defects', 'has_defect']]
         
     except FileNotFoundError:
-        print("    [INFO] Dataset com features não encontrado, usando dataset original")
+        print("    [INFO] Dataset with features not found, using original dataset")
         df = pd.read_csv('aluminum_diecasting_dataset.csv')
         
-        # Variáveis de processo originais
+        # Original process variables
         process_vars = [
             'piston_velocity_phase1', 'metal_velocity_gate', 'fill_time',
             'phase_transition_position', 'intensification_time_phase3',
@@ -88,79 +88,79 @@ def load_and_prepare_data():
             'plunger_temperature'
         ]
         
-        # Defeitos
+        # Defects
         defect_cols = [col for col in df.columns 
                       if col not in process_vars + ['id', 'total_defects', 'has_defect']]
         feature_cols = process_vars
     
-    # Extrair features e labels
+    # Extract features and labels
     X = df[feature_cols].values.astype(np.float32)
     y = df[defect_cols].values.astype(np.float32)
     
-    # Validação básica de dados
-    assert not np.isnan(X).any(), "Dados contêm NaN nas features"
-    assert not np.isnan(y).any(), "Dados contêm NaN nos labels"
-    assert X.shape[0] == y.shape[0], "Número de amostras inconsistente"
+    # Basic data validation
+    assert not np.isnan(X).any(), "Data contains NaN in features"
+    assert not np.isnan(y).any(), "Data contains NaN in labels"
+    assert X.shape[0] == y.shape[0], "Inconsistent number of samples"
     
-    print(f"\n[*] Dataset preparado:")
+    print(f"\n[*] Dataset prepared:")
     print(f"    Features: {X.shape[1]}")
-    print(f"    Defeitos: {y.shape[1]}")
-    print(f"    Amostras: {X.shape[0]:,}")
+    print(f"    Defects: {y.shape[1]}")
+    print(f"    Samples: {X.shape[0]:,}")
     
-    # Calcular pesos para balanceamento de classes
+    # Calculate weights for class balancing
     pos_weights = []
-    print("\n[*] Calculando pesos para balanceamento:")
+    print("\n[*] Calculating weights for class balancing:")
     for i, defect_name in enumerate(defect_cols):
         pos_count = y[:, i].sum()
         neg_count = len(y) - pos_count
         if pos_count > 0:
             weight = np.sqrt(neg_count / pos_count)
-            weight = min(weight, 10.0)  # Limitar peso máximo
+            weight = min(weight, 10.0)  # Limit maximum weight
         else:
             weight = 1.0
         pos_weights.append(weight)
         
-        if i < 5:  # Mostrar apenas primeiros 5
-            print(f"    {defect_name:<30}: peso={weight:.2f} (defeitos={int(pos_count)})")
+        if i < 5:  # Show only first 5
+            print(f"    {defect_name:<30}: weight={weight:.2f} (defects={int(pos_count)})")
     
-    print("\n[OK] Data Preparation concluída - Clean and structured dataset pronto")
+    print("\n[OK] Data Preparation complete - Clean and structured dataset ready")
     
     return X, y, feature_cols, defect_cols, pos_weights
 
 
 # =============================================================================
-# 3.5. FEATURE ENGINEERING - Engenharia de Features
+# 3.5. FEATURE ENGINEERING - Feature Engineering
 # =============================================================================
 
 def apply_feature_engineering(X, feature_names):
     """
-    Etapa 3.5: Engenharia de features (se necessário).
+    Step 3.5: Feature engineering (if needed).
     
     Input: Clean and structured dataset
     Output: Final dataset
     """
     print("\n" + "="*70)
-    print("3.5. FEATURE ENGINEERING - Engenharia de Features")
+    print("3.5. FEATURE ENGINEERING - Feature Engineering")
     print("="*70)
     
-    print("\n[*] Aplicando feature engineering...")
+    print("\n[*] Applying feature engineering...")
     
-    # Se já temos features derivadas, não precisamos fazer nada adicional
-    # Caso contrário, poderíamos adicionar features derivadas aqui
-    # Por enquanto, mantemos as features originais ou já derivadas
+    # If we already have derived features, no additional work is needed
+    # Otherwise, we could add derived features here
+    # For now, we keep the original or already derived features
     
-    print(f"    Features finais: {X.shape[1]}")
-    print("\n[OK] Feature Engineering concluída - Final dataset pronto")
+    print(f"    Final features: {X.shape[1]}")
+    print("\n[OK] Feature Engineering complete - Final dataset ready")
     
     return X, feature_names
 
 
 # =============================================================================
-# ARQUITETURA DA REDE NEURAL
+# NEURAL NETWORK ARCHITECTURE
 # =============================================================================
 
 class DefectPredictionNN(nn.Module):
-    """Neural Network para predição de defeitos em fundição de alumínio."""
+    """Neural Network for defect prediction in aluminum die casting."""
     
     def __init__(self, input_size, num_defects):
         super(DefectPredictionNN, self).__init__()
@@ -188,7 +188,7 @@ class DefectPredictionNN(nn.Module):
 
 
 class PyTorchModelWrapper:
-    """Wrapper para compatibilidade com sklearn e pickle."""
+    """Wrapper for compatibility with sklearn and pickle."""
     
     def __init__(self, pytorch_model, scaler, thresholds=None):
         self.pytorch_model = pytorch_model
@@ -196,7 +196,7 @@ class PyTorchModelWrapper:
         self.thresholds = thresholds
     
     def predict(self, X, defect_names=None):
-        """Predição binária usando thresholds adaptativos ou fixo 0.5."""
+        """Binary prediction using adaptive thresholds or fixed 0.5."""
         proba = self.predict_proba(X)
         
         if self.thresholds is not None and defect_names is not None:
@@ -209,7 +209,7 @@ class PyTorchModelWrapper:
             return (proba > 0.5).astype(int)
     
     def predict_proba(self, X):
-        """Predição de probabilidades."""
+        """Probability prediction."""
         X_scaled = self.scaler.transform(X).astype(np.float32)
         X_tensor = torch.FloatTensor(X_scaled)
         
@@ -222,16 +222,16 @@ class PyTorchModelWrapper:
 
 
 # =============================================================================
-# 3.6. MODEL TRAINING AND SELECTION - Treinamento e Seleção do Modelo
+# 3.6. MODEL TRAINING AND SELECTION - Model Training and Selection
 # =============================================================================
 
 def apply_smote_balancing(X_train, y_train, defect_names, verbose=True):
-    """Aplicar SMOTE para balanceamento artificial das classes."""
+    """Apply SMOTE for artificial class balancing."""
     if not SMOTE_AVAILABLE:
         return X_train, y_train
     
     if verbose:
-        print("\n[*] Aplicando SMOTE para balanceamento...")
+        print("\n[*] Applying SMOTE for class balancing...")
     
     synthetic_samples = []
     synthetic_labels = []
@@ -297,14 +297,14 @@ def apply_smote_balancing(X_train, y_train, defect_names, verbose=True):
         X_train = np.vstack([X_train, X_synthetic_array]).astype(np.float32)
         y_train = np.vstack([y_train, y_synthetic_array]).astype(np.float32)
         if verbose:
-            print(f"    [OK] {len(synthetic_samples)} amostras sintéticas adicionadas")
+            print(f"    [OK] {len(synthetic_samples)} synthetic samples added")
     
     return X_train, y_train
 
 
 def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, num_defects, verbose=True):
-    """Treinar um único modelo."""
-    # Preparar dados
+    """Train a single model."""
+    # Prepare data
     X_train_tensor = torch.FloatTensor(X_train)
     y_train_tensor = torch.FloatTensor(y_train)
     X_val_tensor = torch.FloatTensor(X_val)
@@ -313,18 +313,18 @@ def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, 
     train_dataset = TensorDataset(X_train_tensor, y_train_tensor)
     train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True)
     
-    # Criar modelo
+    # Create model
     model = DefectPredictionNN(input_size, num_defects)
     
-    # Loss com ponderação
+    # Weighted loss
     pos_weight_tensor = torch.FloatTensor(pos_weights)
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight_tensor)
     
-    # Otimizador
+    # Optimizer
     optimizer = optim.Adam(model.parameters(), lr=0.0005, weight_decay=1e-5)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, patience=10, factor=0.7)
     
-    # Treinamento
+    # Training
     model.train()
     best_val_loss = float('inf')
     patience = 0
@@ -352,7 +352,7 @@ def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, 
             avg_train_loss = epoch_loss / batch_count
             scheduler.step(avg_train_loss)
             
-            # Avaliar no conjunto de validação
+            # Evaluate on validation set
             model.eval()
             with torch.no_grad():
                 val_logits = model(X_val_tensor)
@@ -372,7 +372,7 @@ def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, 
             if patience >= 25:
                 break
     
-    # Avaliação final
+    # Final evaluation
     model.eval()
     with torch.no_grad():
         logits = model(X_val_tensor)
@@ -391,14 +391,14 @@ def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, 
 
 def optimize_thresholds(y_test, y_pred_proba, defect_names):
     """
-    Otimizar thresholds para MAXIMIZAR RECALL - identificar a maior quantidade possível de peças com defeito.
+    Optimize thresholds to MAXIMIZE RECALL - identify as many defective parts as possible.
     
-    Objetivo Principal: Minimizar falsos negativos (defeitos que passam).
-    Estratégia: Testar múltiplos thresholds e escolher o que maximiza Recall,
-    mantendo um balanceamento razoável com Precision através de F1-Score.
+    Primary Objective: Minimize false negatives (defects that pass through).
+    Strategy: Test multiple thresholds and choose the one that maximizes Recall,
+    while maintaining a reasonable balance with Precision through F1-Score.
     """
-    print("\n[*] Otimizando thresholds para MAXIMIZAR DETECÇÃO DE DEFEITOS (Recall)...")
-    print("    Objetivo: Identificar a maior quantidade possível de peças com defeito")
+    print("\n[*] Optimizing thresholds to MAXIMIZE DEFECT DETECTION (Recall)...")
+    print("    Objective: Identify as many defective parts as possible")
     
     optimal_thresholds = {}
     y_pred_binary = np.zeros_like(y_pred_proba)
@@ -407,7 +407,7 @@ def optimize_thresholds(y_test, y_pred_proba, defect_names):
         y_true_defect = y_test[:, i]
         
         if y_true_defect.sum() == 0:
-            # Se não há defeitos no teste, usar threshold conservador
+            # If there are no defects in the test set, use a conservative threshold
             optimal_thresholds[defect_name] = 0.5
             continue
         
@@ -416,8 +416,8 @@ def optimize_thresholds(y_test, y_pred_proba, defect_names):
         best_precision = 0
         best_f1 = 0
         
-        # Estratégia: Testar thresholds de 0.1 a 0.9 em passos de 0.01
-        # Thresholds mais baixos = mais sensíveis = maior Recall
+        # Strategy: Test thresholds from 0.1 to 0.9 in steps of 0.01
+        # Lower thresholds = more sensitive = higher Recall
         for threshold in np.arange(0.1, 0.91, 0.01):
             y_pred_defect = (y_pred_proba[:, i] >= threshold).astype(int)
             
@@ -425,27 +425,27 @@ def optimize_thresholds(y_test, y_pred_proba, defect_names):
                 precision = precision_score(y_true_defect, y_pred_defect, zero_division=0)
                 recall = recall_score(y_true_defect, y_pred_defect, zero_division=0)
                 
-                # Calcular F1-Score para balanceamento
+                # Calculate F1-Score for balance
                 if precision + recall > 0:
                     f1 = 2 * (precision * recall) / (precision + recall)
                 else:
                     f1 = 0
                 
-                # Priorizar Recall máximo, mas usar F1-Score como critério de desempate
-                # para evitar thresholds extremamente baixos que geram muitos falsos positivos
+                # Prioritize maximum Recall, but use F1-Score as tiebreaker
+                # to avoid extremely low thresholds that generate too many false positives
                 if recall > best_recall:
-                    # Novo melhor Recall encontrado
+                    # New best Recall found
                     best_recall = recall
                     best_threshold = threshold
                     best_precision = precision
                     best_f1 = f1
                 elif recall == best_recall and f1 > best_f1:
-                    # Mesmo Recall, mas melhor F1-Score (mais balanceado)
+                    # Same Recall, but better F1-Score (more balanced)
                     best_threshold = threshold
                     best_precision = precision
                     best_f1 = f1
         
-        # Se ainda não encontrou um bom Recall, tentar thresholds ainda mais baixos
+        # If a good Recall was still not found, try even lower thresholds
         if best_recall < 0.80:
             for threshold in np.arange(0.05, 0.11, 0.01):
                 y_pred_defect = (y_pred_proba[:, i] >= threshold).astype(int)
@@ -474,33 +474,33 @@ def optimize_thresholds(y_test, y_pred_proba, defect_names):
             print(f"    {defect_name:<30}: threshold={best_threshold:.3f}, "
                   f"Recall={best_recall:.3f}, Precision={best_precision:.3f}, F1={best_f1:.3f}")
     
-    print("    [OK] Thresholds otimizados para maximizar detecção de defeitos")
+    print("    [OK] Thresholds optimized to maximize defect detection")
     return optimal_thresholds, y_pred_binary
 
 
 def train_model(X, y, pos_weights, feature_names, defect_names):
     """
-    Etapa 3.6: Treinar e selecionar o melhor modelo.
+    Step 3.6: Train and select the best model.
     
     Input: Final dataset
     Output: Selected model
     """
     print("\n" + "="*70)
-    print("3.6. MODEL TRAINING AND SELECTION - Treinamento e Seleção do Modelo")
+    print("3.6. MODEL TRAINING AND SELECTION - Model Training and Selection")
     print("="*70)
     
-    # Divisão inicial: desenvolvimento (80%) e teste final (20%)
+    # Initial split: development (80%) and final test (20%)
     has_defect = (y.sum(axis=1) > 0).astype(int)
     X_dev, X_test_final, y_dev, y_test_final = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=has_defect
     )
     
-    print(f"\n[*] Divisão dos dados:")
-    print(f"    Desenvolvimento: {X_dev.shape[0]:,} amostras (80%)")
-    print(f"    Teste Final: {X_test_final.shape[0]:,} amostras (20%)")
+    print(f"\n[*] Data split:")
+    print(f"    Development: {X_dev.shape[0]:,} samples (80%)")
+    print(f"    Final Test: {X_test_final.shape[0]:,} samples (20%)")
     
-    # Cross-Validation para seleção de modelo
-    print(f"\n[*] Executando 5-Fold Cross-Validation...")
+    # Cross-Validation for model selection
+    print(f"\n[*] Running 5-Fold Cross-Validation...")
     has_defect_dev = (y_dev.sum(axis=1) > 0).astype(int)
     skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     cv_splits = list(skf.split(X_dev, has_defect_dev))
@@ -516,17 +516,17 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
         X_val_fold = X_dev[val_idx]
         y_val_fold = y_dev[val_idx]
         
-        # Normalização (fit apenas no treino)
+        # Normalization (fit on training data only)
         scaler_fold = StandardScaler()
         X_train_fold_scaled = scaler_fold.fit_transform(X_train_fold).astype(np.float32)
         X_val_fold_scaled = scaler_fold.transform(X_val_fold).astype(np.float32)
         
-        # Balanceamento com SMOTE
+        # Class balancing with SMOTE
         X_train_fold_scaled, y_train_fold = apply_smote_balancing(
             X_train_fold_scaled, y_train_fold, defect_names
         )
         
-        # Treinar modelo
+        # Train model
         model_fold, metrics_fold = train_single_model(
             X_train_fold_scaled, y_train_fold,
             X_val_fold_scaled, y_val_fold,
@@ -541,8 +541,8 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
         print(f"    Precision: {metrics_fold['precision_micro']:.4f}")
         print(f"    Recall: {metrics_fold['recall_micro']:.4f}")
     
-    # Métricas médias do Cross-Validation
-    print(f"\n[*] Resultados do Cross-Validation (5 folds):")
+    # Average Cross-Validation metrics
+    print(f"\n[*] Cross-Validation results (5 folds):")
     avg_metrics = {}
     std_metrics = {}
     for key in cv_metrics[0].keys():
@@ -551,26 +551,26 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
         std_metrics[key] = np.std(values)
         print(f"    {key}: {avg_metrics[key]:.4f} (+/- {std_metrics[key]:.4f})")
     
-    # Treinar modelo final com TODOS os dados de desenvolvimento
-    print(f"\n[*] Treinando modelo final com todos os dados de desenvolvimento...")
+    # Train final model with ALL development data
+    print(f"\n[*] Training final model with all development data...")
     
     scaler_final = StandardScaler()
     X_dev_scaled = scaler_final.fit_transform(X_dev).astype(np.float32)
     X_test_final_scaled = scaler_final.transform(X_test_final).astype(np.float32)
     
-    # Balanceamento com SMOTE
+    # Class balancing with SMOTE
     X_dev_scaled, y_dev = apply_smote_balancing(
         X_dev_scaled, y_dev, defect_names
     )
     
-    # Treinar modelo final
+    # Train final model
     model_final, _ = train_single_model(
         X_dev_scaled, y_dev,
         X_test_final_scaled, y_test_final,
         pos_weights, X_dev_scaled.shape[1], y_dev.shape[1]
     )
     
-    # Avaliação no conjunto de teste final
+    # Evaluation on final test set
     model_final.eval()
     X_test_tensor = torch.FloatTensor(X_test_final_scaled)
     y_test_tensor = torch.FloatTensor(y_test_final)
@@ -579,12 +579,12 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
         logits = model_final(X_test_tensor)
         y_pred_proba = torch.sigmoid(logits).numpy()
     
-    # Otimizar thresholds para maximizar Recall
+    # Optimize thresholds to maximize Recall
     optimal_thresholds, y_pred_binary = optimize_thresholds(
         y_test_final, y_pred_proba, defect_names
     )
     
-    # Métricas finais
+    # Final metrics
     metrics = {
         'f1_micro': f1_score(y_test_final, y_pred_binary, average='micro'),
         'f1_macro': f1_score(y_test_final, y_pred_binary, average='macro'),
@@ -593,15 +593,15 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
         'accuracy': accuracy_score(y_test_final, y_pred_binary)
     }
     
-    print(f"\n[*] Métricas no conjunto de teste final:")
+    print(f"\n[*] Metrics on final test set:")
     print(f"    F1-Score (Micro): {metrics['f1_micro']:.4f}")
     print(f"    F1-Score (Macro): {metrics['f1_macro']:.4f}")
     print(f"    Precision: {metrics['precision_micro']:.4f}")
     print(f"    Recall: {metrics['recall_micro']:.4f}")
     print(f"    Accuracy: {metrics['accuracy']:.4f}")
     
-    # Gerar matrizes de confusão
-    print(f"\n[*] Gerando matrizes de confusão...")
+    # Generate confusion matrices
+    print(f"\n[*] Generating confusion matrices...")
     Path('confusion_matrices').mkdir(exist_ok=True)
     
     confusion_matrices = {}
@@ -612,7 +612,7 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
         cm = confusion_matrix(y_true_defect, y_pred_defect)
         confusion_matrices[defect_name] = cm
         
-        # Salvar visualização
+        # Save visualization
         if cm.shape == (2, 2):
             fig, ax = plt.subplots(figsize=(8, 7))
             disp = ConfusionMatrixDisplay(confusion_matrix=cm, 
@@ -642,15 +642,15 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
                        dpi=150, bbox_inches='tight', facecolor='white')
             plt.close()
     
-    print(f"    [OK] {len(confusion_matrices)} matrizes de confusão salvas")
+    print(f"    [OK] {len(confusion_matrices)} confusion matrices saved")
     
-    print("\n[OK] Model Training and Selection concluída - Selected model pronto")
+    print("\n[OK] Model Training and Selection complete - Selected model ready")
     
     return {
         'model': model_final,
         'scaler': scaler_final,
         'metrics': metrics,
-        'precision_thresholds': optimal_thresholds,  # Mantido para compatibilidade
+        'precision_thresholds': optimal_thresholds,  # Kept for compatibility
         'optimal_thresholds': optimal_thresholds,
         'confusion_matrices': confusion_matrices,
         'pos_weights': pos_weights
@@ -658,12 +658,12 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
 
 
 def save_model(model_info, feature_names, defect_names):
-    """Salvar modelo treinado."""
-    print("\n[*] Salvando modelo...")
+    """Save trained model."""
+    print("\n[*] Saving model...")
     
     Path('models').mkdir(exist_ok=True)
     
-    # Criar wrapper
+    # Create wrapper
     wrapper = PyTorchModelWrapper(
         model_info['model'], 
         model_info['scaler'], 
@@ -689,11 +689,11 @@ def save_model(model_info, feature_names, defect_names):
     with open('models/best_model.pkl', 'wb') as f:
         pickle.dump(artifacts, f)
     
-    # Salvar thresholds separadamente
+    # Save thresholds separately
     with open('optimal_thresholds.pkl', 'wb') as f:
         pickle.dump(model_info['precision_thresholds'], f)
     
-    # Salvar métricas em JSON para fácil análise
+    # Save metrics in JSON for easy analysis
     import json
     metrics_json = {
         'f1_micro': float(model_info['metrics']['f1_micro']),
@@ -708,7 +708,7 @@ def save_model(model_info, feature_names, defect_names):
     with open('model_metrics.json', 'w') as f:
         json.dump(metrics_json, f, indent=2)
     
-    print("    [OK] Modelo salvo:")
+    print("    [OK] Model saved:")
     print("        - models/pytorch_stable_model.pkl")
     print("        - models/best_model.pkl")
     print("        - optimal_thresholds.pkl")
@@ -716,7 +716,7 @@ def save_model(model_info, feature_names, defect_names):
 
 
 def main():
-    """Função principal - Executa o workflow ML completo."""
+    """Main function - Runs the complete ML workflow."""
     print("="*70)
     print("ML-BASED WORKFLOW FOR DEFECT PREDICTION IN CASTING PROCESSES")
     print("="*70)
@@ -731,20 +731,20 @@ def main():
         # 3.6. Model Training and Selection
         model_info = train_model(X, y, pos_weights, feature_names, defect_names)
         
-        # Salvar modelo
+        # Save model
         save_model(model_info, feature_names, defect_names)
         
         print("\n" + "="*70)
-        print("[CONCLUIDO] WORKFLOW ML EXECUTADO COM SUCESSO!")
+        print("[COMPLETED] ML WORKFLOW EXECUTED SUCCESSFULLY!")
         print("="*70)
-        print(f"\nResumo Final:")
+        print(f"\nFinal Summary:")
         print(f"  F1-Score (Micro): {model_info['metrics']['f1_micro']:.4f}")
         print(f"  Precision: {model_info['metrics']['precision_micro']:.4f}")
         print(f"  Recall: {model_info['metrics']['recall_micro']:.4f}")
         print(f"  Accuracy: {model_info['metrics']['accuracy']:.4f}")
         
     except Exception as e:
-        print(f"\n[ERRO] {e}")
+        print(f"\n[ERROR] {e}")
         import traceback
         traceback.print_exc()
 

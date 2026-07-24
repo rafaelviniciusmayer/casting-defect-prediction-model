@@ -54,7 +54,7 @@ streamlit run streamlit_app.py
 The browser opens the **Die Casting Defect Predictor** dashboard:
 
 1. Adjust the **15 process variables** in the sidebar.
-2. Click **VERIFICAR PROBABILIDADE DE DEFEITOS**.
+2. Click **CHECK DEFECT PROBABILITY**.
 3. Inspect the 2×2 layout:
    - process parameters vs ideal ranges
    - predicted probabilities for 28 defect types (with threshold markers)

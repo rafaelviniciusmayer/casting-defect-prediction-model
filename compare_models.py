@@ -1,19 +1,19 @@
 """
-Comparação de Modelos para Predição de Defeitos em Fundição
+Model Comparison for Casting Defect Prediction
 ===========================================================
 
-Script standalone que compara 3 modelos no mesmo pipeline:
-1. PyTorch Neural Network (modelo atual em produção)
+Standalone script that compares 3 models on the same pipeline:
+1. PyTorch Neural Network (current production model)
 2. XGBoost
 3. Random Forest
 
-Objetivo: Justificar a escolha do melhor modelo com evidências empíricas.
-Não altera train_model.py - importa funções existentes e adiciona apenas
-a lógica de comparação.
+Objective: Justify the choice of the best model with empirical evidence.
+Does not modify train_model.py - imports existing functions and adds only
+the comparison logic.
 
-Execute: python compare_models.py
+Run: python compare_models.py
 
-Requisitos adicionais: pip install xgboost
+Additional requirements: pip install xgboost
 """
 
 import json
@@ -34,7 +34,7 @@ from sklearn.preprocessing import StandardScaler
 
 warnings.filterwarnings('ignore')
 
-# Importar do train_model existente (sem alterá-lo)
+# Import from existing train_model (without modifying it)
 from train_model import (
     apply_feature_engineering,
     apply_smote_balancing,
@@ -52,11 +52,11 @@ try:
     XGBOOST_AVAILABLE = True
 except ImportError:
     XGBOOST_AVAILABLE = False
-    print("[AVISO] xgboost não instalado. Execute: pip install xgboost")
+    print("[WARNING] xgboost not installed. Run: pip install xgboost")
 
 
 def _get_train_test_split():
-    """Carrega dados e retorna split idêntico ao train_model.py."""
+    """Loads data and returns split identical to train_model.py."""
     X, y, feature_names, defect_names, pos_weights = load_and_prepare_data()
     X, feature_names = apply_feature_engineering(X, feature_names)
 
@@ -68,7 +68,7 @@ def _get_train_test_split():
 
 
 def _optimize_thresholds_silent(y_test, y_pred_proba, defect_names):
-    """Mesma lógica de optimize_thresholds do train_model, sem prints."""
+    """Same logic as optimize_thresholds from train_model, without prints."""
     optimal_thresholds = {}
     y_pred_binary = np.zeros_like(y_pred_proba)
     for i, defect_name in enumerate(defect_names):
@@ -104,7 +104,7 @@ def _optimize_thresholds_silent(y_test, y_pred_proba, defect_names):
 
 
 def _optimize_and_evaluate(y_test, y_pred_proba, defect_names, model_name):
-    """Aplica otimização de thresholds e retorna métricas."""
+    """Applies threshold optimization and returns metrics."""
     optimal_thresholds, y_pred_binary = _optimize_thresholds_silent(
         y_test, y_pred_proba, defect_names
     )
@@ -119,7 +119,7 @@ def _optimize_and_evaluate(y_test, y_pred_proba, defect_names, model_name):
 
 
 def train_and_evaluate_pytorch(X_train, X_test, y_train, y_test, pos_weights, defect_names):
-    """Treina e avalia o modelo PyTorch (mesma lógica do train_model.py)."""
+    """Trains and evaluates the PyTorch model (same logic as train_model.py)."""
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train).astype(np.float32)
     X_test_scaled = scaler.transform(X_test).astype(np.float32)
@@ -146,7 +146,7 @@ def train_and_evaluate_pytorch(X_train, X_test, y_train, y_test, pos_weights, de
     for _ in range(100):
         with torch.no_grad():
             _ = torch.sigmoid(model(torch.FloatTensor(X_test_scaled[:100])))
-    inference_time_ms = (time.perf_counter() - t0) / 100 * 1000  # ms por 100 amostras
+    inference_time_ms = (time.perf_counter() - t0) / 100 * 1000  # ms per 100 samples
 
     metrics, thresholds = _optimize_and_evaluate(
         y_test, y_pred_proba, defect_names, 'PyTorch NN'
@@ -155,7 +155,7 @@ def train_and_evaluate_pytorch(X_train, X_test, y_train, y_test, pos_weights, de
 
 
 def _extract_proba_positive(proba_list, model):
-    """Extrai P(classe=1) de MultiOutputClassifier, tratando caso de classe única."""
+    """Extracts P(class=1) from MultiOutputClassifier, handling single-class case."""
     proba_cols = []
     for i, p in enumerate(proba_list):
         if p.shape[1] == 2:
@@ -167,7 +167,7 @@ def _extract_proba_positive(proba_list, model):
 
 
 def train_and_evaluate_xgboost(X_train, X_test, y_train, y_test, defect_names):
-    """Treina e avalia XGBoost com MultiOutputClassifier."""
+    """Trains and evaluates XGBoost with MultiOutputClassifier."""
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
@@ -208,7 +208,7 @@ def train_and_evaluate_xgboost(X_train, X_test, y_train, y_test, defect_names):
 
 
 def train_and_evaluate_random_forest(X_train, X_test, y_train, y_test, defect_names):
-    """Treina e avalia Random Forest com MultiOutputClassifier."""
+    """Trains and evaluates Random Forest with MultiOutputClassifier."""
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train)
     X_test_scaled = scaler.transform(X_test)
@@ -248,22 +248,22 @@ def train_and_evaluate_random_forest(X_train, X_test, y_train, y_test, defect_na
 
 def main():
     print("=" * 70)
-    print("COMPARAÇÃO DE MODELOS - Predição de Defeitos em Fundição")
+    print("MODEL COMPARISON - Casting Defect Prediction")
     print("=" * 70)
 
     if not XGBOOST_AVAILABLE:
-        print("\n[ERRO] xgboost não está instalado. Execute: pip install xgboost")
+        print("\n[ERROR] xgboost is not installed. Run: pip install xgboost")
         return
 
-    print("\n[*] Carregando dados (mesmo pipeline do train_model.py)...")
+    print("\n[*] Loading data (same pipeline as train_model.py)...")
     X_dev, X_test, y_dev, y_test, feature_names, defect_names, pos_weights = _get_train_test_split()
-    print(f"    Treino: {X_dev.shape[0]:,} | Teste: {X_test.shape[0]:,} | Features: {X_dev.shape[1]} | Defeitos: {y_dev.shape[1]}")
+    print(f"    Train: {X_dev.shape[0]:,} | Test: {X_test.shape[0]:,} | Features: {X_dev.shape[1]} | Defects: {y_dev.shape[1]}")
 
     results = {}
 
     # 1. PyTorch NN
     print("\n" + "-" * 70)
-    print("1/3 Treinando PyTorch Neural Network...")
+    print("1/3 Training PyTorch Neural Network...")
     print("-" * 70)
     metrics_pytorch, train_time_pytorch, inf_time_pytorch, _ = train_and_evaluate_pytorch(
         X_dev, X_test, y_dev, y_test, pos_weights, defect_names
@@ -274,11 +274,11 @@ def main():
         'inference_time_ms_per_100': round(inf_time_pytorch, 2),
     }
     print(f"    F1-Micro: {metrics_pytorch['f1_micro']:.4f} | Recall: {metrics_pytorch['recall_micro']:.4f} | "
-          f"Precision: {metrics_pytorch['precision_micro']:.4f} | Treino: {train_time_pytorch:.1f}s")
+          f"Precision: {metrics_pytorch['precision_micro']:.4f} | Train: {train_time_pytorch:.1f}s")
 
     # 2. XGBoost
     print("\n" + "-" * 70)
-    print("2/3 Treinando XGBoost...")
+    print("2/3 Training XGBoost...")
     print("-" * 70)
     metrics_xgb, train_time_xgb, inf_time_xgb, _ = train_and_evaluate_xgboost(
         X_dev, X_test, y_dev, y_test, defect_names
@@ -289,11 +289,11 @@ def main():
         'inference_time_ms_per_100': round(inf_time_xgb, 2),
     }
     print(f"    F1-Micro: {metrics_xgb['f1_micro']:.4f} | Recall: {metrics_xgb['recall_micro']:.4f} | "
-          f"Precision: {metrics_xgb['precision_micro']:.4f} | Treino: {train_time_xgb:.1f}s")
+          f"Precision: {metrics_xgb['precision_micro']:.4f} | Train: {train_time_xgb:.1f}s")
 
     # 3. Random Forest
     print("\n" + "-" * 70)
-    print("3/3 Treinando Random Forest...")
+    print("3/3 Training Random Forest...")
     print("-" * 70)
     metrics_rf, train_time_rf, inf_time_rf, _ = train_and_evaluate_random_forest(
         X_dev, X_test, y_dev, y_test, defect_names
@@ -304,16 +304,16 @@ def main():
         'inference_time_ms_per_100': round(inf_time_rf, 2),
     }
     print(f"    F1-Micro: {metrics_rf['f1_micro']:.4f} | Recall: {metrics_rf['recall_micro']:.4f} | "
-          f"Precision: {metrics_rf['precision_micro']:.4f} | Treino: {train_time_rf:.1f}s")
+          f"Precision: {metrics_rf['precision_micro']:.4f} | Train: {train_time_rf:.1f}s")
 
-    # Resumo e justificativa
+    # Summary and justification
     print("\n" + "=" * 70)
-    print("RESUMO DA COMPARAÇÃO")
+    print("COMPARISON SUMMARY")
     print("=" * 70)
 
-    # Tabela
+    # Table
     print("\n{:<18} {:>10} {:>10} {:>10} {:>10} {:>12}".format(
-        "Modelo", "F1-Micro", "F1-Macro", "Precision", "Recall", "Treino (s)"
+        "Model", "F1-Micro", "F1-Macro", "Precision", "Recall", "Train (s)"
     ))
     print("-" * 72)
     for name, data in results.items():
@@ -323,40 +323,40 @@ def main():
             m['recall_micro'], data['train_time_sec']
         ))
 
-    # Melhor modelo por critério
+    # Best model by criterion
     best_f1 = max(results.items(), key=lambda x: x[1]['metrics']['f1_micro'])
     best_recall = max(results.items(), key=lambda x: x[1]['metrics']['recall_micro'])
 
-    print("\n[*] Melhor F1-Micro:", best_f1[0])
-    print("[*] Melhor Recall:", best_recall[0])
+    print("\n[*] Best F1-Micro:", best_f1[0])
+    print("[*] Best Recall:", best_recall[0])
 
-    # Justificativa
+    # Justification
     justification = []
     if best_f1[0] == 'PyTorch NN':
         justification.append(
-            "O modelo PyTorch NN obteve o melhor F1-Score, indicando melhor "
-            "balanceamento entre Precision e Recall na tarefa multi-label."
+            "The PyTorch NN model achieved the best F1-Score, indicating better "
+            "balance between Precision and Recall in the multi-label task."
         )
     if best_recall[0] == 'PyTorch NN':
         justification.append(
-            "O PyTorch NN apresentou o maior Recall, essencial para minimizar "
-            "falsos negativos (defeitos que passam despercebidos)."
+            "PyTorch NN showed the highest Recall, essential for minimizing "
+            "false negatives (defects that go unnoticed)."
         )
     if justification:
-        print("\n[Justificativa] " + " ".join(justification))
+        print("\n[Justification] " + " ".join(justification))
     else:
-        print("\n[Justificativa] O modelo alternativo", best_f1[0], "ou", best_recall[0],
-              "apresentou desempenho superior. Considere reavaliar a escolha do modelo.")
+        print("\n[Justification] The alternative model", best_f1[0], "or", best_recall[0],
+              "showed superior performance. Consider re-evaluating the model choice.")
 
-    # Salvar relatório
+    # Save report
     report = {
         'comparison': {k: {**v, 'metrics': {mk: float(mv) for mk, mv in v['metrics'].items()}}
                       for k, v in results.items()},
         'best_f1_micro': best_f1[0],
         'best_recall': best_recall[0],
         'justification': justification if justification else [
-            f"Modelo alternativo ({best_f1[0]}) apresentou melhor desempenho. "
-            "Considere reavaliar a escolha do modelo em produção."
+            f"Alternative model ({best_f1[0]}) showed better performance. "
+            "Consider re-evaluating the production model choice."
         ],
         'config': {
             'train_test_split': '80/20',
@@ -372,31 +372,31 @@ def main():
     # Markdown
     md_path = Path('reports/MODEL_COMPARISON_REPORT.md')
     with open(md_path, 'w', encoding='utf-8') as f:
-        f.write("# Relatório de Comparação de Modelos\n\n")
-        f.write("## Objetivo\n\n")
-        f.write("Justificar a escolha do modelo para predição de defeitos em fundição de alumínio, ")
-        f.write("comparando PyTorch NN (modelo atual), XGBoost e Random Forest.\n\n")
-        f.write("## Metodologia\n\n")
-        f.write("- Mesmo pipeline de dados (load_and_prepare_data, apply_feature_engineering)\n")
-        f.write("- Mesmo split 80/20 estratificado (random_state=42)\n")
-        f.write("- SMOTE aplicado ao treino para todos os modelos\n")
-        f.write("- Otimização de thresholds por defeito (maximizar Recall)\n\n")
-        f.write("## Resultados\n\n")
-        f.write("| Modelo | F1-Micro | F1-Macro | Precision | Recall | Treino (s) | Inf. (ms/100) |\n")
+        f.write("# Model Comparison Report\n\n")
+        f.write("## Objective\n\n")
+        f.write("Justify the model choice for aluminum casting defect prediction, ")
+        f.write("comparing PyTorch NN (current model), XGBoost and Random Forest.\n\n")
+        f.write("## Methodology\n\n")
+        f.write("- Same data pipeline (load_and_prepare_data, apply_feature_engineering)\n")
+        f.write("- Same stratified 80/20 split (random_state=42)\n")
+        f.write("- SMOTE applied to training for all models\n")
+        f.write("- Per-defect threshold optimization (maximize Recall)\n\n")
+        f.write("## Results\n\n")
+        f.write("| Model | F1-Micro | F1-Macro | Precision | Recall | Train (s) | Inf. (ms/100) |\n")
         f.write("|--------|----------|----------|-----------|--------|------------|---------------|\n")
         for name, data in results.items():
             m = data['metrics']
             f.write(f"| {name} | {m['f1_micro']:.4f} | {m['f1_macro']:.4f} | "
                     f"{m['precision_micro']:.4f} | {m['recall_micro']:.4f} | "
                     f"{data['train_time_sec']} | {data['inference_time_ms_per_100']:.2f} |\n")
-        f.write("\n## Conclusão\n\n")
-        f.write(f"- **Melhor F1-Micro:** {best_f1[0]}\n")
-        f.write(f"- **Melhor Recall:** {best_recall[0]}\n\n")
+        f.write("\n## Conclusion\n\n")
+        f.write(f"- **Best F1-Micro:** {best_f1[0]}\n")
+        f.write(f"- **Best Recall:** {best_recall[0]}\n\n")
         for j in report['justification']:
             f.write(f"- {j}\n")
 
-    print(f"\n[OK] Relatório salvo em reports/model_comparison_report.json")
-    print(f"[OK] Relatório Markdown salvo em {md_path}")
+    print(f"\n[OK] Report saved to reports/model_comparison_report.json")
+    print(f"[OK] Markdown report saved to {md_path}")
     print("\n" + "=" * 70)
 
 

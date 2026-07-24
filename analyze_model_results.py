@@ -1,12 +1,12 @@
 """
-Script de Análise de Resultados do Modelo
+Model Results Analysis Script
 ==========================================
 
-Analisa os resultados do treinamento focando em MAXIMIZAR DETECÇÃO DE DEFEITOS.
-Objetivo: Identificar a maior quantidade possível de peças com defeito.
+Analyzes training results focusing on MAXIMIZING DEFECT DETECTION.
+Goal: Identify the largest possible number of defective parts.
 
-Os valores de Recall, F1-Score e Precision são SAÍDAS do processo de otimização,
-não critérios de entrada.
+Recall, F1-Score, and Precision values are OUTPUTS of the optimization process,
+not input criteria.
 """
 
 import pickle
@@ -17,14 +17,14 @@ import json
 import sys
 
 def load_artifacts_safely():
-    """Carrega artifacts do modelo de forma segura."""
+    """Loads model artifacts safely."""
     try:
         with open('models/best_model.pkl', 'rb') as f:
             artifacts = pickle.load(f)
         return artifacts
     except (AttributeError, ModuleNotFoundError) as e:
-        print(f"[AVISO] Erro ao carregar modelo completo: {e}")
-        print("[INFO] Tentando carregar apenas métricas e thresholds...")
+        print(f"[WARNING] Error loading full model: {e}")
+        print("[INFO] Attempting to load metrics and thresholds only...")
         
         thresholds = {}
         try:
@@ -42,22 +42,22 @@ def load_artifacts_safely():
         return artifacts
 
 def analyze_model_results():
-    """Analisa os resultados do modelo treinado focando em detecção máxima de defeitos."""
+    """Analyzes trained model results focusing on maximum defect detection."""
     
     print("="*70)
-    print("ANÁLISE DE RESULTADOS - FOCO EM MAXIMIZAR DETECÇÃO DE DEFEITOS")
+    print("RESULTS ANALYSIS - FOCUS ON MAXIMIZING DEFECT DETECTION")
     print("="*70)
     
-    # Carregar modelo
+    # Load model
     try:
         artifacts = load_artifacts_safely()
-        print("\n[OK] Dados do modelo carregados")
+        print("\n[OK] Model data loaded")
     except Exception as e:
-        print(f"\n[ERRO] Erro ao carregar modelo: {e}")
-        print("[INFO] Execute train_model.py primeiro para gerar o modelo.")
+        print(f"\n[ERROR] Error loading model: {e}")
+        print("[INFO] Run train_model.py first to generate the model.")
         return
     
-    # Tentar carregar métricas de JSON primeiro
+    # Try loading metrics from JSON first
     metrics = {}
     thresholds = {}
     feature_names = []
@@ -74,24 +74,24 @@ def analyze_model_results():
                 'accuracy': metrics_json.get('accuracy', 0)
             }
             thresholds = metrics_json.get('thresholds', {})
-            print("\n[OK] Métricas carregadas de model_metrics.json")
+            print("\n[OK] Metrics loaded from model_metrics.json")
     except FileNotFoundError:
-        # Tentar extrair do artifacts
+        # Try extracting from artifacts
         metrics = artifacts.get('metrics', {})
         thresholds = artifacts.get('optimal_thresholds', {})
         feature_names = artifacts.get('process_vars', [])
         defect_names = artifacts.get('defect_cols', [])
         
         if not metrics:
-            print("\n[AVISO] Métricas não encontradas.")
-            print("[INFO] Execute train_model.py para gerar métricas completas.")
+            print("\n[WARNING] Metrics not found.")
+            print("[INFO] Run train_model.py to generate complete metrics.")
             return
     
     # =============================================================================
-    # 1. MÉTRICAS OBTIDAS (SAÍDAS DO PROCESSO DE OTIMIZAÇÃO)
+    # 1. OBTAINED METRICS (OUTPUTS OF THE OPTIMIZATION PROCESS)
     # =============================================================================
     print("\n" + "="*70)
-    print("1. MÉTRICAS OBTIDAS (Resultados da Otimização)")
+    print("1. OBTAINED METRICS (Optimization Results)")
     print("="*70)
     
     recall = metrics.get('recall_micro', 0)
@@ -100,116 +100,116 @@ def analyze_model_results():
     f1_macro = metrics.get('f1_macro', 0)
     accuracy = metrics.get('accuracy', 0)
     
-    print(f"\nMétricas no Conjunto de Teste:")
-    print(f"  Recall (Sensibilidade):     {recall:.4f} ({recall*100:.2f}%)")
-    print(f"  Precision (Precisão):       {precision:.4f} ({precision*100:.2f}%)")
+    print(f"\nTest Set Metrics:")
+    print(f"  Recall (Sensitivity):       {recall:.4f} ({recall*100:.2f}%)")
+    print(f"  Precision:                  {precision:.4f} ({precision*100:.2f}%)")
     print(f"  F1-Score (Micro):           {f1_micro:.4f} ({f1_micro*100:.2f}%)")
     print(f"  F1-Score (Macro):           {f1_macro:.4f} ({f1_macro*100:.2f}%)")
-    print(f"  Accuracy (Acurácia):         {accuracy:.4f} ({accuracy*100:.2f}%)")
+    print(f"  Accuracy:                   {accuracy:.4f} ({accuracy*100:.2f}%)")
     
     # =============================================================================
-    # 2. ANÁLISE DE DETECÇÃO DE DEFEITOS (FOCO PRINCIPAL)
+    # 2. DEFECT DETECTION ANALYSIS (MAIN FOCUS)
     # =============================================================================
     print("\n" + "="*70)
-    print("2. ANÁLISE DE DETECÇÃO DE DEFEITOS")
+    print("2. DEFECT DETECTION ANALYSIS")
     print("="*70)
     
-    # Taxa de falsos negativos (defeitos que passam - CRÍTICO)
+    # False negative rate (defects that slip through - CRITICAL)
     false_negative_rate = 1 - recall
     true_positive_rate = recall
     
-    print(f"\n[*] Detecção de Defeitos Reais:")
-    print(f"    Taxa de Detecção (Recall):     {recall:.4f} ({recall*100:.2f}%)")
-    print(f"    Taxa de Falsos Negativos:      {false_negative_rate:.4f} ({false_negative_rate*100:.2f}%)")
+    print(f"\n[*] Real Defect Detection:")
+    print(f"    Detection Rate (Recall):     {recall:.4f} ({recall*100:.2f}%)")
+    print(f"    False Negative Rate:         {false_negative_rate:.4f} ({false_negative_rate*100:.2f}%)")
     
-    # Estimar impacto em produção
-    print(f"\n[*] Impacto Estimado em Produção (por 1000 peças):")
-    print(f"    Defeitos Detectados:           ~{recall*1000:.0f} peças")
-    print(f"    Defeitos que Passam (FN):       ~{false_negative_rate*1000:.0f} peças")
+    # Estimate production impact
+    print(f"\n[*] Estimated Production Impact (per 1000 parts):")
+    print(f"    Defects Detected:              ~{recall*1000:.0f} parts")
+    print(f"    Defects That Slip Through (FN): ~{false_negative_rate*1000:.0f} parts")
     
-    # Interpretação do Recall
+    # Recall interpretation
     if recall >= 0.90:
-        recall_status = "EXCELENTE - Modelo detecta mais de 90% dos defeitos"
+        recall_status = "EXCELLENT - Model detects more than 90% of defects"
         recall_color = "[OK]"
     elif recall >= 0.80:
-        recall_status = "MUITO BOM - Modelo detecta mais de 80% dos defeitos"
+        recall_status = "VERY GOOD - Model detects more than 80% of defects"
         recall_color = "[OK]"
     elif recall >= 0.70:
-        recall_status = "BOM - Modelo detecta mais de 70% dos defeitos"
+        recall_status = "GOOD - Model detects more than 70% of defects"
         recall_color = "[OK]"
     elif recall >= 0.60:
-        recall_status = "REGULAR - Modelo detecta mais de 60% dos defeitos"
+        recall_status = "FAIR - Model detects more than 60% of defects"
         recall_color = "[!]"
     else:
-        recall_status = "BAIXO - Modelo detecta menos de 60% dos defeitos"
+        recall_status = "LOW - Model detects less than 60% of defects"
         recall_color = "[X]"
     
     print(f"\n    {recall_color} {recall_status}")
     
     # =============================================================================
-    # 3. ANÁLISE DE PRECISION (TRADE-OFF)
+    # 3. PRECISION ANALYSIS (TRADE-OFF)
     # =============================================================================
     print("\n" + "="*70)
-    print("3. ANÁLISE DE PRECISION (Trade-off com Recall)")
+    print("3. PRECISION ANALYSIS (Trade-off with Recall)")
     print("="*70)
     
     false_positive_rate = 1 - precision
     
-    print(f"\n[*] Precisão das Predições:")
+    print(f"\n[*] Prediction Precision:")
     print(f"    Precision:                     {precision:.4f} ({precision*100:.2f}%)")
-    print(f"    Taxa de Falsos Positivos:      {false_positive_rate:.4f} ({false_positive_rate*100:.2f}%)")
+    print(f"    False Positive Rate:           {false_positive_rate:.4f} ({false_positive_rate*100:.2f}%)")
     
-    print(f"\n[*] Impacto Estimado em Produção (por 1000 peças):")
-    print(f"    Peças Boas Rejeitadas (FP):   ~{false_positive_rate*1000:.0f} peças")
+    print(f"\n[*] Estimated Production Impact (per 1000 parts):")
+    print(f"    Good Parts Rejected (FP):      ~{false_positive_rate*1000:.0f} parts")
     
-    # Interpretação do Precision
+    # Precision interpretation
     if precision >= 0.80:
-        precision_status = "ALTA - Poucos falsos positivos"
+        precision_status = "HIGH - Few false positives"
         precision_color = "[OK]"
     elif precision >= 0.70:
-        precision_status = "MODERADA - Alguns falsos positivos"
+        precision_status = "MODERATE - Some false positives"
         precision_color = "[!]"
     elif precision >= 0.60:
-        precision_status = "BAIXA - Muitos falsos positivos"
+        precision_status = "LOW - Many false positives"
         precision_color = "[!]"
     else:
-        precision_status = "MUITO BAIXA - Muitos falsos positivos"
+        precision_status = "VERY LOW - Many false positives"
         precision_color = "[X]"
     
     print(f"\n    {precision_color} {precision_status}")
     
     # =============================================================================
-    # 4. BALANCEAMENTO (F1-SCORE)
+    # 4. BALANCE (F1-SCORE)
     # =============================================================================
     print("\n" + "="*70)
-    print("4. BALANCEAMENTO ENTRE RECALL E PRECISION (F1-Score)")
+    print("4. BALANCE BETWEEN RECALL AND PRECISION (F1-Score)")
     print("="*70)
     
-    print(f"\n[*] F1-Score (Média Harmônica):")
+    print(f"\n[*] F1-Score (Harmonic Mean):")
     print(f"    F1-Score (Micro):             {f1_micro:.4f} ({f1_micro*100:.2f}%)")
     print(f"    F1-Score (Macro):             {f1_macro:.4f} ({f1_macro*100:.2f}%)")
     
-    # Interpretação do F1-Score
+    # F1-Score interpretation
     if f1_micro >= 0.80:
-        f1_status = "EXCELENTE balanceamento"
+        f1_status = "EXCELLENT balance"
         f1_color = "[OK]"
     elif f1_micro >= 0.70:
-        f1_status = "BOM balanceamento"
+        f1_status = "GOOD balance"
         f1_color = "[OK]"
     elif f1_micro >= 0.60:
-        f1_status = "REGULAR balanceamento"
+        f1_status = "FAIR balance"
         f1_color = "[!]"
     else:
-        f1_status = "BAIXO balanceamento"
+        f1_status = "LOW balance"
         f1_color = "[X]"
     
     print(f"\n    {f1_color} {f1_status}")
     
     # =============================================================================
-    # 5. ANÁLISE DE THRESHOLDS OTIMIZADOS
+    # 5. OPTIMIZED THRESHOLDS ANALYSIS
     # =============================================================================
     print("\n" + "="*70)
-    print("5. ANÁLISE DE THRESHOLDS OTIMIZADOS")
+    print("5. OPTIMIZED THRESHOLDS ANALYSIS")
     print("="*70)
     
     if thresholds:
@@ -219,83 +219,83 @@ def analyze_model_results():
         max_threshold = np.max(threshold_values)
         median_threshold = np.median(threshold_values)
         
-        print(f"\n[*] Estatísticas dos Thresholds:")
-        print(f"    Média:   {avg_threshold:.3f}")
-        print(f"    Mediana: {median_threshold:.3f}")
-        print(f"    Mínimo:  {min_threshold:.3f}")
-        print(f"    Máximo:  {max_threshold:.3f}")
+        print(f"\n[*] Threshold Statistics:")
+        print(f"    Mean:    {avg_threshold:.3f}")
+        print(f"    Median:  {median_threshold:.3f}")
+        print(f"    Minimum: {min_threshold:.3f}")
+        print(f"    Maximum: {max_threshold:.3f}")
         
-        # Distribuição de thresholds
+        # Threshold distribution
         low_thresholds = sum(1 for t in threshold_values if t < 0.3)
         medium_thresholds = sum(1 for t in threshold_values if 0.3 <= t < 0.6)
         high_thresholds = sum(1 for t in threshold_values if t >= 0.6)
         
-        print(f"\n[*] Distribuição:")
-        print(f"    Thresholds Baixos (< 0.3):    {low_thresholds} defeitos (alta sensibilidade)")
-        print(f"    Thresholds Médios (0.3-0.6):  {medium_thresholds} defeitos")
-        print(f"    Thresholds Altos (>= 0.6):    {high_thresholds} defeitos (baixa sensibilidade)")
+        print(f"\n[*] Distribution:")
+        print(f"    Low Thresholds (< 0.3):       {low_thresholds} defects (high sensitivity)")
+        print(f"    Medium Thresholds (0.3-0.6):  {medium_thresholds} defects")
+        print(f"    High Thresholds (>= 0.6):     {high_thresholds} defects (low sensitivity)")
         
         if avg_threshold < 0.4:
-            threshold_strategy = "Estratégia: Thresholds baixos para maximizar Recall"
+            threshold_strategy = "Strategy: Low thresholds to maximize Recall"
         elif avg_threshold < 0.6:
-            threshold_strategy = "Estratégia: Thresholds moderados para balanceamento"
+            threshold_strategy = "Strategy: Moderate thresholds for balance"
         else:
-            threshold_strategy = "Estratégia: Thresholds altos (pode estar limitando Recall)"
+            threshold_strategy = "Strategy: High thresholds (may be limiting Recall)"
         
         print(f"\n    {threshold_strategy}")
         
-        # Mostrar top 10 defeitos com thresholds mais baixos (mais sensíveis)
+        # Show top 10 defects with lowest thresholds (most sensitive)
         sorted_thresholds = sorted(thresholds.items(), key=lambda x: x[1])
-        print(f"\n[*] Top 10 Defeitos com Maior Sensibilidade (thresholds mais baixos):")
+        print(f"\n[*] Top 10 Defects with Highest Sensitivity (lowest thresholds):")
         for i, (defect, threshold) in enumerate(sorted_thresholds[:10], 1):
             print(f"    {i:2d}. {defect:<35}: {threshold:.3f}")
     
     # =============================================================================
-    # 6. RESUMO E INTERPRETAÇÃO FINAL
+    # 6. SUMMARY AND FINAL INTERPRETATION
     # =============================================================================
     print("\n" + "="*70)
-    print("6. RESUMO E INTERPRETAÇÃO FINAL")
+    print("6. SUMMARY AND FINAL INTERPRETATION")
     print("="*70)
     
-    print(f"\n[*] Objetivo Principal: Maximizar Detecção de Defeitos")
-    print(f"    Recall Obtido: {recall:.4f} ({recall*100:.2f}%)")
+    print(f"\n[*] Primary Goal: Maximize Defect Detection")
+    print(f"    Recall Obtained: {recall:.4f} ({recall*100:.2f}%)")
     
     print(f"\n[*] Trade-offs:")
     print(f"    Precision: {precision:.4f} ({precision*100:.2f}%)")
     print(f"    F1-Score:  {f1_micro:.4f} ({f1_micro*100:.2f}%)")
     
-    # Recomendação baseada nos resultados obtidos
-    print(f"\n[*] Interpretação dos Resultados:")
+    # Recommendation based on obtained results
+    print(f"\n[*] Results Interpretation:")
     
     if recall >= 0.85:
-        print(f"    [OK] EXCELENTE deteccao de defeitos ({recall*100:.1f}%)")
-        print(f"    [OK] O modelo esta capturando a grande maioria dos defeitos reais")
+        print(f"    [OK] EXCELLENT defect detection ({recall*100:.1f}%)")
+        print(f"    [OK] The model is capturing the vast majority of real defects")
         if precision >= 0.70:
-            print(f"    [OK] Boa precisao mantida ({precision*100:.1f}%)")
-            recommendation = "Modelo EXCELENTE para uso em producao. Alta deteccao de defeitos com boa precisao."
+            print(f"    [OK] Good precision maintained ({precision*100:.1f}%)")
+            recommendation = "EXCELLENT model for production use. High defect detection with good precision."
         else:
-            print(f"    [!] Precision baixa ({precision*100:.1f}%) - muitas pecas boas serao rejeitadas")
-            recommendation = "Modelo BOM para deteccao, mas com muitos falsos positivos. Considere se o custo de rejeicao e aceitavel."
+            print(f"    [!] Low precision ({precision*100:.1f}%) - many good parts will be rejected")
+            recommendation = "GOOD model for detection, but with many false positives. Consider whether rejection cost is acceptable."
     elif recall >= 0.75:
-        print(f"    [OK] BOM deteccao de defeitos ({recall*100:.1f}%)")
-        print(f"    [OK] O modelo esta capturando a maioria dos defeitos reais")
+        print(f"    [OK] GOOD defect detection ({recall*100:.1f}%)")
+        print(f"    [OK] The model is capturing most real defects")
         if precision >= 0.70:
-            recommendation = "Modelo BOM para uso em producao. Boa deteccao com precisao aceitavel."
+            recommendation = "GOOD model for production use. Good detection with acceptable precision."
         else:
-            recommendation = "Modelo ACEITAVEL. Boa deteccao mas com trade-off em precisao."
+            recommendation = "ACCEPTABLE model. Good detection but with a precision trade-off."
     elif recall >= 0.65:
-        print(f"    [!] REGULAR deteccao de defeitos ({recall*100:.1f}%)")
-        print(f"    [!] Alguns defeitos podem passar sem deteccao")
-        recommendation = "Modelo REGULAR. Considere ajustar hiperparametros ou coletar mais dados para melhorar Recall."
+        print(f"    [!] FAIR defect detection ({recall*100:.1f}%)")
+        print(f"    [!] Some defects may slip through undetected")
+        recommendation = "FAIR model. Consider adjusting hyperparameters or collecting more data to improve Recall."
     else:
-        print(f"    [X] BAIXA deteccao de defeitos ({recall*100:.1f}%)")
-        print(f"    [X] Muitos defeitos podem passar sem deteccao")
-        recommendation = "Modelo precisa de MELHORIAS. Recall muito baixo para uso em producao."
+        print(f"    [X] LOW defect detection ({recall*100:.1f}%)")
+        print(f"    [X] Many defects may slip through undetected")
+        recommendation = "Model needs IMPROVEMENTS. Recall too low for production use."
     
-    print(f"\n[*] Recomendação:")
+    print(f"\n[*] Recommendation:")
     print(f"    {recommendation}")
     
-    # Salvar relatório
+    # Save report
     report = {
         'metrics': metrics,
         'thresholds': thresholds,
@@ -314,7 +314,7 @@ def analyze_model_results():
     with open('model_analysis_report.json', 'w') as f:
         json.dump(report, f, indent=2)
     
-    print(f"\n[OK] Relatório completo salvo em 'model_analysis_report.json'")
+    print(f"\n[OK] Full report saved to 'model_analysis_report.json'")
     
     return report
 

@@ -165,7 +165,7 @@ def load_model():
         process_vars = artifacts['process_vars']
         defect_cols = artifacts['defect_cols']
         
-        # Criar metadata compatível
+        # Create compatible metadata
         metadata = {
             # UI uses only the 15 process variables
             'process_variables': PROCESS_VARS_15,
@@ -180,7 +180,7 @@ def load_model():
         return model, scaler, metadata
         
     except FileNotFoundError:
-        st.error("❌ Modelo não encontrado! Execute 'python train_model.py' primeiro.")
+        st.error("❌ Model not found! Run 'python train_model.py' first.")
         st.stop()
 
 
@@ -189,20 +189,20 @@ def predict_defects(values: Dict[str, float], model, scaler, metadata) -> Dict:
     variables = metadata.get('model_variables', metadata['process_variables'])
     defects = metadata['defects']
     
-    # Preparar features
+    # Prepare features
     # For engineered variables not present in sidebar inputs, fallback to 0.0
     features = np.array([[values.get(var, 0.0) for var in variables]], dtype=np.float32)
     
-    # Fazer predição usando o wrapper do modelo
+    # Run prediction using the model wrapper
     probs = model.predict_proba(features)[0]
     
-    # Converter para porcentagens
+    # Convert to percentages
     probabilities = {d: round(float(p) * 100, 2) for d, p in zip(defects, probs)}
     sorted_probs = sorted(probabilities.items(), key=lambda x: x[1], reverse=True)
     
     max_risk = max(probabilities.values())
     
-    # Classificação de risco
+    # Risk classification
     if max_risk < 5:
         classification = 'MINIMAL'
     elif max_risk < 15:
@@ -300,20 +300,20 @@ def main():
     try:
         model, scaler, metadata = load_model()
         
-        # Mostrar informações do modelo
-        st.sidebar.markdown("### 📊 Informações do Modelo")
+        # Show model information
+        st.sidebar.markdown("### 📊 Model Information")
         st.sidebar.info(f"""
-        **Modelo:** {metadata.get('model_name', 'PyTorch NN').upper()}  
+        **Model:** {metadata.get('model_name', 'PyTorch NN').upper()}  
         **F1-Score:** {metadata.get('metrics', {}).get('f1_micro', 0):.4f}  
-        **Prob. Máxima:** {metadata.get('prob_stats', {}).get('max_prob', 0):.4f}
+        **Max Prob.:** {metadata.get('prob_stats', {}).get('max_prob', 0):.4f}
         """)
         
-        st.sidebar.success("✨ Modelo PyTorch com ponderação de defeitos!")
+        st.sidebar.success("✨ PyTorch model with defect weighting!")
         
         variables = metadata['process_variables']
         defects = metadata['defects']
         
-        # Configuração das variáveis (valores padrão)
+        # Variable configuration (default values)
         var_config = {
             'piston_velocity_phase1': {
                 'name': 'Piston Velocity Phase 1',
@@ -422,36 +422,36 @@ def main():
             }
         }
         
-        # Adicionar metadata de configuração
+        # Add configuration metadata
         metadata['variable_config'] = var_config
         
     except Exception as e:
-        st.error(f"❌ Erro ao carregar modelo: {e}")
-        st.info("Execute 'python train_model.py' primeiro.")
+        st.error(f"❌ Error loading model: {e}")
+        st.info("Run 'python train_model.py' first.")
         return
     
     # Sidebar - Process Variables Input
-    st.sidebar.markdown("## ⚙️ Variáveis de Processo")
-    st.sidebar.markdown("Ajuste os valores para simular as condições do processo.")
+    st.sidebar.markdown("## ⚙️ Process Variables")
+    st.sidebar.markdown("Adjust values to simulate process conditions.")
     st.sidebar.markdown("---")
     
     values = {}
     
-    # Agrupar variáveis por estágio
+    # Group variables by stage
     stages = {
-        'Preenchimento': ['piston_velocity_phase1', 'metal_velocity_gate', 'fill_time', 'phase_transition_position'],
-        'Intensificação': ['intensification_time_phase3', 'intensification_pressure'],
-        'Solidificação': ['solidification_time', 'cycle_time'],
-        'Configuração': ['sleeve_fill_percentage', 'sleeve_diameter', 'sleeve_length', 'plunger_lubricant', 'plunger_sleeve_clearance'],
-        'Temperatura': ['sleeve_temperature', 'plunger_temperature']
+        'Filling': ['piston_velocity_phase1', 'metal_velocity_gate', 'fill_time', 'phase_transition_position'],
+        'Intensification': ['intensification_time_phase3', 'intensification_pressure'],
+        'Solidification': ['solidification_time', 'cycle_time'],
+        'Setup': ['sleeve_fill_percentage', 'sleeve_diameter', 'sleeve_length', 'plunger_lubricant', 'plunger_sleeve_clearance'],
+        'Temperature': ['sleeve_temperature', 'plunger_temperature']
     }
     
-    # Criar inputs para cada estágio
+    # Create inputs for each stage
     for stage, stage_vars in stages.items():
         st.sidebar.markdown(f"### 📍 {stage}")
         
         for var in stage_vars:
-            if var in variables:  # Verificar se a variável existe no modelo
+            if var in variables:  # Check if variable exists in the model
                 cfg = var_config.get(var, {})
                 name = cfg.get('name', var.replace('_', ' ').title())
                 unit = cfg.get('unit', '')
@@ -467,7 +467,7 @@ def main():
                     ideal_max = float(defect_free[1])
                     default_val = (ideal_min + ideal_max) / 2
                     
-                    # Determinar step baseado no range
+                    # Determine step based on range
                     range_size = max_val - min_val
                     if range_size < 1:
                         step = 0.01
@@ -482,21 +482,21 @@ def main():
                         max_value=max_val,
                         value=default_val,
                         step=step,
-                        help=f"Range ideal: {ideal_min} - {ideal_max} {unit}"
+                        help=f"Ideal range: {ideal_min} - {ideal_max} {unit}"
                     )
                     
                 else:  # categorical
                     options = {
                         0: "Normal (ideal)",
-                        1: "Lubrificação insuficiente",
-                        2: "Excesso de lubrificação"
+                        1: "Insufficient lubrication",
+                        2: "Excessive lubrication"
                     }
                     selected = st.sidebar.selectbox(
                         f"{name}",
                         options=list(options.keys()),
                         format_func=lambda x: options[x],
                         index=0,
-                        help="Condição da lubrificação do pistão"
+                        help="Plunger lubrication condition"
                     )
                     values[var] = selected
         
@@ -538,13 +538,13 @@ def main():
     with col2:
         st.markdown("## 🎯 Quick Stats")
         
-        # Contar variáveis dentro/fora do range
+        # Count variables inside/outside range
         analysis = analyze_variables(values, metadata)
         in_range = len(analysis['in_range'])
         out_range = analysis['total_issues']
         
-        st.metric("Variáveis no Range", f"{in_range}/{len(variables)}")
-        st.metric("Variáveis Fora do Range", f"{out_range}/{len(variables)}")
+        st.metric("Variables In Range", f"{in_range}/{len(variables)}")
+        st.metric("Variables Out of Range", f"{out_range}/{len(variables)}")
     
     st.markdown("---")
     
@@ -552,13 +552,13 @@ def main():
     col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
     with col_btn2:
         predict_button = st.button(
-            "🔍 VERIFICAR PROBABILIDADE DE DEFEITOS",
+            "🔍 CHECK DEFECT PROBABILITY",
             type="primary",
             use_container_width=True
         )
     
     if predict_button:
-        with st.spinner("Analisando parâmetros do processo..."):
+        with st.spinner("Analyzing process parameters..."):
             # DEBUG section - uncomment to see values sent to model
             # st.markdown("---")
             # with st.expander("🔍 DEBUG: Values sent to model", expanded=True):

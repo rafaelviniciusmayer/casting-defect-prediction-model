@@ -223,34 +223,34 @@ PROCESS_VARIABLES = {
 # =============================================================================
 
 DEFECTS = [
-    'blisters_post_treatment',      # Bolhas após tratamento
-    'surface_blisters',             # Bolhas
-    'die_sticking',                 # Colagens
-    'flow_lines',                   # Linhas de fluxo
-    'surface_streaks',              # Estrias
-    'cold_shut',                    # Solda fria
-    'heat_cracks',                  # Trincas de calor
-    'ejector_pin_marks',            # Marca pino extrator
-    'die_soldering',                # Agarres
-    'surface_oxide_inclusions',     # Inclusões de óxidos superficiais
-    'low_tensile_strength',         # Resistência à tração baixa
-    'low_elongation',               # Limite alongamento baixo
-    'low_ultimate_strength',        # Limite de ruptura baixo
-    'low_fatigue_resistance',       # Resistência fadiga baixa
-    'low_surface_hardness',         # Dureza superficial baixa
-    'density_deviation',            # Densidade inadequada
-    'incomplete_fill',              # Enchimento incompleto
-    'flash',                        # Rebarbas
-    'warpage',                      # Empenamento
-    'shrinkage_porosity',           # Rechupes
-    'volumetric_variation',         # Variações volumétricas
-    'dimensional_deviation',        # Desvios dimensionais
-    'gas_porosity',                 # Porosidades de gás
-    'gas_bubbles',                  # Bolhas de gás
-    'internal_shrinkage',           # Rechupes internos
-    'cracks',                       # Trincas
-    'hard_inclusions',              # Inclusões duras
-    'oxide_inclusions'              # Inclusões de óxidos
+    'blisters_post_treatment',      # Blisters after treatment
+    'surface_blisters',             # Blisters
+    'die_sticking',                 # Die sticking
+    'flow_lines',                   # Flow lines
+    'surface_streaks',              # Surface streaks
+    'cold_shut',                    # Cold shut
+    'heat_cracks',                  # Heat cracks
+    'ejector_pin_marks',            # Ejector pin marks
+    'die_soldering',                # Die soldering
+    'surface_oxide_inclusions',     # Surface oxide inclusions
+    'low_tensile_strength',         # Low tensile strength
+    'low_elongation',               # Low elongation
+    'low_ultimate_strength',        # Low ultimate strength
+    'low_fatigue_resistance',       # Low fatigue resistance
+    'low_surface_hardness',         # Low surface hardness
+    'density_deviation',            # Inadequate density
+    'incomplete_fill',              # Incomplete fill
+    'flash',                        # Flash
+    'warpage',                      # Warpage
+    'shrinkage_porosity',           # Shrinkage porosity
+    'volumetric_variation',         # Volumetric variations
+    'dimensional_deviation',        # Dimensional deviations
+    'gas_porosity',                 # Gas porosity
+    'gas_bubbles',                  # Gas bubbles
+    'internal_shrinkage',           # Internal shrinkage
+    'cracks',                       # Cracks
+    'hard_inclusions',              # Hard inclusions
+    'oxide_inclusions'              # Oxide inclusions
 ]
 
 # =============================================================================
@@ -456,72 +456,72 @@ def calculate_defect_probability(severity: float,
     """
     Calculates probability of a specific defect occurring.
     
-    Baseado APENAS na matriz de influência dos especialistas:
-    - Severity: quão fora da faixa boa está o valor (0.0 = na faixa boa, 1.0 = pior caso)
-    - Influence: nível de influência desta variável sobre este defeito específico (0, 1, 2, 3)
+    Based ONLY on the expert influence matrix:
+    - Severity: how far the value is from the good range (0.0 = in good range, 1.0 = worst case)
+    - Influence: influence level of this variable on this specific defect (0, 1, 2, 3)
     
-    INTERPRETAÇÃO CORRETA:
-    - Quando severity=1.0 (pior caso) e influence=3 (muita influência): probabilidade ≈ 100%
-    - Quando severity=1.0 e influence=2 (forte influência): probabilidade ≈ 75%
-    - Quando severity=1.0 e influence=1 (baixa influência): probabilidade ≈ 40%
-    - Quando influence=0: esta variável NÃO afeta este defeito = 0%
-    - Quando severity=0: variável está na faixa boa = 0%
+    CORRECT INTERPRETATION:
+    - When severity=1.0 (worst case) and influence=3 (very strong influence): probability ≈ 100%
+    - When severity=1.0 and influence=2 (strong influence): probability ≈ 75%
+    - When severity=1.0 and influence=1 (low influence): probability ≈ 40%
+    - When influence=0: this variable does NOT affect this defect = 0%
+    - When severity=0: variable is in the good range = 0%
     
-    Fórmula:
-    - Se influence = 0: P = 0% (variável não afeta este defeito)
-    - Se severity = 0: P = 0% (variável está na faixa boa)
-    - Caso contrário: P = severity × max_prob_by_influence[influence]
+    Formula:
+    - If influence = 0: P = 0% (variable does not affect this defect)
+    - If severity = 0: P = 0% (variable is in the good range)
+    - Otherwise: P = severity × max_prob_by_influence[influence]
     
-    Exemplo (piston_velocity_phase1):
-    - Pior caso (severity=1.0) com influência 3: P = 1.0 × 0.95 = 95% (próximo de 100%)
-    - Pior caso (severity=1.0) com influência 2: P = 1.0 × 0.75 = 75%
-    - Pior caso (severity=1.0) com influência 1: P = 1.0 × 0.40 = 40%
-    - Pior caso (severity=1.0) com influência 0: P = 0% (não afeta)
+    Example (piston_velocity_phase1):
+    - Worst case (severity=1.0) with influence 3: P = 1.0 × 0.95 = 95% (close to 100%)
+    - Worst case (severity=1.0) with influence 2: P = 1.0 × 0.75 = 75%
+    - Worst case (severity=1.0) with influence 1: P = 1.0 × 0.40 = 40%
+    - Worst case (severity=1.0) with influence 0: P = 0% (no effect)
     
     Args:
-        severity: Distância da faixa ideal (0.0 = na faixa boa, 1.0 = pior caso nos limites)
-        influence: Nível de influência sobre este defeito específico (0, 1, 2, 3)
-        chance_pct: Parâmetro mantido para compatibilidade, mas não usado no cálculo
+        severity: Distance from ideal range (0.0 = in good range, 1.0 = worst case at limits)
+        influence: Influence level on this specific defect (0, 1, 2, 3)
+        chance_pct: Parameter kept for compatibility, but not used in the calculation
     
     Returns:
-        Probabilidade entre 0.0 e 0.95
+        Probability between 0.0 and 0.95
     """
-    # Influência 0 = esta variável NÃO afeta este defeito específico
+    # Influence 0 = this variable does NOT affect this specific defect
     if influence == 0:
         return 0.0
     
-    # Severity 0 = variável está na faixa boa (sem defeito)
+    # Severity 0 = variable is in the good range (no defect)
     if severity == 0:
         return 0.0
     
-    # Probabilidade máxima baseada APENAS na influência (quando severity=1.0)
-    # Baseado na matriz de influência dos especialistas
+    # Maximum probability based ONLY on influence (when severity=1.0)
+    # Based on the expert influence matrix
     max_prob_by_influence = {
-        1: 0.40,   # Baixa influência: até 40% no pior caso
-        2: 0.75,   # Forte influência: até 75% no pior caso
-        3: 0.95    # Muita influência: até 95% no pior caso (próximo de 100%)
+        1: 0.40,   # Low influence: up to 40% in worst case
+        2: 0.75,   # Strong influence: up to 75% in worst case
+        3: 0.95    # Very strong influence: up to 95% in worst case (close to 100%)
     }
     
     max_prob = max_prob_by_influence[influence]
     
-    # Fórmula direta: escala linear com severity até max_prob
-    # Quando severity=1.0 e influence=3: P = 0.95 (próximo de 100%)
+    # Direct formula: linear scale with severity up to max_prob
+    # When severity=1.0 and influence=3: P = 0.95 (close to 100%)
     probability = severity * max_prob
     
-    # Para influências altas (2-3), garantir probabilidade mínima mesmo com severity baixa
-    # Isso reflete que variáveis de alta influência são muito sensíveis
+    # For high influences (2-3), ensure minimum probability even with low severity
+    # This reflects that high-influence variables are very sensitive
     if influence >= 2:
         if influence == 2:
-            # Influência forte: mínimo 50% do máximo possível mesmo com severity baixa
+            # Strong influence: minimum 50% of maximum possible even with low severity
             min_effective_prob = 0.50 * max_prob
         else:  # influence == 3
-            # Muita influência: mínimo 60% do máximo possível mesmo com severity baixa
+            # Very strong influence: minimum 60% of maximum possible even with low severity
             min_effective_prob = 0.60 * max_prob
         
-        # Garantir probabilidade mínima efetiva
+        # Ensure effective minimum probability
         probability = max(min_effective_prob, probability)
     
-    # Limitar a 95% para deixar margem para combinação com outras variáveis
+    # Cap at 95% to leave margin for combination with other variables
     return min(probability, 0.95)
 
 
@@ -548,39 +548,39 @@ def combine_probabilities(probabilities: List[float]) -> float:
 
 def select_variables_for_defect() -> List[str]:
     """
-    Seleciona quantas variáveis vão sair fora da faixa ideal.
+    Selects how many variables will fall outside the ideal range.
     
-    Distribuição baseada em conhecimento especializado:
-    Eventos com 3+ variáveis fora são muito raros e geralmente causam
-    interrupção do processo (problemas graves na máquina, molde ou processo).
+    Distribution based on expert knowledge:
+    Events with 3+ variables out of range are very rare and usually cause
+    process interruption (serious machine, mold, or process problems).
     
-    Distribuição desejada:
-    - 65%: apenas 1 variável fora (maioria dos casos)
-    - 27%: 2 variáveis fora (casos moderados)
-    - 5%: 3 variáveis fora (casos raros)
-    - 3%: 4+ variáveis fora (eventos muito raros, geralmente causam interrupção)
+    Target distribution:
+    - 65%: only 1 variable out (majority of cases)
+    - 27%: 2 variables out (moderate cases)
+    - 5%: 3 variables out (rare cases)
+    - 3%: 4+ variables out (very rare events, usually cause interruption)
     
     Returns:
-        Lista com os nomes das variáveis selecionadas para sair fora da faixa
+        List of variable names selected to fall outside the range
     """
     all_variables = list(PROCESS_VARIABLES.keys())
     dice = np.random.random()
     
     if dice < 0.65:
-        # 65%: apenas 1 variável fora
+        # 65%: only 1 variable out
         n_vars = 1
     elif dice < 0.92:  # 65% + 27% = 92%
-        # 27%: 2 variáveis fora
+        # 27%: 2 variables out
         n_vars = 2
     elif dice < 0.97:  # 92% + 5% = 97%
-        # 5%: 3 variáveis fora (casos raros)
+        # 5%: 3 variables out (rare cases)
         n_vars = 3
     else:
-        # 3%: 4+ variáveis fora (eventos muito raros)
-        # Distribuição dentro deste grupo: 4 (40%), 5 (30%), 6 (20%), 7 (10%)
+        # 3%: 4+ variables out (very rare events)
+        # Distribution within this group: 4 (40%), 5 (30%), 6 (20%), 7 (10%)
         n_vars = np.random.choice([4, 5, 6, 7], p=[0.4, 0.3, 0.2, 0.1])
     
-    # Seleciona aleatoriamente n_vars variáveis
+    # Randomly select n_vars variables
     selected = np.random.choice(all_variables, size=min(n_vars, len(all_variables)), replace=False)
     return selected.tolist()
 
@@ -628,7 +628,7 @@ def generate_sample(defect_scenario: bool = False) -> Dict:
             influence = INFLUENCE_MATRIX[var_name][idx]
             severity = severities[var_name]
             
-            # Cálculo baseado APENAS em severity e influence (da matriz dos especialistas)
+            # Calculation based ONLY on severity and influence (from expert matrix)
             prob = calculate_defect_probability(severity, influence)
             if prob > 0:
                 probs_per_variable.append(prob)
