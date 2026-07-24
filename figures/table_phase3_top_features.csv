@@ -1,0 +1,111 @@
+feature,PyTorch NN,XGBoost,Random Forest,Logistic Regression (L2/Ridge),Logistic Regression (L1/Lasso),importancia_media,process_phase,feature_category
+n_vars_in_range,0.01682,0.40009,0.13559,0.00698,0.00836,0.11357,Global/Aggregation,Statistical aggregation
+n_vars_out_of_range,0.03856,0.19981,0.17297,0.00698,0.00789,0.08524,Global/Aggregation,Statistical aggregation
+max_distance_from_ideal,0.0,0.05948,0.21659,0.03344,0.04618,0.07114,Global/Aggregation,Statistical aggregation
+avg_distance_from_ideal,0.00019,0.0462,0.10251,0.00561,0.00156,0.03121,Global/Aggregation,Statistical aggregation
+metal_velocity_gate_distance_from_range,0.07809,0.00351,0.0091,0.01623,0.01798,0.02498,Injection,Ideal-range distance
+intensification_pressure_distance_from_range,0.08944,0.00366,0.01071,0.00991,0.01053,0.02485,Intensification,Ideal-range distance
+cycle_time_distance_from_range,0.07546,0.01129,0.01124,0.01101,0.01314,0.02443,Cooling,Ideal-range distance
+intensification_pressure_in_range,0.0555,0.01262,0.00836,0.00805,0.01582,0.02007,Intensification,Range flag
+intensification_time_phase3_distance_from_range,0.05286,0.0036,0.00589,0.01127,0.0137,0.01746,Intensification,Ideal-range distance
+fill_time_distance_from_range,0.03276,0.00801,0.01239,0.01309,0.01674,0.0166,Injection,Ideal-range distance
+phase_transition_position_distance_from_range,0.05579,0.00379,0.00605,0.0079,0.0079,0.01628,Injection,Ideal-range distance
+phase_transition_position_in_range,0.04072,0.00268,0.00606,0.00654,0.00991,0.01319,Injection,Range flag
+solidification_time_distance_from_range,0.03063,0.00231,0.00346,0.0133,0.01378,0.01269,Cooling,Ideal-range distance
+solidification_ratio,0.00156,0.00214,0.00329,0.026,0.02872,0.01234,Cooling,Ratio
+piston_velocity_phase1_distance_from_range,0.03823,0.00117,0.00484,0.00875,0.00851,0.0123,Injection,Ideal-range distance
+plunger_lubricant,0.01425,0.0171,0.00705,0.01029,0.01195,0.01213,Configuration/Maintenance,Original
+sleeve_length_distance_from_range,0.03362,0.00328,0.00229,0.00934,0.01018,0.01174,Configuration/Maintenance,Ideal-range distance
+fill_time_in_range,0.02041,0.01019,0.01029,0.00681,0.01064,0.01167,Injection,Range flag
+pressure_time_ratio,0.0,0.00343,0.0047,0.02584,0.02414,0.01162,Intensification,Ratio
+cycle_time_in_range,0.01722,0.00515,0.00906,0.0096,0.01506,0.01122,Cooling,Range flag
+sleeve_diameter_distance_from_range,0.02272,0.00341,0.00626,0.01031,0.01151,0.01084,Configuration/Maintenance,Ideal-range distance
+sleeve_temperature_distance_from_range,0.01825,0.0021,0.00429,0.01236,0.01489,0.01038,Configuration/Maintenance,Ideal-range distance
+intensification_time_phase3_in_range,0.01926,0.00178,0.00531,0.00776,0.0121,0.00924,Intensification,Range flag
+temp_ratio,0.0,0.00238,0.00279,0.01919,0.02124,0.00912,Configuration/Maintenance,Ratio
+velocity_distance,0.0,0.00353,0.00376,0.01855,0.01923,0.00901,Injection,Difference
+intensification_time_phase3,0.0,0.00236,0.0021,0.02199,0.01754,0.0088,Intensification,Original
+fill_time,0.0,0.0025,0.00264,0.02022,0.01752,0.00858,Injection,Original
+intensification_energy,0.00079,0.00364,0.00455,0.01561,0.01766,0.00845,Intensification,Product
+metal_velocity_gate_in_range,0.0011,0.00542,0.00838,0.00928,0.01575,0.00799,Injection,Range flag
+solidification_time_in_range,0.01395,0.0024,0.00299,0.00721,0.01213,0.00774,Cooling,Range flag
+sleeve_fill_percentage_distance_from_range,0.013,0.00205,0.00263,0.01023,0.01003,0.00759,Injection,Ideal-range distance
+plunger_temperature_distance_from_range,0.00865,0.00282,0.00159,0.0117,0.01294,0.00754,Configuration/Maintenance,Ideal-range distance
+phase_transition_position_distance_from_center,0.00348,0.00425,0.008,0.00999,0.01112,0.00737,Injection,Ideal-range distance
+metal_velocity_gate_distance_from_center,0.0,0.00313,0.01374,0.00864,0.00834,0.00677,Injection,Ideal-range distance
+temp_solidification,0.0,0.00295,0.00209,0.01374,0.01445,0.00665,Multiple phases,Product
+fill_time_distance_from_center,2e-05,0.00728,0.01165,0.00761,0.00663,0.00664,Injection,Ideal-range distance
+cycle_time_below_range,0.01395,0.00019,0.00265,0.0096,0.00661,0.0066,Cooling,Range flag
+phase_transition_position_below_range,0.02104,0.00026,0.00048,0.00652,0.00436,0.00653,Injection,Range flag
+velocity_ratio,0.00077,0.00272,0.00436,0.01346,0.01076,0.00641,Injection,Ratio
+fill_time_ratio,0.0,0.00293,0.00503,0.01338,0.0106,0.00639,Injection,Ratio
+metal_velocity_gate_above_range,0.01432,0.00048,0.001,0.00994,0.0062,0.00639,Injection,Range flag
+fill_time_above_range,0.01695,0.0002,0.00126,0.00766,0.00505,0.00622,Injection,Range flag
+sleeve_temperature_distance_from_center,0.0,0.0052,0.00538,0.00925,0.01071,0.00611,Configuration/Maintenance,Ideal-range distance
+temp_diff,0.0,0.00275,0.00252,0.01005,0.01523,0.00611,Configuration/Maintenance,Difference
+solidification_time_distance_from_center,0.0,0.00444,0.0039,0.01051,0.01165,0.0061,Cooling,Ideal-range distance
+cycle_time_distance_from_center,0.0,0.00386,0.01164,0.00687,0.0079,0.00605,Cooling,Ideal-range distance
+intensification_pressure_distance_from_center,0.0,0.00363,0.01119,0.0076,0.00764,0.00601,Intensification,Ideal-range distance
+intensification_time_phase3_distance_from_center,0.0,0.00433,0.00796,0.0085,0.00882,0.00592,Intensification,Ideal-range distance
+sleeve_diameter_distance_from_center,0.00038,0.00374,0.00682,0.00889,0.00956,0.00588,Configuration/Maintenance,Ideal-range distance
+cycle_fill_diff,0.0,0.00349,0.00425,0.01064,0.01089,0.00585,Multiple phases,Difference
+sleeve_fill_percentage_distance_from_center,0.0,0.00346,0.00473,0.01003,0.01097,0.00584,Injection,Ideal-range distance
+plunger_sleeve_clearance_distance_from_range,0.00383,0.00186,0.00106,0.01095,0.01139,0.00582,Configuration/Maintenance,Ideal-range distance
+process_efficiency,0.0,0.00178,0.00483,0.01338,0.00899,0.0058,Multiple phases,Domain-specific
+piston_velocity_phase1_distance_from_center,0.0,0.00347,0.00701,0.00941,0.00894,0.00577,Injection,Ideal-range distance
+sleeve_length_in_range,0.01059,0.00201,0.00241,0.00563,0.00808,0.00574,Configuration/Maintenance,Range flag
+sleeve_length_distance_from_center,0.0,0.00389,0.00399,0.00995,0.01083,0.00573,Configuration/Maintenance,Ideal-range distance
+intensification_pressure_above_range,0.01329,0.00503,0.00058,0.00666,0.00302,0.00572,Intensification,Range flag
+sleeve_temperature_in_range,0.00456,0.00545,0.00337,0.00682,0.00834,0.00571,Configuration/Maintenance,Range flag
+sleeve_diameter,0.00154,0.00239,0.00161,0.00942,0.01349,0.00569,Configuration/Maintenance,Original
+sleeve_diameter_in_range,0.00852,0.00255,0.00559,0.00498,0.00553,0.00543,Configuration/Maintenance,Range flag
+solidification_time,0.0,0.00268,0.00233,0.00932,0.01213,0.00529,Cooling,Original
+fill_volume_ratio,0.0,0.00351,0.00241,0.01019,0.00889,0.005,Multiple phases,Domain-specific
+phase_transition_position,0.0,0.00318,0.00254,0.00952,0.00937,0.00492,Injection,Original
+sleeve_fill_percentage,0.0,0.00272,0.00201,0.00988,0.00917,0.00476,Injection,Original
+sleeve_temperature,0.0,0.00258,0.00203,0.0106,0.00819,0.00468,Configuration/Maintenance,Original
+intensification_pressure,0.00159,0.00247,0.00249,0.00792,0.00872,0.00464,Intensification,Original
+plunger_sleeve_clearance_distance_from_center,0.0,0.00307,0.00182,0.00896,0.00886,0.00454,Configuration/Maintenance,Ideal-range distance
+intensification_pressure_below_range,0.01029,0.00111,0.00043,0.00726,0.00328,0.00447,Intensification,Range flag
+total_process_time,0.0,0.00313,0.0019,0.00975,0.00744,0.00444,Multiple phases,Domain-specific
+sleeve_fill_percentage_in_range,0.00113,0.00142,0.00237,0.00689,0.01039,0.00444,Injection,Range flag
+plunger_sleeve_clearance,0.0,0.00327,0.00131,0.00777,0.00917,0.0043,Configuration/Maintenance,Original
+plunger_temperature,0.0,0.00345,0.00167,0.01,0.00631,0.00429,Configuration/Maintenance,Original
+fill_time_below_range,0.01037,0.0004,0.00051,0.00573,0.0034,0.00408,Injection,Range flag
+cycle_time,0.0,0.00226,0.00377,0.00917,0.00508,0.00406,Cooling,Original
+pressure_deviation,0.0,0.00113,0.00202,0.00792,0.00918,0.00405,Intensification,Difference
+intensification_time_phase3_above_range,0.00535,0.00015,0.00049,0.00777,0.00628,0.00401,Intensification,Range flag
+piston_velocity_phase1_in_range,0.0,0.00022,0.00427,0.00633,0.00906,0.00398,Injection,Range flag
+plunger_temperature_distance_from_center,0.0,0.00374,0.00372,0.00646,0.00572,0.00393,Configuration/Maintenance,Ideal-range distance
+sleeve_length_above_range,0.01089,0.00122,0.00024,0.00444,0.00281,0.00392,Configuration/Maintenance,Range flag
+plunger_sleeve_clearance_above_range,0.00077,0.00031,0.00012,0.00774,0.0101,0.00381,Configuration/Maintenance,Range flag
+sleeve_volume_estimate,0.00159,0.00343,0.00149,0.00648,0.00575,0.00375,Configuration/Maintenance,Domain-specific
+sleeve_aspect_ratio,0.00195,0.00329,0.00269,0.00512,0.00556,0.00372,Configuration/Maintenance,Ratio
+intensification_time_phase3_below_range,0.00807,1e-05,0.0006,0.00618,0.00358,0.00369,Intensification,Range flag
+cycle_time_log,0.0,0.00106,0.00396,0.00845,0.00451,0.0036,Cooling,Mathematical transform
+sleeve_fill_percentage_above_range,0.00906,0.00057,0.00029,0.00507,0.00257,0.00351,Injection,Range flag
+piston_velocity_phase1,0.0,0.00196,0.00156,0.0062,0.00647,0.00324,Injection,Original
+intensification_pressure_log,0.0,0.00075,0.00248,0.00823,0.00456,0.0032,Intensification,Mathematical transform
+phase_transition_position_above_range,0.0045,0.00044,0.00041,0.00585,0.00478,0.0032,Injection,Range flag
+metal_velocity_gate_below_range,0.0038,0.00055,0.00055,0.00728,0.00314,0.00306,Injection,Range flag
+sleeve_length,0.0,0.00279,0.00187,0.00503,0.00522,0.00298,Configuration/Maintenance,Original
+solidification_time_above_range,0.00077,0.00124,0.0004,0.00705,0.00545,0.00298,Cooling,Range flag
+sleeve_fill_percentage_below_range,0.00345,0.00015,0.00024,0.00639,0.00433,0.00291,Injection,Range flag
+plunger_temperature_in_range,0.0,0.00262,0.0013,0.00506,0.0054,0.00287,Configuration/Maintenance,Range flag
+piston_velocity_phase1_above_range,0.008,0.00022,0.0003,0.00432,0.00133,0.00283,Injection,Range flag
+sleeve_temperature_below_range,0.00103,0.00043,0.00038,0.00649,0.00582,0.00283,Configuration/Maintenance,Range flag
+piston_velocity_phase1_squared,0.0,0.00136,0.00149,0.00632,0.00497,0.00283,Injection,Mathematical transform
+metal_velocity_gate_squared,0.0,0.00117,0.00269,0.00483,0.00537,0.00281,Injection,Mathematical transform
+sleeve_diameter_below_range,0.00497,0.00011,0.0001,0.00475,0.00338,0.00266,Configuration/Maintenance,Range flag
+piston_velocity_phase1_below_range,0.00184,6e-05,0.00018,0.00615,0.00508,0.00266,Injection,Range flag
+sleeve_temperature_above_range,0.00115,0.00107,0.00053,0.00551,0.00387,0.00243,Configuration/Maintenance,Range flag
+cycle_time_above_range,0.0,0.00342,0.00186,0.00533,0.00127,0.00238,Cooling,Range flag
+plunger_temperature_below_range,0.00192,0.00069,0.00018,0.00481,0.00422,0.00236,Configuration/Maintenance,Range flag
+metal_velocity_gate,0.0,0.0027,0.00272,0.00368,0.00229,0.00228,Injection,Original
+plunger_temperature_above_range,0.00249,0.00039,0.00014,0.0049,0.00335,0.00225,Configuration/Maintenance,Range flag
+plunger_sleeve_clearance_in_range,0.0,0.00243,0.00048,0.00404,0.00262,0.00192,Configuration/Maintenance,Range flag
+weighted_velocity,0.0,0.0026,0.00261,0.0035,0.00072,0.00189,Injection,Domain-specific
+sleeve_diameter_above_range,0.00115,0.00015,0.00037,0.00443,0.00283,0.00179,Configuration/Maintenance,Range flag
+solidification_time_below_range,2e-05,5e-05,0.00044,0.00573,0.0022,0.00169,Cooling,Range flag
+sleeve_length_below_range,0.00077,0.00027,0.00029,0.00416,0.00242,0.00158,Configuration/Maintenance,Range flag
+plunger_sleeve_clearance_below_range,0.0,0.00036,0.00015,0.00358,0.00209,0.00123,Configuration/Maintenance,Range flag

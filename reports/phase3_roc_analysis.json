@@ -1,0 +1,271 @@
+{
+  "micro_average_auc": {
+    "PyTorch NN": 0.9954964612762893,
+    "XGBoost": 0.9951562073315051,
+    "Random Forest": 0.994496411602985,
+    "Logistic Regression (L2/Ridge)": 0.9928604667986379,
+    "Logistic Regression (L1/Lasso)": 0.9931863679042061
+  },
+  "mean_auc_by_defect": {
+    "PyTorch NN": 0.9951,
+    "XGBoost": 0.9947,
+    "Random Forest": 0.994,
+    "Logistic Regression (L2/Ridge)": 0.9929,
+    "Logistic Regression (L1/Lasso)": 0.9893
+  },
+  "auc_by_defect": [
+    {
+      "defect": "gas_porosity",
+      "test_positives": 141,
+      "PyTorch NN": 0.9941,
+      "XGBoost": 0.994,
+      "Random Forest": 0.9904,
+      "Logistic Regression (L2/Ridge)": 0.9937,
+      "Logistic Regression (L1/Lasso)": 0.9937
+    },
+    {
+      "defect": "density_deviation",
+      "test_positives": 140,
+      "PyTorch NN": 0.9932,
+      "XGBoost": 0.9922,
+      "Random Forest": 0.9904,
+      "Logistic Regression (L2/Ridge)": 0.9945,
+      "Logistic Regression (L1/Lasso)": 0.9945
+    },
+    {
+      "defect": "cold_shut",
+      "test_positives": 138,
+      "PyTorch NN": 0.9951,
+      "XGBoost": 0.9938,
+      "Random Forest": 0.9913,
+      "Logistic Regression (L2/Ridge)": 0.9959,
+      "Logistic Regression (L1/Lasso)": 0.9959
+    },
+    {
+      "defect": "gas_bubbles",
+      "test_positives": 129,
+      "PyTorch NN": 0.9938,
+      "XGBoost": 0.993,
+      "Random Forest": 0.9909,
+      "Logistic Regression (L2/Ridge)": 0.9947,
+      "Logistic Regression (L1/Lasso)": 0.9948
+    },
+    {
+      "defect": "incomplete_fill",
+      "test_positives": 105,
+      "PyTorch NN": 0.9942,
+      "XGBoost": 0.9939,
+      "Random Forest": 0.9931,
+      "Logistic Regression (L2/Ridge)": 0.9948,
+      "Logistic Regression (L1/Lasso)": 0.9948
+    },
+    {
+      "defect": "surface_blisters",
+      "test_positives": 93,
+      "PyTorch NN": 0.9916,
+      "XGBoost": 0.9906,
+      "Random Forest": 0.9887,
+      "Logistic Regression (L2/Ridge)": 0.9925,
+      "Logistic Regression (L1/Lasso)": 0.9925
+    },
+    {
+      "defect": "blisters_post_treatment",
+      "test_positives": 92,
+      "PyTorch NN": 0.9951,
+      "XGBoost": 0.9946,
+      "Random Forest": 0.9937,
+      "Logistic Regression (L2/Ridge)": 0.9954,
+      "Logistic Regression (L1/Lasso)": 0.9954
+    },
+    {
+      "defect": "volumetric_variation",
+      "test_positives": 84,
+      "PyTorch NN": 0.9961,
+      "XGBoost": 0.9962,
+      "Random Forest": 0.9965,
+      "Logistic Regression (L2/Ridge)": 0.9851,
+      "Logistic Regression (L1/Lasso)": 0.9871
+    },
+    {
+      "defect": "low_elongation",
+      "test_positives": 84,
+      "PyTorch NN": 0.9941,
+      "XGBoost": 0.9937,
+      "Random Forest": 0.9928,
+      "Logistic Regression (L2/Ridge)": 0.9938,
+      "Logistic Regression (L1/Lasso)": 0.9939
+    },
+    {
+      "defect": "dimensional_deviation",
+      "test_positives": 83,
+      "PyTorch NN": 0.9967,
+      "XGBoost": 0.9964,
+      "Random Forest": 0.9961,
+      "Logistic Regression (L2/Ridge)": 0.9963,
+      "Logistic Regression (L1/Lasso)": 0.9964
+    },
+    {
+      "defect": "low_tensile_strength",
+      "test_positives": 80,
+      "PyTorch NN": 0.9953,
+      "XGBoost": 0.9946,
+      "Random Forest": 0.9943,
+      "Logistic Regression (L2/Ridge)": 0.9935,
+      "Logistic Regression (L1/Lasso)": 0.9938
+    },
+    {
+      "defect": "low_fatigue_resistance",
+      "test_positives": 76,
+      "PyTorch NN": 0.9965,
+      "XGBoost": 0.9964,
+      "Random Forest": 0.996,
+      "Logistic Regression (L2/Ridge)": 0.9946,
+      "Logistic Regression (L1/Lasso)": 0.9948
+    },
+    {
+      "defect": "low_ultimate_strength",
+      "test_positives": 70,
+      "PyTorch NN": 0.9941,
+      "XGBoost": 0.9911,
+      "Random Forest": 0.9911,
+      "Logistic Regression (L2/Ridge)": 0.9939,
+      "Logistic Regression (L1/Lasso)": 0.994
+    },
+    {
+      "defect": "die_soldering",
+      "test_positives": 67,
+      "PyTorch NN": 0.9942,
+      "XGBoost": 0.9943,
+      "Random Forest": 0.9948,
+      "Logistic Regression (L2/Ridge)": 0.9819,
+      "Logistic Regression (L1/Lasso)": 0.9819
+    },
+    {
+      "defect": "low_surface_hardness",
+      "test_positives": 65,
+      "PyTorch NN": 0.9974,
+      "XGBoost": 0.997,
+      "Random Forest": 0.997,
+      "Logistic Regression (L2/Ridge)": 0.9975,
+      "Logistic Regression (L1/Lasso)": 0.9975
+    },
+    {
+      "defect": "die_sticking",
+      "test_positives": 55,
+      "PyTorch NN": 0.9948,
+      "XGBoost": 0.9948,
+      "Random Forest": 0.9944,
+      "Logistic Regression (L2/Ridge)": 0.996,
+      "Logistic Regression (L1/Lasso)": 0.9961
+    },
+    {
+      "defect": "flow_lines",
+      "test_positives": 50,
+      "PyTorch NN": 0.9938,
+      "XGBoost": 0.9943,
+      "Random Forest": 0.9942,
+      "Logistic Regression (L2/Ridge)": 0.9953,
+      "Logistic Regression (L1/Lasso)": 0.9953
+    },
+    {
+      "defect": "oxide_inclusions",
+      "test_positives": 49,
+      "PyTorch NN": 0.9946,
+      "XGBoost": 0.9953,
+      "Random Forest": 0.9932,
+      "Logistic Regression (L2/Ridge)": 0.9928,
+      "Logistic Regression (L1/Lasso)": 0.9892
+    },
+    {
+      "defect": "flash",
+      "test_positives": 49,
+      "PyTorch NN": 0.9914,
+      "XGBoost": 0.9915,
+      "Random Forest": 0.9909,
+      "Logistic Regression (L2/Ridge)": 0.9925,
+      "Logistic Regression (L1/Lasso)": 0.9926
+    },
+    {
+      "defect": "internal_shrinkage",
+      "test_positives": 42,
+      "PyTorch NN": 0.9958,
+      "XGBoost": 0.9965,
+      "Random Forest": 0.9965,
+      "Logistic Regression (L2/Ridge)": 0.9967,
+      "Logistic Regression (L1/Lasso)": 0.9968
+    },
+    {
+      "defect": "surface_oxide_inclusions",
+      "test_positives": 40,
+      "PyTorch NN": 0.9952,
+      "XGBoost": 0.9936,
+      "Random Forest": 0.9932,
+      "Logistic Regression (L2/Ridge)": 0.9689,
+      "Logistic Regression (L1/Lasso)": 0.9679
+    },
+    {
+      "defect": "warpage",
+      "test_positives": 37,
+      "PyTorch NN": 0.994,
+      "XGBoost": 0.9907,
+      "Random Forest": 0.9913,
+      "Logistic Regression (L2/Ridge)": 0.9943,
+      "Logistic Regression (L1/Lasso)": 0.9943
+    },
+    {
+      "defect": "cracks",
+      "test_positives": 31,
+      "PyTorch NN": 0.997,
+      "XGBoost": 0.9971,
+      "Random Forest": 0.997,
+      "Logistic Regression (L2/Ridge)": 0.9967,
+      "Logistic Regression (L1/Lasso)": 0.9966
+    },
+    {
+      "defect": "hard_inclusions",
+      "test_positives": 21,
+      "PyTorch NN": 0.9947,
+      "XGBoost": 0.9964,
+      "Random Forest": 0.9955,
+      "Logistic Regression (L2/Ridge)": 0.9818,
+      "Logistic Regression (L1/Lasso)": 0.9924
+    },
+    {
+      "defect": "shrinkage_porosity",
+      "test_positives": 20,
+      "PyTorch NN": 0.9984,
+      "XGBoost": 0.9981,
+      "Random Forest": 0.9975,
+      "Logistic Regression (L2/Ridge)": 0.9985,
+      "Logistic Regression (L1/Lasso)": 0.9984
+    },
+    {
+      "defect": "heat_cracks",
+      "test_positives": 8,
+      "PyTorch NN": 0.9981,
+      "XGBoost": 0.9984,
+      "Random Forest": 0.9982,
+      "Logistic Regression (L2/Ridge)": 0.9987,
+      "Logistic Regression (L1/Lasso)": 0.8905
+    },
+    {
+      "defect": "surface_streaks",
+      "test_positives": 7,
+      "PyTorch NN": 0.9985,
+      "XGBoost": 0.9991,
+      "Random Forest": 0.9991,
+      "Logistic Regression (L2/Ridge)": 0.999,
+      "Logistic Regression (L1/Lasso)": 0.9989
+    },
+    {
+      "defect": "ejector_pin_marks",
+      "test_positives": 0,
+      "PyTorch NN": NaN,
+      "XGBoost": NaN,
+      "Random Forest": NaN,
+      "Logistic Regression (L2/Ridge)": NaN,
+      "Logistic Regression (L1/Lasso)": NaN
+    }
+  ],
+  "official_strategy": "fbeta_2"
+}

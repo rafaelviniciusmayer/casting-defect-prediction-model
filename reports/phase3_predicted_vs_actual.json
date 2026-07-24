@@ -1,0 +1,286 @@
+{
+  "confusion_stats": [
+    {
+      "defect": "gas_porosity",
+      "threshold": 0.05,
+      "tn": 4739,
+      "fp": 120,
+      "fn": 0,
+      "tp": 141,
+      "recall": 1.0,
+      "precision": 0.5402
+    },
+    {
+      "defect": "density_deviation",
+      "threshold": 0.1,
+      "tn": 4765,
+      "fp": 95,
+      "fn": 0,
+      "tp": 140,
+      "recall": 1.0,
+      "precision": 0.5957
+    },
+    {
+      "defect": "cold_shut",
+      "threshold": 0.21000000000000002,
+      "tn": 4766,
+      "fp": 96,
+      "fn": 0,
+      "tp": 138,
+      "recall": 1.0,
+      "precision": 0.5897
+    }
+  ],
+  "calibration_bins": [
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.0002,
+      "observed_positive_freq": 0.0002
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.1452,
+      "observed_positive_freq": 0.0838
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.2473,
+      "observed_positive_freq": 0.1795
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.3466,
+      "observed_positive_freq": 0.1647
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.4542,
+      "observed_positive_freq": 0.2525
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.5533,
+      "observed_positive_freq": 0.2267
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.6556,
+      "observed_positive_freq": 0.3121
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.7564,
+      "observed_positive_freq": 0.3401
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.8578,
+      "observed_positive_freq": 0.4493
+    },
+    {
+      "model": "PyTorch NN",
+      "mean_predicted_prob": 0.9486,
+      "observed_positive_freq": 0.6638
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.0006,
+      "observed_positive_freq": 0.0003
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.1377,
+      "observed_positive_freq": 0.1336
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.2477,
+      "observed_positive_freq": 0.2204
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.3485,
+      "observed_positive_freq": 0.3473
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.4518,
+      "observed_positive_freq": 0.3174
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.5497,
+      "observed_positive_freq": 0.3631
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.653,
+      "observed_positive_freq": 0.3551
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.7517,
+      "observed_positive_freq": 0.4414
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.8566,
+      "observed_positive_freq": 0.4966
+    },
+    {
+      "model": "XGBoost",
+      "mean_predicted_prob": 0.9634,
+      "observed_positive_freq": 0.6198
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.0008,
+      "observed_positive_freq": 0.0
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.1458,
+      "observed_positive_freq": 0.017
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.2466,
+      "observed_positive_freq": 0.0763
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.351,
+      "observed_positive_freq": 0.1901
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.4511,
+      "observed_positive_freq": 0.3362
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.5518,
+      "observed_positive_freq": 0.454
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.652,
+      "observed_positive_freq": 0.4789
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.7502,
+      "observed_positive_freq": 0.5513
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.8457,
+      "observed_positive_freq": 0.6278
+    },
+    {
+      "model": "Random Forest",
+      "mean_predicted_prob": 0.9176,
+      "observed_positive_freq": 0.6954
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.0014,
+      "observed_positive_freq": 0.0002
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.1457,
+      "observed_positive_freq": 0.0793
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.2428,
+      "observed_positive_freq": 0.1078
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.349,
+      "observed_positive_freq": 0.1774
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.4512,
+      "observed_positive_freq": 0.3182
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.5565,
+      "observed_positive_freq": 0.2414
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.6523,
+      "observed_positive_freq": 0.2755
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.7519,
+      "observed_positive_freq": 0.3043
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.8599,
+      "observed_positive_freq": 0.3206
+    },
+    {
+      "model": "Logistic Regression (L2/Ridge)",
+      "mean_predicted_prob": 0.982,
+      "observed_positive_freq": 0.5598
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.0016,
+      "observed_positive_freq": 0.0002
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.1456,
+      "observed_positive_freq": 0.0795
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.2467,
+      "observed_positive_freq": 0.0941
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.3419,
+      "observed_positive_freq": 0.1129
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.4478,
+      "observed_positive_freq": 0.25
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.5506,
+      "observed_positive_freq": 0.2833
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.6509,
+      "observed_positive_freq": 0.3125
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.7572,
+      "observed_positive_freq": 0.2466
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.8618,
+      "observed_positive_freq": 0.3211
+    },
+    {
+      "model": "Logistic Regression (L1/Lasso)",
+      "mean_predicted_prob": 0.9819,
+      "observed_positive_freq": 0.561
+    }
+  ]
+}

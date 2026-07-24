@@ -225,12 +225,13 @@ class PyTorchModelWrapper:
 # 3.6. MODEL TRAINING AND SELECTION - Treinamento e Seleção do Modelo
 # =============================================================================
 
-def apply_smote_balancing(X_train, y_train, defect_names):
+def apply_smote_balancing(X_train, y_train, defect_names, verbose=True):
     """Aplicar SMOTE para balanceamento artificial das classes."""
     if not SMOTE_AVAILABLE:
         return X_train, y_train
     
-    print("\n[*] Aplicando SMOTE para balanceamento...")
+    if verbose:
+        print("\n[*] Aplicando SMOTE para balanceamento...")
     
     synthetic_samples = []
     synthetic_labels = []
@@ -295,12 +296,13 @@ def apply_smote_balancing(X_train, y_train, defect_names):
         y_synthetic_array = np.array(synthetic_labels).astype(np.float32)
         X_train = np.vstack([X_train, X_synthetic_array]).astype(np.float32)
         y_train = np.vstack([y_train, y_synthetic_array]).astype(np.float32)
-        print(f"    [OK] {len(synthetic_samples)} amostras sintéticas adicionadas")
+        if verbose:
+            print(f"    [OK] {len(synthetic_samples)} amostras sintéticas adicionadas")
     
     return X_train, y_train
 
 
-def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, num_defects):
+def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, num_defects, verbose=True):
     """Treinar um único modelo."""
     # Preparar dados
     X_train_tensor = torch.FloatTensor(X_train)
@@ -364,7 +366,7 @@ def train_single_model(X_train, y_train, X_val, y_val, pos_weights, input_size, 
             else:
                 patience += 1
             
-            if epoch % 25 == 0:
+            if verbose and epoch % 25 == 0:
                 print(f"      Epoch {epoch:3d}: Train Loss = {avg_train_loss:.6f}, Val Loss = {val_loss:.6f}")
             
             if patience >= 25:

@@ -1,0 +1,120 @@
+﻿=== TABLE 0 (16x4) ===
+  R0: ['Phase', 'Variable', 'Unit', 'Type']
+  R1: ['Injection', 'Piston injection velocity (phase 1)', 'm/s', 'Continuous']
+  R2: ['Injection', 'Metal velocity at gate', 'm/s', 'Continuous']
+  R3: ['Injection', 'Cavity fill time', 'ms', 'Continuous']
+  R4: ['Injection', 'Phase transition position', 'mm', 'Continuous']
+  R5: ['Intensification', 'Pressure rise time', 's', 'Continuous']
+  ... +10 rows
+
+=== TABLE 1 (8x3) ===
+  R0: ['Category', 'Count', 'Percentage']
+  R1: ['Total samples', '25,000', '100.00%']
+  R2: ['Defect-free samples', '23,599', '94.40%']
+  R3: ['Samples with defects', '1,401', '5.60%']
+  R4: ['Training set (80%)', '20,000', '-']
+  R5: ['Test set (20%)', '5,000', '-']
+  ... +2 rows
+
+=== TABLE 2 (11x3) ===
+  R0: ['Feature Category', 'Count', 'Description']
+  R1: ['Original variables', '15', 'Raw process measurements from sensors.']
+  R2: ['Ratio features', '6', 'Proportional relationships (velocity, ti']
+  R3: ['Product features', '3', 'Multiplicative interactions (energy, dis']
+  R4: ['Difference features', '2', 'Gradients between related variables.']
+  R5: ['Distance features', '30', 'Normalized distances from ideal operatin']
+  ... +5 rows
+
+=== TABLE 3 (1x3) ===
+  R0: ['', '.', '(1)']
+
+=== TABLE 4 (1x3) ===
+  R0: ['', '', '(2)']
+
+=== TABLE 5 (1x3) ===
+  R0: ['', '.', '(3)']
+
+=== TABLE 6 (1x3) ===
+  R0: ['', '.', '(4)']
+
+=== TABLE 7 (1x3) ===
+  R0: ['', '', '(5)']
+
+=== TABLE 8 (1x3) ===
+  R0: ['', '0.', '(6)']
+
+=== TABLE 9 (13x3) ===
+  R0: ['Parameter', 'Value', 'Description']
+  R1: ['Architecture', '115-128-64-32-28', 'Input, hidden layers, output']
+  R2: ['Activation', 'ReLU', 'Hidden layer activation function']
+  R3: ['Output activation', 'Sigmoid', 'Multi-label probability output']
+  R4: ['Dropout rate', '0.2 / 0.1', 'Layers 1-2 / Layer 3']
+  R5: ['Batch normalization', 'Yes', 'After layers 1-2']
+  ... +7 rows
+
+=== TABLE 10 (1x3) ===
+  R0: ['', ',', '(7)']
+
+=== TABLE 11 (1x3) ===
+  R0: ['', ',', '(8)']
+
+=== TABLE 12 (1x3) ===
+  R0: ['', ',', '(9)']
+
+=== TABLE 13 (1x3) ===
+  R0: ['', '.', '(10)']
+
+=== TABLE 14 (1x3) ===
+  R0: ['', '.', '(11)']
+
+=== TABLE 15 (8x3) ===
+  R0: ['Parameter', 'Value', 'Description']
+  R1: ['n_estimators', '200', 'Number of boosting rounds']
+  R2: ['max_depth', '6', 'Maximum tree depth']
+  R3: ['learning_rate', '0.05', 'Shrinkage factor per tree']
+  R4: ['subsample', '0.8', 'Row sampling ratio per tree']
+  R5: ['colsample_bytree', '0.8', 'Column sampling ratio per tree']
+  ... +2 rows
+
+=== TABLE 16 (8x3) ===
+  R0: ['Parameter', 'Value', 'Description']
+  R1: ['n_estimators', '200', 'Number of trees in the forest']
+  R2: ['max_depth', '15', 'Maximum tree depth']
+  R3: ['min_samples_split', '5', 'Minimum samples to split a node']
+  R4: ['min_samples_leaf', '2', 'Minimum samples at a leaf node']
+  R5: ['max_features', 'sqrt', 'Features per split: ÔêÜ115 Ôëê 11']
+  ... +2 rows
+
+=== TABLE 17 (9x6) ===
+  R0: ['Defect Type', 'Original Count', 'Original Freq. (%)', 'After SMOTE', 'After SMOTE Freq. (%)', 'Ratio Before ÔåÆ After']
+  R1: ['Gas Porosity', '644', '3.22%', '15,650', '36.95%', '1:30 ÔåÆ 1:1.7']
+  R2: ['Density Deviation', '596', '2.98%', '14,450', '34.12%', '1:33 ÔåÆ 1:1.9']
+  R3: ['Cold Shut', '560', '2.80%', '12,981', '30.65%', '1:35 ÔåÆ 1:2.3']
+  R4: ['Gas Bubbles', '497', '2.48%', '11,755', '27.76%', '1:39 ÔåÆ 1:2.6']
+  R5: ['Incomplete Fill', '416', '2.08%', '9,357', '22.09%', '1:47 ÔåÆ 1:3.5']
+  ... +3 rows
+
+=== TABLE 18 (4x7) ===
+  R0: ['Model', 'F1-Micro', 'F1-Macro', 'Precision', 'Recall', 'Training (s)', 'Inference (ms/100)']
+  R1: ['PyTorch NN', '0.6661', '0.6116', '0.5054', '0.9763', '70.74', '0.33']
+  R2: ['XGBoost', '0.6833', '0.6328', '0.5408', '0.9278', '53.67', '19.82']
+  R3: ['Random Forest', '0.6669', '0.6163', '0.5044', '0.9838', '210.26', '1232.20']
+
+=== TABLE 19 (9x5) ===
+  R0: ['Defect Type', 'Optimal Threshold', 'Recall', 'Precision', 'F1-Score']
+  R1: ['Gas Porosity', '0.21', '0.993', '0.538', '0.698']
+  R2: ['Density Deviation', '0.18', '1.000', '0.601', '0.751']
+  R3: ['Cold Shut', '0.31', '1.000', '0.592', '0.744']
+  R4: ['Gas Bubbles', '0.11', '1.000', '0.547', '0.707']
+  R5: ['Incomplete Fill', '0.24', '0.990', '0.515', '0.677']
+  ... +3 rows
+
+=== TABLE 20 (10x7) ===
+  R0: ['Defect Type', 'TP', 'TN', 'FP', 'FN', 'Recall', 'Precision']
+  R1: ['Gas Porosity', '140', '4,739', '120', '1', '0.993', '0.538']
+  R2: ['Density Deviation', '140', '4,767', '93', '0', '1.000', '0.601']
+  R3: ['Cold Shut', '138', '4,767', '95', '0', '1.000', '0.592']
+  R4: ['Gas Bubbles', '129', '4,764', '107', '0', '1.000', '0.547']
+  R5: ['Incomplete Fill', '104', '4,797', '98', '1', '0.990', '0.515']
+  ... +4 rows
+

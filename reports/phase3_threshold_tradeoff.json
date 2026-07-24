@@ -1,0 +1,265 @@
+{
+  "results": [
+    {
+      "model_type": "pytorch_nn",
+      "model_name": "PyTorch NN",
+      "strategy": "recall_first",
+      "strategy_name": "Recall-first",
+      "metrics": {
+        "recall_micro": 0.9924568965517241,
+        "precision_micro": 0.4875595553202753,
+        "f1_micro": 0.6538871139510117,
+        "f1_macro": 0.5995378435758382,
+        "fbeta2_micro": 0.8221746116764863
+      }
+    },
+    {
+      "model_type": "pytorch_nn",
+      "model_name": "PyTorch NN",
+      "strategy": "f1",
+      "strategy_name": "F1 (balanced)",
+      "metrics": {
+        "recall_micro": 0.8879310344827587,
+        "precision_micro": 0.57083477658469,
+        "f1_micro": 0.6949188277461522,
+        "f1_macro": 0.6376771460710554,
+        "fbeta2_micro": 0.7991465425273979
+      }
+    },
+    {
+      "model_type": "pytorch_nn",
+      "model_name": "PyTorch NN",
+      "strategy": "fbeta_2",
+      "strategy_name": "F-beta β=2 (recall-weighted)",
+      "metrics": {
+        "recall_micro": 0.9827586206896551,
+        "precision_micro": 0.5068074465129202,
+        "f1_micro": 0.6687442713107241,
+        "f1_macro": 0.6150299850854665,
+        "fbeta2_micro": 0.8273609725120203
+      }
+    },
+    {
+      "model_type": "pytorch_nn",
+      "model_name": "PyTorch NN",
+      "strategy": "fbeta_05",
+      "strategy_name": "F-beta β=0.5 (precision-weighted)",
+      "metrics": {
+        "recall_micro": 0.6788793103448276,
+        "precision_micro": 0.6360424028268551,
+        "f1_micro": 0.656763096168882,
+        "f1_macro": 0.6022260325210019,
+        "fbeta2_micro": 0.6698564593301436
+      }
+    },
+    {
+      "model_type": "xgboost",
+      "model_name": "XGBoost",
+      "strategy": "recall_first",
+      "strategy_name": "Recall-first",
+      "metrics": {
+        "recall_micro": 0.990301724137931,
+        "precision_micro": 0.48064853556485354,
+        "f1_micro": 0.6471830985915493,
+        "f1_macro": 0.6099324361258536,
+        "fbeta2_micro": 0.8170341394025604
+      }
+    },
+    {
+      "model_type": "xgboost",
+      "model_name": "XGBoost",
+      "strategy": "f1",
+      "strategy_name": "F1 (balanced)",
+      "metrics": {
+        "recall_micro": 0.8863146551724138,
+        "precision_micro": 0.5620088828151691,
+        "f1_micro": 0.687852812042651,
+        "f1_macro": 0.6426565073576163,
+        "fbeta2_micro": 0.7946092165008212
+      }
+    },
+    {
+      "model_type": "xgboost",
+      "model_name": "XGBoost",
+      "strategy": "fbeta_2",
+      "strategy_name": "F-beta β=2 (recall-weighted)",
+      "metrics": {
+        "recall_micro": 0.9773706896551724,
+        "precision_micro": 0.5084080717488789,
+        "f1_micro": 0.6688790560471977,
+        "f1_macro": 0.6263927944529469,
+        "fbeta2_micro": 0.8251455604075691
+      }
+    },
+    {
+      "model_type": "xgboost",
+      "model_name": "XGBoost",
+      "strategy": "fbeta_05",
+      "strategy_name": "F-beta β=0.5 (precision-weighted)",
+      "metrics": {
+        "recall_micro": 0.7306034482758621,
+        "precision_micro": 0.6053571428571428,
+        "f1_micro": 0.662109375,
+        "f1_macro": 0.6127673097442256,
+        "fbeta2_micro": 0.7015728476821192
+      }
+    },
+    {
+      "model_type": "random_forest",
+      "model_name": "Random Forest",
+      "strategy": "recall_first",
+      "strategy_name": "Recall-first",
+      "metrics": {
+        "recall_micro": 0.9989224137931034,
+        "precision_micro": 0.4066681289756526,
+        "f1_micro": 0.5780202650038971,
+        "f1_macro": 0.5549433562869778,
+        "fbeta2_micro": 0.773595927564049
+      }
+    },
+    {
+      "model_type": "random_forest",
+      "model_name": "Random Forest",
+      "strategy": "f1",
+      "strategy_name": "F1 (balanced)",
+      "metrics": {
+        "recall_micro": 0.9213362068965517,
+        "precision_micro": 0.5355465079862198,
+        "f1_micro": 0.6773618538324421,
+        "f1_macro": 0.6315710239673098,
+        "fbeta2_micro": 0.8053122350946595
+      }
+    },
+    {
+      "model_type": "random_forest",
+      "model_name": "Random Forest",
+      "strategy": "fbeta_2",
+      "strategy_name": "F-beta β=2 (recall-weighted)",
+      "metrics": {
+        "recall_micro": 0.9709051724137931,
+        "precision_micro": 0.5044792833146696,
+        "f1_micro": 0.6639646278555638,
+        "f1_macro": 0.6201345055875055,
+        "fbeta2_micro": 0.8193888686795199
+      }
+    },
+    {
+      "model_type": "random_forest",
+      "model_name": "Random Forest",
+      "strategy": "fbeta_05",
+      "strategy_name": "F-beta β=0.5 (precision-weighted)",
+      "metrics": {
+        "recall_micro": 0.7165948275862069,
+        "precision_micro": 0.5835892935498025,
+        "f1_micro": 0.6432889963724304,
+        "f1_macro": 0.5859886617100533,
+        "fbeta2_micro": 0.6853550448314955
+      }
+    },
+    {
+      "model_type": "logistic_regression_l2",
+      "model_name": "Logistic Regression (L2/Ridge)",
+      "strategy": "recall_first",
+      "strategy_name": "Recall-first",
+      "metrics": {
+        "recall_micro": 0.9865301724137931,
+        "precision_micro": 0.49809575625680086,
+        "f1_micro": 0.6619667389732465,
+        "f1_macro": 0.6194380482583242,
+        "fbeta2_micro": 0.8247747747747748
+      }
+    },
+    {
+      "model_type": "logistic_regression_l2",
+      "model_name": "Logistic Regression (L2/Ridge)",
+      "strategy": "f1",
+      "strategy_name": "F1 (balanced)",
+      "metrics": {
+        "recall_micro": 0.9358836206896551,
+        "precision_micro": 0.5486418193303854,
+        "f1_micro": 0.6917562724014337,
+        "f1_macro": 0.6421058308091625,
+        "fbeta2_micro": 0.8201133144475921
+      }
+    },
+    {
+      "model_type": "logistic_regression_l2",
+      "model_name": "Logistic Regression (L2/Ridge)",
+      "strategy": "fbeta_2",
+      "strategy_name": "F-beta β=2 (recall-weighted)",
+      "metrics": {
+        "recall_micro": 0.9757543103448276,
+        "precision_micro": 0.5217516565831173,
+        "f1_micro": 0.6799324197484513,
+        "f1_macro": 0.6327548059688777,
+        "fbeta2_micro": 0.8311151904543369
+      }
+    },
+    {
+      "model_type": "logistic_regression_l2",
+      "model_name": "Logistic Regression (L2/Ridge)",
+      "strategy": "fbeta_05",
+      "strategy_name": "F-beta β=0.5 (precision-weighted)",
+      "metrics": {
+        "recall_micro": 0.8868534482758621,
+        "precision_micro": 0.5604358188627852,
+        "f1_micro": 0.6868349676611726,
+        "f1_macro": 0.6354820092405785,
+        "fbeta2_micro": 0.7943248721165911
+      }
+    },
+    {
+      "model_type": "logistic_regression_l1",
+      "model_name": "Logistic Regression (L1/Lasso)",
+      "strategy": "recall_first",
+      "strategy_name": "Recall-first",
+      "metrics": {
+        "recall_micro": 0.9876077586206896,
+        "precision_micro": 0.4971521562245728,
+        "f1_micro": 0.6613747068374527,
+        "f1_macro": 0.6162984598156029,
+        "fbeta2_micro": 0.8248582485824858
+      }
+    },
+    {
+      "model_type": "logistic_regression_l1",
+      "model_name": "Logistic Regression (L1/Lasso)",
+      "strategy": "f1",
+      "strategy_name": "F1 (balanced)",
+      "metrics": {
+        "recall_micro": 0.9364224137931034,
+        "precision_micro": 0.5505226480836237,
+        "f1_micro": 0.6933971673648514,
+        "f1_macro": 0.6431004751121853,
+        "fbeta2_micro": 0.8212834325678102
+      }
+    },
+    {
+      "model_type": "logistic_regression_l1",
+      "model_name": "Logistic Regression (L1/Lasso)",
+      "strategy": "fbeta_2",
+      "strategy_name": "F-beta β=2 (recall-weighted)",
+      "metrics": {
+        "recall_micro": 0.9752155172413793,
+        "precision_micro": 0.5246376811594203,
+        "f1_micro": 0.682246513381078,
+        "f1_macro": 0.6322824376655382,
+        "fbeta2_micro": 0.8322604377414015
+      }
+    },
+    {
+      "model_type": "logistic_regression_l1",
+      "model_name": "Logistic Regression (L1/Lasso)",
+      "strategy": "fbeta_05",
+      "strategy_name": "F-beta β=0.5 (precision-weighted)",
+      "metrics": {
+        "recall_micro": 0.8938577586206896,
+        "precision_micro": 0.5618015577378936,
+        "f1_micro": 0.6899563318777293,
+        "f1_macro": 0.6388527145621439,
+        "fbeta2_micro": 0.7993639780283319
+      }
+    }
+  ],
+  "official_strategy": "fbeta_2"
+}

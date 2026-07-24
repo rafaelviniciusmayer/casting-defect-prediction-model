@@ -15,6 +15,16 @@ import pandas as pd
 from typing import Dict
 from train_model import PyTorchModelWrapper, DefectPredictionNN
 
+# 15 original process variables shown in the UI
+PROCESS_VARS_15 = [
+    'piston_velocity_phase1', 'metal_velocity_gate', 'fill_time',
+    'phase_transition_position', 'intensification_time_phase3',
+    'intensification_pressure', 'solidification_time', 'cycle_time',
+    'sleeve_fill_percentage', 'sleeve_diameter', 'sleeve_length',
+    'plunger_lubricant', 'plunger_sleeve_clearance', 'sleeve_temperature',
+    'plunger_temperature'
+]
+
 # Page configuration
 st.set_page_config(
     page_title="Die Casting Defect Predictor",
@@ -47,8 +57,18 @@ st.markdown("""
         border-right: 2px solid #e94560;
     }
     
-    [data-testid="stSidebar"] .stMarkdown {
-        color: #f1f1f1;
+    [data-testid="stSidebar"] .stMarkdown,
+    [data-testid="stSidebar"] label,
+    [data-testid="stSidebar"] p,
+    [data-testid="stSidebar"] span {
+        color: #ffffff !important;
+    }
+    [data-testid="stSidebar"] [data-testid="stWidgetLabel"],
+    [data-testid="stSidebar"] .stSlider label,
+    [data-testid="stSidebar"] .stSelectbox label,
+    [data-testid="stSidebar"] div[data-testid="stSlider"] label,
+    [data-testid="stSidebar"] div[data-testid="stSelectbox"] label {
+        color: #ffffff !important;
     }
     
     /* Metric cards */
@@ -60,7 +80,7 @@ st.markdown("""
     }
     
     [data-testid="stMetric"] label {
-        color: #a0a0a0 !important;
+        color: #ffffff !important;
     }
     
     [data-testid="stMetric"] [data-testid="stMetricValue"] {
@@ -119,9 +139,15 @@ st.markdown("""
     /* Footer */
     .footer {
         text-align: center;
-        color: #666;
+        color: #ffffff;
         padding: 20px;
         font-size: 12px;
+    }
+    
+    .recommendations-text {
+        color: #ffffff !important;
+        font-size: 0.95rem;
+        line-height: 1.4;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -141,7 +167,10 @@ def load_model():
         
         # Criar metadata compatível
         metadata = {
-            'process_variables': process_vars,
+            # UI uses only the 15 process variables
+            'process_variables': PROCESS_VARS_15,
+            # Model may expect engineered features (e.g., velocity_ratio)
+            'model_variables': process_vars,
             'defects': defect_cols,
             'model_name': artifacts.get('model_name', 'pytorch_model'),
             'metrics': artifacts.get('metrics', {}),
@@ -157,11 +186,12 @@ def load_model():
 
 def predict_defects(values: Dict[str, float], model, scaler, metadata) -> Dict:
     """Make defect prediction using the trained PyTorch model."""
-    variables = metadata['process_variables']
+    variables = metadata.get('model_variables', metadata['process_variables'])
     defects = metadata['defects']
     
     # Preparar features
-    features = np.array([[values[var] for var in variables]])
+    # For engineered variables not present in sidebar inputs, fallback to 0.0
+    features = np.array([[values.get(var, 0.0) for var in variables]], dtype=np.float32)
     
     # Fazer predição usando o wrapper do modelo
     probs = model.predict_proba(features)[0]
@@ -545,119 +575,79 @@ def main():
             analysis = analyze_variables(values, metadata)
         
         st.markdown("---")
-        st.markdown("## 📋 RESULTADOS DA PREDIÇÃO")
-        
-        # Risk classification banner
-        classification = result['classification']
-        max_risk = result['max_risk']
-        
-        col_risk1, col_risk2 = st.columns([1, 2])
-        
-        with col_risk1:
-            st.markdown("### Classificação de Risco")
-            st.markdown(get_risk_badge(classification), unsafe_allow_html=True)
-            st.metric("Risco Máximo", f"{max_risk:.1f}%")
-        
-        with col_risk2:
-            if classification == 'MINIMAL':
-                st.success("✅ **Excelente!** Todos os parâmetros estão ótimos. Baixo risco de defeitos.")
-            elif classification == 'LOW':
-                st.info("ℹ️ **Bom.** Pequenos desvios detectados. Monitore o processo.")
-            elif classification == 'MODERATE':
-                st.warning("⚠️ **Atenção necessária.** Alguns parâmetros fora do range ideal.")
-            elif classification == 'HIGH':
-                st.warning("🔶 **Ação necessária!** Múltiplos parâmetros problemáticos.")
-            else:
-                st.error("🚨 **CRÍTICO!** Ação imediata necessária. Alto risco de defeitos!")
-        
-        st.markdown("---")
-        
-        # Defect probabilities
-        st.markdown("### 📈 Probabilidades de Defeitos")
-        
-        # Create tabs for different views
-        tab1, tab2, tab3 = st.tabs(["📊 Gráfico", "📋 Tabela", "🔧 Análise de Variáveis"])
-        
-        with tab1:
-            # Bar chart of top defects
-            top_defects = result['sorted_probs'][:10]
-            defect_names = [d[0].replace('_', ' ').title() for d in top_defects]
-            defect_probs = [d[1] for d in top_defects]
-            
-            chart_data = pd.DataFrame({
-                'Defect': defect_names,
-                'Probability (%)': defect_probs
-            })
-            
-            st.bar_chart(chart_data.set_index('Defect'), use_container_width=True)
-            
-            # Show high-risk defects with progress bars
-            st.markdown("#### Top Risk Defects:")
-            for defect, prob in result['sorted_probs'][:5]:
-                col_def1, col_def2 = st.columns([3, 1])
-                with col_def1:
-                    defect_display = defect.replace('_', ' ').title()
-                    st.progress(min(prob/100, 1.0), text=defect_display)
-                with col_def2:
-                    if prob >= 50:
-                        st.markdown(f"**🔴 {prob:.1f}%**")
-                    elif prob >= 30:
-                        st.markdown(f"**🟠 {prob:.1f}%**")
-                    elif prob >= 10:
-                        st.markdown(f"**🟡 {prob:.1f}%**")
-                    else:
-                        st.markdown(f"**🟢 {prob:.1f}%**")
-        
-        with tab2:
-            # Full table of all defects
-            all_defects_df = pd.DataFrame(result['sorted_probs'], columns=['Defect', 'Probability (%)'])
-            all_defects_df['Defect'] = all_defects_df['Defect'].str.replace('_', ' ').str.title()
-            all_defects_df['Risk Level'] = all_defects_df['Probability (%)'].apply(
-                lambda x: '🔴 Critical' if x >= 50 else '🟠 High' if x >= 30 else '🟡 Moderate' if x >= 10 else '🟢 Low'
-            )
-            st.dataframe(all_defects_df, use_container_width=True, hide_index=True)
-        
-        with tab3:
-            # Variable analysis
+        st.markdown("### Defect Prediction Dashboard")
+
+        # 2x2 layout in a single view (as requested for Figure 4)
+        top_left, top_right = st.columns(2)
+
+        with top_left:
+            st.markdown("**Process variables (ideal range)**")
+            param_rows = []
+            for var in variables:
+                if var not in values:
+                    continue
+                cfg = var_config.get(var, {})
+                name = cfg.get('name', var.replace('_', ' ').title())
+                unit = cfg.get('unit', '')
+                value = values[var]
+                if cfg.get('type') == 'continuous':
+                    min_ok, max_ok = cfg.get('defect_free_range', [0, 100])
+                    ideal = f"{min_ok}-{max_ok} {unit}"
+                    status = "✅" if min_ok <= value <= max_ok else "⚠️"
+                else:
+                    ideal = "-"
+                    status = "✅" if value == 0 else "⚠️"
+                param_rows.append({
+                    "Parameter": name,
+                    "Value": f"{value} {unit}",
+                    "Ideal": ideal,
+                    "Status": status
+                })
+            st.dataframe(pd.DataFrame(param_rows), use_container_width=True, hide_index=True, height=210)
+
+        with top_right:
+            st.markdown("**Defect probabilities (28 types, threshold)**")
+            thresholds = metadata.get('optimal_thresholds', {})
+            defect_rows = []
+            for defect, prob in result['sorted_probs']:
+                th = thresholds.get(defect, 0.5)
+                defect_rows.append({
+                    "Defect": defect.replace('_', ' ').title(),
+                    "P(%)": round(prob, 1),
+                    "Thr(%)": round(float(th) * 100, 0)
+                })
+            st.dataframe(pd.DataFrame(defect_rows), use_container_width=True, hide_index=True, height=210)
+
+        bottom_left, bottom_right = st.columns(2)
+
+        with bottom_left:
+            st.markdown("**Outside ideal range (severity)**")
             if analysis['issues']:
-                st.markdown("#### ⚠️ Variables Out of Ideal Range:")
+                out_rows = []
                 for issue in analysis['issues']:
-                    with st.expander(f"🔶 {issue['name']} - Severity: {issue['severity']}%"):
-                        col_v1, col_v2 = st.columns(2)
-                        with col_v1:
-                            st.metric("Current Value", f"{issue['value']} {issue['unit']}")
-                            st.caption(f"Direction: {issue['direction']} ideal range")
-                        with col_v2:
-                            st.metric("Ideal Range", f"{issue['ideal_range'][0]} - {issue['ideal_range'][1]} {issue['unit']}")
-                            st.progress(issue['severity']/100, text=f"Severity: {issue['severity']}%")
+                    out_rows.append({
+                        "Variable": issue['name'],
+                        "Value": f"{issue['value']} {issue['unit']}",
+                        "Ideal": f"{issue['ideal_range'][0]}-{issue['ideal_range'][1]} {issue['unit']}",
+                        "Sev%": issue['severity'],
+                        "Dir": "Below" if issue['direction'] == 'BELOW' else "Above"
+                    })
+                st.dataframe(pd.DataFrame(out_rows), use_container_width=True, hide_index=True, height=165)
             else:
-                st.success("✅ All variables are within ideal range!")
-            
-            if analysis['in_range']:
-                st.markdown("#### ✅ Variables Within Ideal Range:")
-                ok_vars = [f"• {v['name']}: {v['value']} {v['unit']}" for v in analysis['in_range'][:5]]
-                st.markdown("\n".join(ok_vars))
-                if len(analysis['in_range']) > 5:
-                    st.caption(f"...and {len(analysis['in_range']) - 5} more variables OK")
-        
-        # Recommendations
-        if analysis['issues']:
-            st.markdown("---")
-            st.markdown("### 💡 Recommendations")
-            st.markdown("Based on the analysis, consider adjusting the following parameters:")
-            
-            # Show top 3 recommendations directly
-            for issue in analysis['issues'][:3]:
-                direction = "increase" if issue['direction'] == 'BELOW' else "decrease"
-                st.markdown(f"- **{issue['name']}**: Consider {direction}ing the value to bring it within the ideal range ({issue['ideal_range'][0]} - {issue['ideal_range'][1]} {issue['unit']})")
-            
-            # If there are more than 3 issues, show the rest in a collapsible section
-            if len(analysis['issues']) > 3:
-                remaining_issues = analysis['issues'][3:]
-                with st.expander(f"📋 Show {len(remaining_issues)} more recommendation(s)..."):
-                    for issue in remaining_issues:
-                        direction = "increase" if issue['direction'] == 'BELOW' else "decrease"
-                        st.markdown(f"- **{issue['name']}**: Consider {direction}ing the value to bring it within the ideal range ({issue['ideal_range'][0]} - {issue['ideal_range'][1]} {issue['unit']})")
+                st.caption("All variables are within ideal range.")
+
+        with bottom_right:
+            st.markdown("**Recommendations**")
+            if analysis['issues']:
+                recs = []
+                for issue in analysis['issues']:
+                    direction = "increase" if issue['direction'] == 'BELOW' else "decrease"
+                    recs.append(
+                        f"- **{issue['name']}**: {direction} toward {issue['ideal_range'][0]}-{issue['ideal_range'][1]} {issue['unit']}"
+                    )
+                st.markdown('<div class="recommendations-text">' + "<br>".join(recs[:8]) + '</div>', unsafe_allow_html=True)
+            else:
+                st.caption("No adjustments needed.")
     
     # Footer
     st.markdown("---")

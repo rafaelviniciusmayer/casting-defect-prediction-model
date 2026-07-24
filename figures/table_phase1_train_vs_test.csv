@@ -1,0 +1,10 @@
+Modelo,Métrica,Treino (pós-SMOTE),Teste (isolado),Gap Treino-Teste
+PyTorch NN,Recall,0.9933,0.9019,0.0914
+PyTorch NN,Precision,0.5848,0.5331,0.0517
+PyTorch NN,F1,0.7362,0.6701,0.0660
+XGBoost,Recall,0.9882,0.7565,0.2317
+XGBoost,Precision,0.7691,0.5899,0.1792
+XGBoost,F1,0.8650,0.6629,0.2021
+Random Forest,Recall,0.9955,0.6498,0.3458
+Random Forest,Precision,0.8227,0.5956,0.2272
+Random Forest,F1,0.9009,0.6215,0.2794

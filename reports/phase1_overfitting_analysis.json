@@ -1,0 +1,146 @@
+{
+  "use_smote": true,
+  "models": [
+    {
+      "model_type": "pytorch_nn",
+      "model_name": "PyTorch NN",
+      "use_smote": true,
+      "cv_train_mean": {
+        "recall_micro": 0.9698043848951071,
+        "precision_micro": 0.5695124069738466,
+        "f1_micro": 0.7176014373793689,
+        "f1_macro": 0.6726508280702547
+      },
+      "cv_train_std": {
+        "recall_micro": 0.0022849106080622805,
+        "precision_micro": 0.0032196499355322612,
+        "f1_micro": 0.00206216013738175,
+        "f1_macro": 0.003363304023490035
+      },
+      "cv_val_mean": {
+        "recall_micro": 0.8928184115806859,
+        "precision_micro": 0.5389122120963268,
+        "f1_micro": 0.6720966180298606,
+        "f1_macro": 0.6092779134842303
+      },
+      "cv_val_std": {
+        "recall_micro": 0.01015748739617645,
+        "precision_micro": 0.010544354930342144,
+        "f1_micro": 0.010570230835421184,
+        "f1_macro": 0.014663597127191267
+      },
+      "test_metrics": {
+        "recall_micro": 0.9019396551724138,
+        "precision_micro": 0.5331210191082802,
+        "f1_micro": 0.6701361088871097,
+        "f1_macro": 0.6089377671087993
+      },
+      "gap_train_val": {
+        "recall_micro": 0.07698597331442125,
+        "precision_micro": 0.03060019487751986,
+        "f1_micro": 0.04550481934950823
+      },
+      "gap_val_test": {
+        "recall_micro": -0.009121243591727946,
+        "precision_micro": 0.005791192988046534,
+        "f1_micro": 0.0019605091427509214
+      },
+      "cv_total_train_time_sec": 366.41987669980153,
+      "final_train_time_sec": 70.45834499993362
+    },
+    {
+      "model_type": "xgboost",
+      "model_name": "XGBoost",
+      "use_smote": true,
+      "cv_train_mean": {
+        "recall_micro": 0.9805049054225055,
+        "precision_micro": 0.8161560559861393,
+        "f1_micro": 0.8908100187956188,
+        "f1_macro": 0.8643986478775874
+      },
+      "cv_train_std": {
+        "recall_micro": 0.001128355554972238,
+        "precision_micro": 0.0030344241654382325,
+        "f1_micro": 0.0018041005984619945,
+        "f1_macro": 0.002722857930271209
+      },
+      "cv_val_mean": {
+        "recall_micro": 0.7376682169657329,
+        "precision_micro": 0.5986794487193292,
+        "f1_micro": 0.6609264923739447,
+        "f1_macro": 0.5809343275260608
+      },
+      "cv_val_std": {
+        "recall_micro": 0.00875254220661622,
+        "precision_micro": 0.007888058145206392,
+        "f1_micro": 0.007507562479419554,
+        "f1_macro": 0.010682402873515875
+      },
+      "test_metrics": {
+        "recall_micro": 0.7564655172413793,
+        "precision_micro": 0.5899159663865546,
+        "f1_micro": 0.6628895184135978,
+        "f1_macro": 0.5832255864388937
+      },
+      "gap_train_val": {
+        "recall_micro": 0.24283668845677253,
+        "precision_micro": 0.21747660726681006,
+        "f1_micro": 0.2298835264216741
+      },
+      "gap_val_test": {
+        "recall_micro": -0.01879730027564641,
+        "precision_micro": 0.008763482332774575,
+        "f1_micro": -0.0019630260396530375
+      },
+      "cv_total_train_time_sec": 329.85394409974106,
+      "final_train_time_sec": 73.73881949996576
+    },
+    {
+      "model_type": "random_forest",
+      "model_name": "Random Forest",
+      "use_smote": true,
+      "cv_train_mean": {
+        "recall_micro": 0.9879178149656731,
+        "precision_micro": 0.8494597736660972,
+        "f1_micro": 0.9134649312163633,
+        "f1_macro": 0.8791154162137722
+      },
+      "cv_train_std": {
+        "recall_micro": 0.00030175667381427887,
+        "precision_micro": 0.004589488434710302,
+        "f1_micro": 0.002587488896626604,
+        "f1_macro": 0.003066353538009415
+      },
+      "cv_val_mean": {
+        "recall_micro": 0.6238656765440745,
+        "precision_micro": 0.6058997077079484,
+        "f1_micro": 0.6147200472181323,
+        "f1_macro": 0.52069873859086
+      },
+      "cv_val_std": {
+        "recall_micro": 0.005175819545449299,
+        "precision_micro": 0.007733225560128422,
+        "f1_micro": 0.0049251020568594935,
+        "f1_macro": 0.01519119545230987
+      },
+      "test_metrics": {
+        "recall_micro": 0.6497844827586207,
+        "precision_micro": 0.5955555555555555,
+        "f1_micro": 0.6214893068796702,
+        "f1_macro": 0.5319043412050656
+      },
+      "gap_train_val": {
+        "recall_micro": 0.36405213842159856,
+        "precision_micro": 0.24356006595814872,
+        "f1_micro": 0.29874488399823096
+      },
+      "gap_val_test": {
+        "recall_micro": -0.02591880621454612,
+        "precision_micro": 0.010344152152392927,
+        "f1_micro": -0.006769259661537852
+      },
+      "cv_total_train_time_sec": 948.9768594998168,
+      "final_train_time_sec": 238.36445160000585
+    }
+  ]
+}

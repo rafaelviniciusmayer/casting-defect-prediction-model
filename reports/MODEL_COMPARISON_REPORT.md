@@ -15,13 +15,13 @@ Justificar a escolha do modelo para predição de defeitos em fundição de alum
 
 | Modelo | F1-Micro | F1-Macro | Precision | Recall | Treino (s) | Inf. (ms/100) |
 |--------|----------|----------|-----------|--------|------------|---------------|
-| PyTorch NN | 0.6708 | 0.6194 | 0.5085 | 0.9855 | 68.55 | 0.29 |
-| XGBoost | 0.6833 | 0.6328 | 0.5408 | 0.9278 | 48.91 | 19.76 |
-| Random Forest | 0.6669 | 0.6163 | 0.5044 | 0.9838 | 204.11 | 1346.37 |
+| PyTorch NN | 0.6661 | 0.6116 | 0.5054 | 0.9763 | 70.74 | 0.33 |
+| XGBoost | 0.6833 | 0.6328 | 0.5408 | 0.9278 | 53.67 | 19.82 |
+| Random Forest | 0.6669 | 0.6163 | 0.5044 | 0.9838 | 210.26 | 1232.20 |
 
 ## Conclusão
 
 - **Melhor F1-Micro:** XGBoost
-- **Melhor Recall:** PyTorch NN
+- **Melhor Recall:** Random Forest
 
-- O PyTorch NN apresentou o maior Recall, essencial para minimizar falsos negativos (defeitos que passam despercebidos).
+- Modelo alternativo (XGBoost) apresentou melhor desempenho. Considere reavaliar a escolha do modelo em produção.

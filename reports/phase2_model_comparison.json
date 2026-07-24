@@ -1,0 +1,409 @@
+{
+  "phase": "2.1_statistical_models",
+  "use_smote": false,
+  "cv_stats": {
+    "pytorch_nn": {
+      "model_name": "PyTorch NN",
+      "cv_val_mean": {
+        "recall_micro": 0.9510797696173245,
+        "precision_micro": 0.5121546774405353,
+        "f1_micro": 0.6657384233740814,
+        "f1_macro": 0.6044025015623393
+      },
+      "cv_val_std": {
+        "recall_micro": 0.009786453368753301,
+        "precision_micro": 0.007724276767225793,
+        "f1_micro": 0.007111195018334936,
+        "f1_macro": 0.011420953999168404
+      },
+      "cv_total_train_time_sec": 417.40449520002585
+    },
+    "xgboost": {
+      "model_name": "XGBoost",
+      "cv_val_mean": {
+        "recall_micro": 0.8575728699326959,
+        "precision_micro": 0.5487867827965733,
+        "f1_micro": 0.6692179645427856,
+        "f1_macro": 0.6045284439273273
+      },
+      "cv_val_std": {
+        "recall_micro": 0.01227972110028489,
+        "precision_micro": 0.010739540596555668,
+        "f1_micro": 0.010010904104673765,
+        "f1_macro": 0.012921596514753067
+      },
+      "cv_total_train_time_sec": 120.18602120003197
+    },
+    "random_forest": {
+      "model_name": "Random Forest",
+      "cv_val_mean": {
+        "recall_micro": 0.8204181390059562,
+        "precision_micro": 0.5490915538247368,
+        "f1_micro": 0.6578173853719204,
+        "f1_macro": 0.5663430289901119
+      },
+      "cv_val_std": {
+        "recall_micro": 0.011353217847003792,
+        "precision_micro": 0.015063795763818694,
+        "f1_micro": 0.013822972806700461,
+        "f1_macro": 0.03134030502630021
+      },
+      "cv_total_train_time_sec": 204.5248821999412
+    },
+    "logistic_regression_l2": {
+      "model_name": "Regressão Logística (L2/Ridge)",
+      "cv_val_mean": {
+        "recall_micro": 0.9384028749018661,
+        "precision_micro": 0.5235056051278348,
+        "f1_micro": 0.6720517301401732,
+        "f1_macro": 0.6141353203583412
+      },
+      "cv_val_std": {
+        "recall_micro": 0.00650089823141583,
+        "precision_micro": 0.00918953811620273,
+        "f1_micro": 0.008898354592512304,
+        "f1_macro": 0.01276700090665023
+      },
+      "cv_total_train_time_sec": 58.091354400268756
+    },
+    "logistic_regression_l1": {
+      "model_name": "Regressão Logística (L1/Lasso)",
+      "cv_val_mean": {
+        "recall_micro": 0.9451500356736195,
+        "precision_micro": 0.5225249781967621,
+        "f1_micro": 0.6729618482391585,
+        "f1_macro": 0.615671843855621
+      },
+      "cv_val_std": {
+        "recall_micro": 0.006259609217546586,
+        "precision_micro": 0.008679922291489629,
+        "f1_micro": 0.008357155383078163,
+        "f1_macro": 0.012964065637119418
+      },
+      "cv_total_train_time_sec": 1849.218817800167
+    }
+  },
+  "new_models_cv": {
+    "logistic_regression_l2": {
+      "model_type": "logistic_regression_l2",
+      "model_name": "Regressão Logística (L2/Ridge)",
+      "use_smote": false,
+      "train_mean": {
+        "recall_micro": 0.9999325955013957,
+        "precision_micro": 0.5498801324477619,
+        "f1_micro": 0.7095562307118742,
+        "f1_macro": 0.6847900260199948
+      },
+      "train_std": {
+        "recall_micro": 8.255537719791198e-05,
+        "precision_micro": 0.0028969470224598287,
+        "f1_micro": 0.0024196937789554966,
+        "f1_macro": 0.003563545249965862
+      },
+      "val_mean": {
+        "recall_micro": 0.9384028749018661,
+        "precision_micro": 0.5235056051278348,
+        "f1_micro": 0.6720517301401732,
+        "f1_macro": 0.6141353203583412
+      },
+      "val_std": {
+        "recall_micro": 0.00650089823141583,
+        "precision_micro": 0.00918953811620273,
+        "f1_micro": 0.008898354592512304,
+        "f1_macro": 0.01276700090665023
+      },
+      "total_train_time_sec": 58.091354400268756,
+      "folds": [
+        {
+          "fold_idx": 1,
+          "train_metrics": {
+            "recall_micro": 0.9998305659098611,
+            "precision_micro": 0.546692607003891,
+            "f1_micro": 0.706875898418783,
+            "f1_macro": 0.6806442557381036
+          },
+          "val_metrics": {
+            "recall_micro": 0.9457364341085271,
+            "precision_micro": 0.5327510917030568,
+            "f1_micro": 0.6815642458100558,
+            "f1_macro": 0.6306224870980007
+          },
+          "train_time_sec": 10.46288980008103
+        },
+        {
+          "fold_idx": 2,
+          "train_metrics": {
+            "recall_micro": 1.0,
+            "precision_micro": 0.5478772284506525,
+            "f1_micro": 0.7079078603657089,
+            "f1_macro": 0.6803993877594862
+          },
+          "val_metrics": {
+            "recall_micro": 0.9388440860215054,
+            "precision_micro": 0.5249906050357008,
+            "f1_micro": 0.6734152807905519,
+            "f1_macro": 0.6128940747402024
+          },
+          "train_time_sec": 13.332491500070319
+        },
+        {
+          "fold_idx": 3,
+          "train_metrics": {
+            "recall_micro": 0.9998324115971174,
+            "precision_micro": 0.5492037190463039,
+            "f1_micro": 0.708972073677956,
+            "f1_macro": 0.6875287010202698
+          },
+          "val_metrics": {
+            "recall_micro": 0.9447066756574511,
+            "precision_micro": 0.5239341810022439,
+            "f1_micro": 0.67404378157325,
+            "f1_macro": 0.620396369764318
+          },
+          "train_time_sec": 11.657812800025567
+        },
+        {
+          "fold_idx": 4,
+          "train_metrics": {
+            "recall_micro": 1.0,
+            "precision_micro": 0.5505638750231097,
+            "f1_micro": 0.7101466555383331,
+            "f1_macro": 0.6865222822502073
+          },
+          "val_metrics": {
+            "recall_micro": 0.9344042838018741,
+            "precision_micro": 0.5295902883156297,
+            "f1_micro": 0.6760290556900727,
+            "f1_macro": 0.6150252575439145
+          },
+          "train_time_sec": 11.24332760006655
+        },
+        {
+          "fold_idx": 5,
+          "train_metrics": {
+            "recall_micro": 1.0,
+            "precision_micro": 0.5550632327148528,
+            "f1_micro": 0.7138786655585896,
+            "f1_macro": 0.6888555033319074
+          },
+          "val_metrics": {
+            "recall_micro": 0.9283228949199722,
+            "precision_micro": 0.5062618595825427,
+            "f1_micro": 0.6552062868369352,
+            "f1_macro": 0.5917384126452705
+          },
+          "train_time_sec": 11.39483270002529
+        }
+      ]
+    },
+    "logistic_regression_l1": {
+      "model_type": "logistic_regression_l1",
+      "model_name": "Regressão Logística (L1/Lasso)",
+      "use_smote": false,
+      "train_mean": {
+        "recall_micro": 0.9999325955013957,
+        "precision_micro": 0.5457529651424827,
+        "f1_micro": 0.7061101433171534,
+        "f1_macro": 0.677666308852166
+      },
+      "train_std": {
+        "recall_micro": 8.255537719791198e-05,
+        "precision_micro": 0.0031368242558531623,
+        "f1_micro": 0.0026335671413894885,
+        "f1_macro": 0.003874330164886368
+      },
+      "val_mean": {
+        "recall_micro": 0.9451500356736195,
+        "precision_micro": 0.5225249781967621,
+        "f1_micro": 0.6729618482391585,
+        "f1_macro": 0.615671843855621
+      },
+      "val_std": {
+        "recall_micro": 0.006259609217546586,
+        "precision_micro": 0.008679922291489629,
+        "f1_micro": 0.008357155383078163,
+        "f1_macro": 0.012964065637119418
+      },
+      "total_train_time_sec": 1849.218817800167,
+      "folds": [
+        {
+          "fold_idx": 1,
+          "train_metrics": {
+            "recall_micro": 0.9998305659098611,
+            "precision_micro": 0.5421719955898566,
+            "f1_micro": 0.7030859049207673,
+            "f1_macro": 0.6736320757099359
+          },
+          "val_metrics": {
+            "recall_micro": 0.9483204134366925,
+            "precision_micro": 0.5299638989169675,
+            "f1_micro": 0.6799444187123669,
+            "f1_macro": 0.6290371120188677
+          },
+          "train_time_sec": 404.83225650002714
+        },
+        {
+          "fold_idx": 2,
+          "train_metrics": {
+            "recall_micro": 1.0,
+            "precision_micro": 0.5431356472624579,
+            "f1_micro": 0.7039376586575359,
+            "f1_macro": 0.6728708784915901
+          },
+          "val_metrics": {
+            "recall_micro": 0.9455645161290323,
+            "precision_micro": 0.525,
+            "f1_micro": 0.6751439539347409,
+            "f1_macro": 0.6152559698196015
+          },
+          "train_time_sec": 416.6255309000844
+        },
+        {
+          "fold_idx": 3,
+          "train_metrics": {
+            "recall_micro": 0.9998324115971174,
+            "precision_micro": 0.5453382084095064,
+            "f1_micro": 0.7057431832968593,
+            "f1_macro": 0.6780636831535324
+          },
+          "val_metrics": {
+            "recall_micro": 0.9541469993256911,
+            "precision_micro": 0.5232988165680473,
+            "f1_micro": 0.6759016001910676,
+            "f1_macro": 0.6258778139214829
+          },
+          "train_time_sec": 350.6118878000416
+        },
+        {
+          "fold_idx": 4,
+          "train_metrics": {
+            "recall_micro": 1.0,
+            "precision_micro": 0.5471247473819585,
+            "f1_micro": 0.7072794204963782,
+            "f1_macro": 0.6816936085165057
+          },
+          "val_metrics": {
+            "recall_micro": 0.9424364123159303,
+            "precision_micro": 0.5285285285285285,
+            "f1_micro": 0.6772486772486772,
+            "f1_macro": 0.6161208897947017
+          },
+          "train_time_sec": 346.45413960004225
+        },
+        {
+          "fold_idx": 5,
+          "train_metrics": {
+            "recall_micro": 1.0,
+            "precision_micro": 0.5509942270686338,
+            "f1_micro": 0.7105045492142267,
+            "f1_macro": 0.6820712983892664
+          },
+          "val_metrics": {
+            "recall_micro": 0.9352818371607515,
+            "precision_micro": 0.5058336469702672,
+            "f1_micro": 0.6565705911089399,
+            "f1_macro": 0.5920674337234508
+          },
+          "train_time_sec": 330.6950029999716
+        }
+      ]
+    }
+  },
+  "final_evaluations": {
+    "pytorch_nn": {
+      "model_type": "pytorch_nn",
+      "model_name": "PyTorch NN",
+      "use_smote": false,
+      "test_metrics_threshold_05": {
+        "recall_micro": 0.9595905172413793,
+        "precision_micro": 0.5052482269503547,
+        "f1_micro": 0.6619587437279316,
+        "f1_macro": 0.6027216904175271
+      },
+      "test_metrics_optimized_threshold": {
+        "recall_micro": 0.9929956896551724,
+        "precision_micro": 0.49864718614718617,
+        "f1_micro": 0.6639048991354467,
+        "f1_macro": 0.6088391160024533
+      },
+      "train_time_sec": 48.487999200006016,
+      "inference_time_ms_per_100": 0.2963969996199012
+    },
+    "xgboost": {
+      "model_type": "xgboost",
+      "model_name": "XGBoost",
+      "use_smote": false,
+      "test_metrics_threshold_05": {
+        "recall_micro": 0.8782327586206896,
+        "precision_micro": 0.5404509283819628,
+        "f1_micro": 0.6691297208538588,
+        "f1_macro": 0.6144218841323074
+      },
+      "test_metrics_optimized_threshold": {
+        "recall_micro": 0.9811422413793104,
+        "precision_micro": 0.49835796387520526,
+        "f1_micro": 0.6609800362976407,
+        "f1_macro": 0.6200139305441892
+      },
+      "train_time_sec": 23.444724000059068,
+      "inference_time_ms_per_100": 16.95954199996777
+    },
+    "random_forest": {
+      "model_type": "random_forest",
+      "model_name": "Random Forest",
+      "use_smote": false,
+      "test_metrics_threshold_05": {
+        "recall_micro": 0.8216594827586207,
+        "precision_micro": 0.5421258442943476,
+        "f1_micro": 0.6532448061683443,
+        "f1_macro": 0.5615178725921169
+      },
+      "test_metrics_optimized_threshold": {
+        "recall_micro": 0.9967672413793104,
+        "precision_micro": 0.4136851520572451,
+        "f1_micro": 0.5847029077117573,
+        "f1_macro": 0.5600218230251185
+      },
+      "train_time_sec": 55.81317370000761,
+      "inference_time_ms_per_100": 1269.449366000481
+    },
+    "logistic_regression_l2": {
+      "model_type": "logistic_regression_l2",
+      "model_name": "Regressão Logística (L2/Ridge)",
+      "use_smote": false,
+      "test_metrics_threshold_05": {
+        "recall_micro": 0.9542025862068966,
+        "precision_micro": 0.5160256410256411,
+        "f1_micro": 0.6698184568835098,
+        "f1_macro": 0.6181181093469775
+      },
+      "test_metrics_optimized_threshold": {
+        "recall_micro": 0.984375,
+        "precision_micro": 0.49986320109439125,
+        "f1_micro": 0.6630375612411541,
+        "f1_macro": 0.6206309966479756
+      },
+      "train_time_sec": 11.25401279993821,
+      "inference_time_ms_per_100": 2.846610000124201
+    },
+    "logistic_regression_l1": {
+      "model_type": "logistic_regression_l1",
+      "model_name": "Regressão Logística (L1/Lasso)",
+      "use_smote": false,
+      "test_metrics_threshold_05": {
+        "recall_micro": 0.9606681034482759,
+        "precision_micro": 0.5153179190751445,
+        "f1_micro": 0.6708051166290444,
+        "f1_macro": 0.6198458802634923
+      },
+      "test_metrics_optimized_threshold": {
+        "recall_micro": 0.984375,
+        "precision_micro": 0.5005479452054794,
+        "f1_micro": 0.6636396658191064,
+        "f1_macro": 0.6191487002107399
+      },
+      "train_time_sec": 510.18657810008153,
+      "inference_time_ms_per_100": 2.7650909998919815
+    }
+  }
+}

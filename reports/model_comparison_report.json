@@ -2,14 +2,14 @@
   "comparison": {
     "PyTorch NN": {
       "metrics": {
-        "f1_micro": 0.670823399963323,
-        "f1_macro": 0.6194062529365719,
-        "precision_micro": 0.508479288295802,
-        "recall_micro": 0.9854525862068966,
-        "accuracy": 0.9422
+        "f1_micro": 0.6660540341848925,
+        "f1_macro": 0.6115860073950127,
+        "precision_micro": 0.5054393305439331,
+        "recall_micro": 0.9762931034482759,
+        "accuracy": 0.942
       },
-      "train_time_sec": 68.55,
-      "inference_time_ms_per_100": 0.29
+      "train_time_sec": 70.74,
+      "inference_time_ms_per_100": 0.33
     },
     "XGBoost": {
       "metrics": {
@@ -19,8 +19,8 @@
         "recall_micro": 0.927801724137931,
         "accuracy": 0.9422
       },
-      "train_time_sec": 48.91,
-      "inference_time_ms_per_100": 19.76
+      "train_time_sec": 53.67,
+      "inference_time_ms_per_100": 19.82
     },
     "Random Forest": {
       "metrics": {
@@ -30,14 +30,14 @@
         "recall_micro": 0.9838362068965517,
         "accuracy": 0.939
       },
-      "train_time_sec": 204.11,
-      "inference_time_ms_per_100": 1346.37
+      "train_time_sec": 210.26,
+      "inference_time_ms_per_100": 1232.2
     }
   },
   "best_f1_micro": "XGBoost",
-  "best_recall": "PyTorch NN",
+  "best_recall": "Random Forest",
   "justification": [
-    "O PyTorch NN apresentou o maior Recall, essencial para minimizar falsos negativos (defeitos que passam despercebidos)."
+    "Modelo alternativo (XGBoost) apresentou melhor desempenho. Considere reavaliar a escolha do modelo em produção."
   ],
   "config": {
     "train_test_split": "80/20",

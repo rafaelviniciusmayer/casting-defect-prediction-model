@@ -1,0 +1,7 @@
+process_phase,PyTorch NN,XGBoost,Random Forest,Logistic Regression (L2/Ridge),Logistic Regression (L1/Lasso),importancia_media,n_features
+Global/Aggregation,0.0556,0.7056,0.6276,0.053,0.064,0.3012,4
+Injection,0.3788,0.0908,0.1481,0.3122,0.2996,0.2459,36
+Configuration/Maintenance,0.1556,0.0966,0.0779,0.2695,0.2795,0.1758,35
+Intensification,0.2564,0.0497,0.0699,0.1685,0.1666,0.1422,16
+Cooling,0.1536,0.0425,0.061,0.1392,0.1396,0.1072,14
+Multiple phases,0.0,0.0149,0.0155,0.0577,0.0507,0.0277,5

@@ -1,0 +1,181 @@
+{
+  "models": [
+    {
+      "model_type": "pytorch_nn",
+      "model_name": "PyTorch NN",
+      "without_smote": {
+        "use_smote": false,
+        "cv_val_mean": {
+          "recall_micro": 0.9510797696173245,
+          "precision_micro": 0.5121546774405353,
+          "f1_micro": 0.6657384233740814,
+          "f1_macro": 0.6044025015623393
+        },
+        "cv_val_std": {
+          "recall_micro": 0.009786453368753301,
+          "precision_micro": 0.007724276767225793,
+          "f1_micro": 0.007111195018334936,
+          "f1_macro": 0.011420953999168404
+        },
+        "cv_train_mean": {
+          "recall_micro": 0.9947013336768954,
+          "precision_micro": 0.5275878529112639,
+          "f1_micro": 0.6894197828403563,
+          "f1_macro": 0.6403737516931691
+        },
+        "total_train_time_sec": 417.40449520002585
+      },
+      "with_smote": {
+        "use_smote": true,
+        "cv_val_mean": {
+          "recall_micro": 0.8928184115806859,
+          "precision_micro": 0.5389122120963268,
+          "f1_micro": 0.6720966180298606,
+          "f1_macro": 0.6092779134842303
+        },
+        "cv_val_std": {
+          "recall_micro": 0.01015748739617645,
+          "precision_micro": 0.010544354930342144,
+          "f1_micro": 0.010570230835421184,
+          "f1_macro": 0.014663597127191267
+        },
+        "cv_train_mean": {
+          "recall_micro": 0.9698043848951071,
+          "precision_micro": 0.5695124069738466,
+          "f1_micro": 0.7176014373793689,
+          "f1_macro": 0.6726508280702547
+        },
+        "total_train_time_sec": 366.41987669980153
+      },
+      "delta_with_minus_without": {
+        "recall_micro": -0.05826135803663868,
+        "precision_micro": 0.02675753465579145,
+        "f1_micro": 0.006358194655779248,
+        "f1_macro": 0.004875411921891004,
+        "train_time_sec": -50.984618500224315
+      }
+    },
+    {
+      "model_type": "xgboost",
+      "model_name": "XGBoost",
+      "without_smote": {
+        "use_smote": false,
+        "cv_val_mean": {
+          "recall_micro": 0.8575728699326959,
+          "precision_micro": 0.5487867827965733,
+          "f1_micro": 0.6692179645427856,
+          "f1_macro": 0.6045284439273273
+        },
+        "cv_val_std": {
+          "recall_micro": 0.01227972110028489,
+          "precision_micro": 0.010739540596555668,
+          "f1_micro": 0.010010904104673765,
+          "f1_macro": 0.012921596514753067
+        },
+        "cv_train_mean": {
+          "recall_micro": 1.0,
+          "precision_micro": 0.8748143972316524,
+          "f1_micro": 0.9332261235229706,
+          "f1_macro": 0.9141298876787181
+        },
+        "total_train_time_sec": 120.18602120003197
+      },
+      "with_smote": {
+        "use_smote": true,
+        "cv_val_mean": {
+          "recall_micro": 0.7376682169657329,
+          "precision_micro": 0.5986794487193292,
+          "f1_micro": 0.6609264923739447,
+          "f1_macro": 0.5809343275260608
+        },
+        "cv_val_std": {
+          "recall_micro": 0.00875254220661622,
+          "precision_micro": 0.007888058145206392,
+          "f1_micro": 0.007507562479419554,
+          "f1_macro": 0.010682402873515875
+        },
+        "cv_train_mean": {
+          "recall_micro": 0.9805049054225055,
+          "precision_micro": 0.8161560559861393,
+          "f1_micro": 0.8908100187956188,
+          "f1_macro": 0.8643986478775874
+        },
+        "total_train_time_sec": 329.85394409974106
+      },
+      "delta_with_minus_without": {
+        "recall_micro": -0.11990465296696295,
+        "precision_micro": 0.049892665922755874,
+        "f1_micro": -0.008291472168840852,
+        "f1_macro": -0.02359411640126652,
+        "train_time_sec": 209.66792289970908
+      }
+    },
+    {
+      "model_type": "random_forest",
+      "model_name": "Random Forest",
+      "without_smote": {
+        "use_smote": false,
+        "cv_val_mean": {
+          "recall_micro": 0.8204181390059562,
+          "precision_micro": 0.5490915538247368,
+          "f1_micro": 0.6578173853719204,
+          "f1_macro": 0.5663430289901119
+        },
+        "cv_val_std": {
+          "recall_micro": 0.011353217847003792,
+          "precision_micro": 0.015063795763818694,
+          "f1_micro": 0.013822972806700461,
+          "f1_macro": 0.03134030502630021
+        },
+        "cv_train_mean": {
+          "recall_micro": 1.0,
+          "precision_micro": 0.6968284223092519,
+          "f1_micro": 0.8212972548191688,
+          "f1_macro": 0.8342196785886999
+        },
+        "total_train_time_sec": 204.5248821999412
+      },
+      "with_smote": {
+        "use_smote": true,
+        "cv_val_mean": {
+          "recall_micro": 0.6238656765440745,
+          "precision_micro": 0.6058997077079484,
+          "f1_micro": 0.6147200472181323,
+          "f1_macro": 0.52069873859086
+        },
+        "cv_val_std": {
+          "recall_micro": 0.005175819545449299,
+          "precision_micro": 0.007733225560128422,
+          "f1_micro": 0.0049251020568594935,
+          "f1_macro": 0.01519119545230987
+        },
+        "cv_train_mean": {
+          "recall_micro": 0.9879178149656731,
+          "precision_micro": 0.8494597736660972,
+          "f1_micro": 0.9134649312163633,
+          "f1_macro": 0.8791154162137722
+        },
+        "total_train_time_sec": 948.9768594998168
+      },
+      "delta_with_minus_without": {
+        "recall_micro": -0.19655246246188163,
+        "precision_micro": 0.05680815388321159,
+        "f1_micro": -0.04309733815378802,
+        "f1_macro": -0.045644290399251886,
+        "train_time_sec": 744.4519772998756
+      }
+    }
+  ],
+  "recommendations": [
+    "**PyTorch NN**: SMOTE sem ganho relevante (ΔF1=+0.0064, ΔRecall=-0.0583) — considerar apenas cost-sensitive learning.",
+    "**XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0083, ΔRecall=-0.1199) — considerar apenas cost-sensitive learning.",
+    "**Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0431, ΔRecall=-0.1966) — considerar apenas cost-sensitive learning."
+  ],
+  "decision": {
+    "keep_smote": false,
+    "avg_f1_micro_gain": -0.01501020522228321,
+    "avg_recall_gain": -0.12490615782182775,
+    "avg_train_val_gap_increase": 0.04098794729190162,
+    "criteria": "Manter SMOTE se ganho médio de F1-micro >= 0.005 ou de recall >= 0.01 na validação (CV), com aumento médio de gap treino-val <= 0.05."
+  }
+}
