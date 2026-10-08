@@ -6,9 +6,9 @@ Adaptação para classificação multi-label: (1) diagramas de calibração (pro
 
 | defect | threshold | tn | fp | fn | tp | recall | precision |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| gas_porosity | 0.05 | 4739 | 120 | 0 | 141 | 1.0 | 0.5402 |
-| density_deviation | 0.1 | 4765 | 95 | 0 | 140 | 1.0 | 0.5957 |
-| cold_shut | 0.21000000000000002 | 4766 | 96 | 0 | 138 | 1.0 | 0.5897 |
+| gas_porosity | 0.17000000000000004 | 4741 | 118 | 0 | 141 | 1.0 | 0.5444 |
+| density_deviation | 0.4100000000000001 | 4763 | 97 | 0 | 140 | 1.0 | 0.5907 |
+| cold_shut | 0.34 | 4771 | 91 | 4 | 134 | 0.971 | 0.5956 |
 
 ![Calibração por modelo](phase3_calibration_by_model.png)
 ![Calibração por defeito](phase3_calibration_top_defects_nn.png)

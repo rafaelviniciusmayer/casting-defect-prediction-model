@@ -2,85 +2,85 @@
   "confusion_stats": [
     {
       "defect": "gas_porosity",
-      "threshold": 0.05,
-      "tn": 4739,
-      "fp": 120,
+      "threshold": 0.17000000000000004,
+      "tn": 4741,
+      "fp": 118,
       "fn": 0,
       "tp": 141,
       "recall": 1.0,
-      "precision": 0.5402
+      "precision": 0.5444
     },
     {
       "defect": "density_deviation",
-      "threshold": 0.1,
-      "tn": 4765,
-      "fp": 95,
+      "threshold": 0.4100000000000001,
+      "tn": 4763,
+      "fp": 97,
       "fn": 0,
       "tp": 140,
       "recall": 1.0,
-      "precision": 0.5957
+      "precision": 0.5907
     },
     {
       "defect": "cold_shut",
-      "threshold": 0.21000000000000002,
-      "tn": 4766,
-      "fp": 96,
-      "fn": 0,
-      "tp": 138,
-      "recall": 1.0,
-      "precision": 0.5897
+      "threshold": 0.34,
+      "tn": 4771,
+      "fp": 91,
+      "fn": 4,
+      "tp": 134,
+      "recall": 0.971,
+      "precision": 0.5956
     }
   ],
   "calibration_bins": [
     {
-      "model": "PyTorch NN",
+      "model": "Neural network (MLP)",
       "mean_predicted_prob": 0.0002,
       "observed_positive_freq": 0.0002
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.1452,
-      "observed_positive_freq": 0.0838
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.1445,
+      "observed_positive_freq": 0.0612
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.2473,
-      "observed_positive_freq": 0.1795
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.2519,
+      "observed_positive_freq": 0.1031
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.3466,
-      "observed_positive_freq": 0.1647
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.3479,
+      "observed_positive_freq": 0.1228
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.4542,
-      "observed_positive_freq": 0.2525
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.4475,
+      "observed_positive_freq": 0.1651
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.5533,
-      "observed_positive_freq": 0.2267
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.5508,
+      "observed_positive_freq": 0.2727
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.6556,
-      "observed_positive_freq": 0.3121
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.6591,
+      "observed_positive_freq": 0.2812
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.7564,
-      "observed_positive_freq": 0.3401
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.7533,
+      "observed_positive_freq": 0.3356
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.8578,
-      "observed_positive_freq": 0.4493
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.8554,
+      "observed_positive_freq": 0.4758
     },
     {
-      "model": "PyTorch NN",
-      "mean_predicted_prob": 0.9486,
-      "observed_positive_freq": 0.6638
+      "model": "Neural network (MLP)",
+      "mean_predicted_prob": 0.9462,
+      "observed_positive_freq": 0.6587
     },
     {
       "model": "XGBoost",

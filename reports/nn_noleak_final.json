@@ -1,0 +1,12 @@
+{
+  "train_time_sec": 128.3021298000001,
+  "inference_ms_per_100": 0.5202550999999858,
+  "test_metrics_threshold_05": {
+    "recall_micro": 0.9606681034482759,
+    "precision_micro": 0.5049561030869442,
+    "f1_micro": 0.6619639873770188,
+    "f1_macro": 0.6024560267827491
+  },
+  "train_time_sec_idle": 92.9025643,
+  "inference_ms_per_100_idle": 0.32915350000007493
+}

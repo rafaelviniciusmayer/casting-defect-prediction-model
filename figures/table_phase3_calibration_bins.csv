@@ -1,14 +1,14 @@
 model,mean_predicted_prob,observed_positive_freq
-PyTorch NN,0.0002,0.0002
-PyTorch NN,0.1452,0.0838
-PyTorch NN,0.2473,0.1795
-PyTorch NN,0.3466,0.1647
-PyTorch NN,0.4542,0.2525
-PyTorch NN,0.5533,0.2267
-PyTorch NN,0.6556,0.3121
-PyTorch NN,0.7564,0.3401
-PyTorch NN,0.8578,0.4493
-PyTorch NN,0.9486,0.6638
+Neural network (MLP),0.0002,0.0002
+Neural network (MLP),0.1445,0.0612
+Neural network (MLP),0.2519,0.1031
+Neural network (MLP),0.3479,0.1228
+Neural network (MLP),0.4475,0.1651
+Neural network (MLP),0.5508,0.2727
+Neural network (MLP),0.6591,0.2812
+Neural network (MLP),0.7533,0.3356
+Neural network (MLP),0.8554,0.4758
+Neural network (MLP),0.9462,0.6587
 XGBoost,0.0006,0.0003
 XGBoost,0.1377,0.1336
 XGBoost,0.2477,0.2204

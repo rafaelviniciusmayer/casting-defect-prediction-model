@@ -144,7 +144,7 @@ def plot_tradeoff(results: List[Dict[str, Any]], path: str) -> str:
         ax.scatter([], [], color="gray", marker=marker, label=STRATEGIES[strategy])
     ax.set_xlabel("Recall (micro)")
     ax.set_ylabel("Precision (micro)")
-    ax.set_title("Precision–Recall trade-off by threshold strategy (test set)")
+    ax.set_title("Precision–Recall trade-off by threshold strategy\n(test set; thresholds selected on out-of-fold development predictions)", fontsize=10)
     ax.grid(alpha=0.3)
     ax.legend(fontsize=8, loc="best")
     fig.tight_layout()

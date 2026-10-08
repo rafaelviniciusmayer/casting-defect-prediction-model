@@ -1,30 +1,29 @@
-Defect Type,TP,TN,FP,FN,Recall,Precision
-Blisters Post Treatment,92,4815,93,0,1.0,0.497
-Surface Blisters,91,4795,112,2,0.978,0.448
-Die Sticking,54,4879,66,1,0.982,0.45
-Flow Lines,50,4887,63,0,1.0,0.442
-Surface Streaks,7,4979,14,0,1.0,0.333
-Cold Shut,138,4767,95,0,1.0,0.592
-Heat Cracks,8,4971,21,0,1.0,0.276
-Ejector Pin Marks,0,5000,0,0,0.0,0.0
-Die Soldering,66,4864,69,1,0.985,0.489
-Surface Oxide Inclusions,38,4904,56,2,0.95,0.404
-Low Tensile Strength,77,4848,72,3,0.962,0.517
-Low Elongation,82,4845,71,2,0.976,0.536
-Low Ultimate Strength,68,4849,81,2,0.971,0.456
-Low Fatigue Resistance,74,4864,60,2,0.974,0.552
-Low Surface Hardness,63,4893,42,2,0.969,0.6
-Density Deviation,140,4767,93,0,1.0,0.601
-Incomplete Fill,104,4797,98,1,0.99,0.515
-Flash,46,4864,87,3,0.939,0.346
-Warpage,35,4889,74,2,0.946,0.321
-Shrinkage Porosity,17,4962,18,3,0.85,0.486
-Volumetric Variation,79,4864,52,5,0.94,0.603
-Dimensional Deviation,81,4862,55,2,0.976,0.596
-Gas Porosity,140,4739,120,1,0.993,0.538
-Gas Bubbles,129,4764,107,0,1.0,0.547
-Internal Shrinkage,42,4907,51,0,1.0,0.452
-Cracks,27,4940,29,4,0.871,0.482
-Hard Inclusions,17,4948,31,4,0.81,0.354
-Oxide Inclusions,44,4893,58,5,0.898,0.431
-Overall (micro-avg),1809,136356,1788,47,0.975,0.503
+defect,n_pos,threshold,TP,TN,FP,FN,recall,precision
+blisters_post_treatment,92,0.35,91,4813,95,1,0.989,0.489
+surface_blisters,93,0.35,88,4794,113,5,0.946,0.438
+die_sticking,55,0.29,55,4859,86,0,1.0,0.39
+flow_lines,50,0.13,49,4889,61,1,0.98,0.445
+surface_streaks,7,0.51,6,4976,17,1,0.857,0.261
+cold_shut,138,0.34,134,4771,91,4,0.971,0.596
+heat_cracks,8,0.23,8,4962,30,0,1.0,0.211
+ejector_pin_marks,0,0.5,0,5000,0,0,,
+die_soldering,67,0.19,67,4858,75,0,1.0,0.472
+surface_oxide_inclusions,40,0.39,33,4914,46,7,0.825,0.418
+low_tensile_strength,80,0.13,80,4842,78,0,1.0,0.506
+low_elongation,84,0.17,82,4843,73,2,0.976,0.529
+low_ultimate_strength,70,0.29,70,4845,85,0,1.0,0.452
+low_fatigue_resistance,76,0.22,76,4854,70,0,1.0,0.521
+low_surface_hardness,65,0.27,63,4889,46,2,0.969,0.578
+density_deviation,140,0.41,140,4763,97,0,1.0,0.591
+incomplete_fill,105,0.32,100,4802,93,5,0.952,0.518
+flash,49,0.44,48,4857,94,1,0.98,0.338
+warpage,37,0.19,37,4881,82,0,1.0,0.311
+shrinkage_porosity,20,0.54,17,4960,20,3,0.85,0.459
+volumetric_variation,84,0.44,82,4863,53,2,0.976,0.607
+dimensional_deviation,83,0.34,82,4858,59,1,0.988,0.582
+gas_porosity,141,0.17,141,4741,118,0,1.0,0.544
+gas_bubbles,129,0.34,129,4769,102,0,1.0,0.558
+internal_shrinkage,42,0.66,38,4914,44,4,0.905,0.463
+cracks,31,0.47,31,4936,33,0,1.0,0.484
+hard_inclusions,21,0.5,13,4944,35,8,0.619,0.271
+oxide_inclusions,49,0.43,45,4889,62,4,0.918,0.421

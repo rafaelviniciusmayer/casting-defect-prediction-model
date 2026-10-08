@@ -55,7 +55,7 @@ MODEL_LOGISTIC_L2 = "logistic_regression_l2"
 MODEL_LOGISTIC_L1 = "logistic_regression_l1"
 
 MODEL_DISPLAY_NAMES = {
-    MODEL_PYTORCH: "PyTorch NN",
+    MODEL_PYTORCH: "Neural network (MLP)",
     MODEL_XGBOOST: "XGBoost",
     MODEL_RANDOM_FOREST: "Random Forest",
     MODEL_LOGISTIC_L2: "Logistic Regression (L2/Ridge)",
