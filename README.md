@@ -92,3 +92,23 @@ streamlit run streamlit_app.py
 - **Architecture:** PyTorch MLP with BatchNorm and Dropout
 - **Operating point:** per-defect thresholds favoring recall (defect escape risk)
 - **Reference metrics** (last saved run in `model_metrics.json`): F1-micro ≈ 0.66, recall-micro ≈ 0.97, accuracy ≈ 0.94
+
+## Reproducibility notes (added during the manuscript revision)
+
+* **Data actually used in the study.** The models are trained on `aluminum_diecasting_dataset_with_features.csv`
+  (25,000 records, 1,401 defective = 5.60 %). `aluminum_diecasting_dataset_used_in_study.csv` contains exactly its
+  non-engineered columns (process variables, 28 defect labels, `total_defects`, `has_defect`). The older
+  `aluminum_diecasting_dataset.csv` is a different random realization of the generator (1,408 defective records) and is
+  **not** the data used in the article.
+* **Decision thresholds are chosen without the test set.** `oof_predictions.py` produces out-of-fold probabilities on the
+  development set; `threshold_selection_oof.py` selects the per-defect thresholds on them (and the official strategy) and
+  evaluates once on the test set. The previous procedure (thresholds optimized on the test set) is kept only in
+  `reports/phase3_official_thresholds_test_selected.json`.
+* **Neural network without test leakage.** `nn_noleak.py` replaces the early-stopping set (previously the test set in the
+  final model and the validation fold in CV) by an internal stratified 10 % hold-out of the training data and fixes the
+  random seeds. `rebuild_nn.py` and `cv_nn_noleak.py` regenerate the final model, its out-of-fold predictions and the CV
+  metrics with this training function. The previous cache is kept as `models/phase3_final_models_test_early_stopping.pkl`.
+* `calibration_smote_v2.py`, `l1_sweep_oof.py`, `threshold_analysis_oof.py` and
+  `figures/redraw_feature_importance_readable.py` regenerate the remaining new figures/tables of the revision.
+* The Streamlit app still loads the original deployment artifacts (`models/best_model.pkl`, `optimal_thresholds.pkl`);
+  they were not regenerated.
