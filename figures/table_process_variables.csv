@@ -7,3 +7,10 @@ Intensification Time Phase 3,s,5 - 8,3 - 10
 Intensification Pressure,MPa,80 - 120,60 - 140
 Solidification Time,s,15 - 25,10 - 35
 Cycle Time,s,60 - 90,55 - 100
+Sleeve Fill Percentage,%,40 - 50,30 - 60
+Sleeve Diameter,mm,45 - 50,42 - 52
+Sleeve Length,mm,120 - 130,115 - 135
+Plunger Lubricant,category,n/a,n/a
+Plunger Sleeve Clearance,mm,0.08 - 0.12,0.05 - 0.18
+Sleeve Temperature,°C,180 - 200,150 - 220
+Plunger Temperature,°C,160 - 180,120 - 200

@@ -30,7 +30,7 @@ from sklearn.metrics import f1_score, fbeta_score, precision_score, recall_score
 from compare_models import _optimize_thresholds_silent
 from threshold_tradeoff_analysis import (STRATEGIES, apply_thresholds, micro_metrics,
                                          optimize_thresholds_strategy, plot_tradeoff)
-from unified_cv_pipeline import MODEL_DISPLAY_NAMES, MODEL_PYTORCH
+from unified_cv_pipeline import MODEL_DISPLAY_NAMES, MODEL_PYTORCH, macro_f1_observed
 
 import os
 MODELS = os.environ.get("MODELS", "pytorch_nn,xgboost,random_forest,logistic_regression_l2,logistic_regression_l1").split(",")
@@ -48,7 +48,7 @@ test_proba = {m: cache["models"][m]["test_proba"] for m in MODELS}
 def metrics4(y, p):
     """micro recall, micro precision, micro F1, macro F1"""
     return [recall_score(y, p, average="micro", zero_division=0), precision_score(y, p, average="micro", zero_division=0),
-            f1_score(y, p, average="micro", zero_division=0), f1_score(y, p, average="macro", zero_division=0)]
+            f1_score(y, p, average="micro", zero_division=0), macro_f1_observed(y, p)]
 
 
 def fast_metrics(y, p):
@@ -58,7 +58,8 @@ def fast_metrics(y, p):
     tpk = (y & p).sum(0); fpk = ((1 - y) & p).sum(0); fnk = (y & (1 - p)).sum(0)
     den = 2 * tpk + fpk + fnk
     f1k = np.where(den > 0, 2 * tpk / np.maximum(den, 1), 0.0)
-    return np.array([r, pr, f1m, f1k.mean()])
+    present = y.sum(0) > 0          # macro over the defect types present in this (bootstrap) sample
+    return np.array([r, pr, f1m, f1k[present].mean() if present.any() else 0.0])
 
 
 rng = np.random.default_rng(SEED)

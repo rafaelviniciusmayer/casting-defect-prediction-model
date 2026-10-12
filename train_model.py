@@ -29,7 +29,6 @@ from sklearn.metrics import (
 )
 import matplotlib.pyplot as plt
 import warnings
-warnings.filterwarnings('ignore')
 
 # SMOTE for class balancing
 try:
@@ -478,8 +477,60 @@ def optimize_thresholds(y_test, y_pred_proba, defect_names):
     return optimal_thresholds, y_pred_binary
 
 
+def save_confusion_matrices(y_true, y_pred, defect_names):
+    """Save one confusion-matrix figure per defect type in confusion_matrices/."""
+    # Generate confusion matrices
+    print(f"\n[*] Generating confusion matrices...")
+    Path('confusion_matrices').mkdir(exist_ok=True)
+    
+    confusion_matrices = {}
+    for i, defect_name in enumerate(defect_names):
+        y_true_defect = y_true[:, i]
+        y_pred_defect = y_pred[:, i]
+        
+        cm = confusion_matrix(y_true_defect, y_pred_defect, labels=[0, 1])
+        confusion_matrices[defect_name] = cm
+        
+        # Save visualization
+        if cm.shape == (2, 2):
+            fig, ax = plt.subplots(figsize=(8, 7))
+            disp = ConfusionMatrixDisplay(confusion_matrix=cm, 
+                                         display_labels=['No Defect', 'Defect'])
+            disp.plot(ax=ax, cmap='Blues', values_format='d', colorbar=False)
+            # Increase font sizes for readability
+            for text in ax.texts:
+                text.set_fontsize(14)
+            title_name = defect_name.replace('_', ' ').title()
+            ax.set_title(f'Confusion Matrix: {title_name}', fontsize=13, fontweight='bold')
+            ax.set_xlabel('Predicted', fontsize=11)
+            ax.set_ylabel('Actual', fontsize=11)
+            ax.tick_params(labelsize=10)
+            
+            tn, fp, fn, tp = cm.ravel()
+            precision_defect = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+            recall_defect = tp / (tp + fn) if (tp + fn) > 0 else 0.0
+            
+            textstr = f'Precision: {precision_defect:.3f}\nRecall: {recall_defect:.3f}'
+            props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
+            ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=11,
+                   verticalalignment='bottom', horizontalalignment='right', bbox=props)
+            
+            plt.tight_layout()
+            safe_name = defect_name.replace('/', '_').replace('\\', '_')
+            plt.savefig(f'confusion_matrices/confusion_matrix_{safe_name}.png', 
+                       dpi=150, bbox_inches='tight', facecolor='white')
+            plt.close()
+    
+    print(f"    [OK] {len(confusion_matrices)} confusion matrices saved")
+    return confusion_matrices
+
+
 def train_model(X, y, pos_weights, feature_names, defect_names):
     """
+    LEGACY (original submission): early stopping and threshold optimization use the
+    test set and SMOTE is always applied. Kept for reference only -- main() builds the
+    deployment model with train_deployment_model() instead.
+
     Step 3.6: Train and select the best model.
     
     Input: Final dataset
@@ -601,48 +652,7 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
     print(f"    Accuracy: {metrics['accuracy']:.4f}")
     
     # Generate confusion matrices
-    print(f"\n[*] Generating confusion matrices...")
-    Path('confusion_matrices').mkdir(exist_ok=True)
-    
-    confusion_matrices = {}
-    for i, defect_name in enumerate(defect_names):
-        y_true_defect = y_test_final[:, i]
-        y_pred_defect = y_pred_binary[:, i]
-        
-        cm = confusion_matrix(y_true_defect, y_pred_defect)
-        confusion_matrices[defect_name] = cm
-        
-        # Save visualization
-        if cm.shape == (2, 2):
-            fig, ax = plt.subplots(figsize=(8, 7))
-            disp = ConfusionMatrixDisplay(confusion_matrix=cm, 
-                                         display_labels=['No Defect', 'Defect'])
-            disp.plot(ax=ax, cmap='Blues', values_format='d', colorbar=False)
-            # Increase font sizes for readability
-            for text in ax.texts:
-                text.set_fontsize(14)
-            title_name = defect_name.replace('_', ' ').title()
-            ax.set_title(f'Confusion Matrix: {title_name}', fontsize=13, fontweight='bold')
-            ax.set_xlabel('Predicted', fontsize=11)
-            ax.set_ylabel('Actual', fontsize=11)
-            ax.tick_params(labelsize=10)
-            
-            tn, fp, fn, tp = cm.ravel()
-            precision_defect = tp / (tp + fp) if (tp + fp) > 0 else 0.0
-            recall_defect = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-            
-            textstr = f'Precision: {precision_defect:.3f}\nRecall: {recall_defect:.3f}'
-            props = dict(boxstyle='round', facecolor='wheat', alpha=0.8)
-            ax.text(0.95, 0.05, textstr, transform=ax.transAxes, fontsize=11,
-                   verticalalignment='bottom', horizontalalignment='right', bbox=props)
-            
-            plt.tight_layout()
-            safe_name = defect_name.replace('/', '_').replace('\\', '_')
-            plt.savefig(f'confusion_matrices/confusion_matrix_{safe_name}.png', 
-                       dpi=150, bbox_inches='tight', facecolor='white')
-            plt.close()
-    
-    print(f"    [OK] {len(confusion_matrices)} confusion matrices saved")
+    confusion_matrices = save_confusion_matrices(y_test_final, y_pred_binary, defect_names)
     
     print("\n[OK] Model Training and Selection complete - Selected model ready")
     
@@ -657,14 +667,87 @@ def train_model(X, y, pos_weights, feature_names, defect_names):
     }
 
 
+def train_deployment_model():
+    """
+    Build the deployment model exactly as the official (revised) pipeline does:
+      - same 80/20 stratified split and engineered features as unified_cv_pipeline;
+      - leak-free neural network (early stopping on an internal 10% hold-out of the
+        development data, see nn_noleak.py), cost-sensitive learning, no SMOTE
+        (Phase 1 decision);
+      - per-defect thresholds of the official strategy, selected on out-of-fold
+        development predictions (reports/phase3_official_thresholds.json, written by
+        threshold_selection_oof.py) -- the test set is only used for the final report.
+    """
+    import json
+    import unified_cv_pipeline as ucv
+
+    print("\n" + "="*70)
+    print("3.6. MODEL TRAINING AND SELECTION - Deployment model (leak-free)")
+    print("="*70)
+
+    thresholds_path = Path('reports/phase3_official_thresholds.json')
+    if not thresholds_path.exists():
+        raise FileNotFoundError(
+            f"{thresholds_path} not found: run `python oof_predictions.py pytorch_nn` "
+            "and `python threshold_selection_oof.py` first."
+        )
+    with open(thresholds_path, encoding='utf-8') as f:
+        official = json.load(f)
+    thresholds = {
+        name: float(t) for name, t in
+        official['thresholds_by_model'][ucv.MODEL_PYTORCH][official['official_strategy']].items()
+    }
+
+    data = ucv.load_pipeline_data(verbose=True)
+    split = ucv.prepare_split_data(data, verbose=True)
+    final = ucv.run_final_test_evaluation(ucv.MODEL_PYTORCH, split, use_smote=False, verbose=True)
+
+    X_test_scaled = final.scaler.transform(split.X_test).astype(np.float32)
+    y_pred_proba = ucv.predict_proba_any(ucv.MODEL_PYTORCH, final.model, X_test_scaled)
+    th = np.array([thresholds[name] for name in split.defect_names])
+    y_pred_binary = (y_pred_proba >= th).astype(int)
+    y_test = split.y_test.astype(int)
+
+    metrics = {
+        'f1_micro': f1_score(y_test, y_pred_binary, average='micro', zero_division=0),
+        'f1_macro': ucv.macro_f1_observed(y_test, y_pred_binary),
+        'precision_micro': precision_score(y_test, y_pred_binary, average='micro', zero_division=0),
+        'recall_micro': recall_score(y_test, y_pred_binary, average='micro', zero_division=0),
+        # subset (exact-match) accuracy: all 28 labels of a part must be right
+        'accuracy': accuracy_score(y_test, y_pred_binary)
+    }
+    print(f"\n[*] Metrics on final test set ({official['official_strategy_name']} thresholds, chosen on OOF):")
+    print(f"    F1-Score (Micro): {metrics['f1_micro']:.4f}")
+    print(f"    F1-Score (Macro, defect types present): {metrics['f1_macro']:.4f}")
+    print(f"    Precision: {metrics['precision_micro']:.4f}")
+    print(f"    Recall: {metrics['recall_micro']:.4f}")
+    print(f"    Subset accuracy: {metrics['accuracy']:.4f}")
+
+    print("\n[*] Generating confusion matrices...")
+    confusion_matrices = save_confusion_matrices(y_test, y_pred_binary, split.defect_names)
+
+    model_info = {
+        'model': final.model,
+        'scaler': final.scaler,
+        'metrics': metrics,
+        'precision_thresholds': thresholds,  # Kept for compatibility
+        'optimal_thresholds': thresholds,
+        'confusion_matrices': confusion_matrices,
+        'pos_weights': ucv.compute_pos_weights(split.y_dev)
+    }
+    return model_info, split.feature_names, split.defect_names
+
+
 def save_model(model_info, feature_names, defect_names):
     """Save trained model."""
     print("\n[*] Saving model...")
     
     Path('models').mkdir(exist_ok=True)
     
-    # Create wrapper
-    wrapper = PyTorchModelWrapper(
+    # Create wrapper. Import it from the module (not __main__) so that the pickle
+    # references train_model.PyTorchModelWrapper and loads from any script.
+    from train_model import PyTorchModelWrapper as Wrapper
+    wrapper = Wrapper(
         model_info['model'], 
         model_info['scaler'], 
         thresholds=model_info['precision_thresholds']
@@ -680,7 +763,8 @@ def save_model(model_info, feature_names, defect_names):
         'optimal_thresholds': model_info.get('optimal_thresholds', model_info.get('precision_thresholds', {})),
         'model_name': 'pytorch_defect_prediction',
         'model_type': 'pytorch_neural_network',
-        'version': '1.0'
+        'version': '2.0',
+        'threshold_selection': 'official strategy, chosen on out-of-fold development predictions'
     }
     
     with open('models/pytorch_stable_model.pkl', 'wb') as f:
@@ -717,20 +801,15 @@ def save_model(model_info, feature_names, defect_names):
 
 def main():
     """Main function - Runs the complete ML workflow."""
+    warnings.filterwarnings('ignore')
     print("="*70)
     print("ML-BASED WORKFLOW FOR DEFECT PREDICTION IN CASTING PROCESSES")
     print("="*70)
     
     try:
-        # 3.3. Data Preparation
-        X, y, feature_names, defect_names, pos_weights = load_and_prepare_data()
-        
-        # 3.5. Feature Engineering
-        X, feature_names = apply_feature_engineering(X, feature_names)
-        
-        # 3.6. Model Training and Selection
-        model_info = train_model(X, y, pos_weights, feature_names, defect_names)
-        
+        # 3.3 Data Preparation + 3.5 Feature Engineering + 3.6 Model Training
+        model_info, feature_names, defect_names = train_deployment_model()
+                
         # Save model
         save_model(model_info, feature_names, defect_names)
         
@@ -741,12 +820,13 @@ def main():
         print(f"  F1-Score (Micro): {model_info['metrics']['f1_micro']:.4f}")
         print(f"  Precision: {model_info['metrics']['precision_micro']:.4f}")
         print(f"  Recall: {model_info['metrics']['recall_micro']:.4f}")
-        print(f"  Accuracy: {model_info['metrics']['accuracy']:.4f}")
-        
+        print(f"  Subset accuracy: {model_info['metrics']['accuracy']:.4f}")
+
     except Exception as e:
         print(f"\n[ERROR] {e}")
         import traceback
         traceback.print_exc()
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":

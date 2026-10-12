@@ -205,3 +205,7 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Side outputs of generate_synthetic_dataset.py
+/aluminum_diecasting_dataset_features.npy
+/aluminum_diecasting_dataset_labels.npy

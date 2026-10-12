@@ -1,6 +1,6 @@
 # Relatório consolidado — Ajustes solicitados pela banca
 
-Gerado em 2026-07-10 00:59. Pipeline: split 80/20 estratificado (random_state=42), CV 5-fold unificada, configuração oficial definida na Fase 1.
+Gerado em 2026-10-09 10:43. Pipeline: split 80/20 estratificado (random_state=42), CV 5-fold unificada, configuração oficial definida na Fase 1.
 
 ---
 
@@ -11,11 +11,11 @@ Gerado em 2026-07-10 00:59. Pipeline: split 80/20 estratificado (random_state=42
 
 ### Decisões tomadas
 
-- **SMOTE: REMOVIDO** na configuração oficial do pipeline (ganho médio F1-micro -0.0150, recall -0.1249, aumento de gap treino-val +0.0410).
+- **SMOTE: REMOVIDO** na configuração oficial do pipeline (ganho médio F1-micro -0.0076, recall -0.1450, aumento de gap treino-val +0.0693).
 - **CV unificada**: os 3 modelos passam a usar a mesma CV estratificada em 5 folds (random_state=42) sobre o dev set (80%), com SMOTE (quando habilitado) aplicado apenas no fold de treino.
 - **Cost-sensitive learning** ativo em todos os modelos: pos_weight na NN, class_weight='balanced' no RF, scale_pos_weight no XGBoost (novidade desta fase — antes o XGBoost não tinha ponderação).
-- Melhor recall (validação CV, com SMOTE): **PyTorch NN** (0.8928).
-- Melhor F1-micro (validação CV, com SMOTE): **PyTorch NN** (0.6721).
+- Melhor recall (validação CV, com SMOTE): **Neural network (MLP)** (0.8665).
+- Melhor F1-micro (validação CV, com SMOTE): **Neural network (MLP)** (0.6737).
 
 ### Referência para as próximas fases
 
@@ -39,22 +39,22 @@ Gerado em 2026-07-10 00:59. Pipeline: split 80/20 estratificado (random_state=42
 
 - Condição oficial: sem SMOTE (herdada da Fase 1).
 - Modelos comparados: PyTorch NN, XGBoost, Random Forest, Regressão Logística L2 (Ridge), Regressão Logística L1 (Lasso).
-- Melhor recall no teste (thresholds otimizados): **Random Forest** (0.9968).
-- Melhor F1-micro no teste: **PyTorch NN** (0.6639).
+- Melhor recall no teste (thresholds otimizados): **Random Forest** (0.9952).
+- Melhor F1-micro no teste: **Logistic Regression (L2/Ridge)** (0.6495).
 - A Fase 3 deve usar estes 4-5 modelos finais para importância de features (3.1) e as probabilidades de teste para thresholds/ROC (3.2/3.3).
 
 ---
 
 ## Checkpoint — Fase 3 (diagnósticos e interpretação)
 
-- **Estratégia oficial de threshold: F-beta β=2 (recall moderado)** (Maior F-beta(β=2)-micro no teste para o modelo em produção (NN): mantém prioridade em recall, penalizando excesso de falsos positivos.)
-- Importância de features: A fase com maior importância agregada é **Agregada/Global**. A fase de injeção concentra 24.6% da importância total média entre os 5 modelos.
+- **Estratégia oficial de threshold: F-beta β=2 (recall-weighted)** (Highest F-beta(2)-micro of the production neural network on out-of-fold development predictions; thresholds chosen on development data only.)
+- Importância de features: A fase com maior importância agregada é **Agregada/Global**. A fase de injeção concentra 25.2% da importância total média entre os 5 modelos.
 - Curvas ROC/AUC e previsto×realizado gerados com os thresholds oficiais.
 
 ### Arquivos gerados
 
 - `reports/phase3_feature_importance.md` (3.1)
-- `reports/phase3_threshold_tradeoff.md` (3.2)
+- `reports/oof_threshold_results.json` e `reports/phase3_official_thresholds.json` (3.2)
 - `reports/phase3_roc_analysis.md` (3.3)
 - `reports/phase3_predicted_vs_actual.md` (3.4)
 - Figuras e CSVs correspondentes em `figures/`
@@ -70,29 +70,29 @@ Métricas médias ± desvio-padrão na **validação** de cada fold (threshold f
 
 | Modelo | Recall (val) | Precision (val) | F1-micro (val) | F1-macro (val) | Tempo CV (s) |
 |--------|--------------|-----------------|----------------|----------------|--------------|
-| PyTorch NN | 0.8928 ± 0.0102 | 0.5389 ± 0.0105 | 0.6721 ± 0.0106 | 0.6093 ± 0.0147 | 366.4 |
-| XGBoost | 0.7377 ± 0.0088 | 0.5987 ± 0.0079 | 0.6609 ± 0.0075 | 0.5809 ± 0.0107 | 329.9 |
-| Random Forest | 0.6239 ± 0.0052 | 0.6059 ± 0.0077 | 0.6147 ± 0.0049 | 0.5207 ± 0.0152 | 949.0 |
+| Neural network (MLP) | 0.8665 ± 0.0090 | 0.5512 ± 0.0089 | 0.6737 ± 0.0082 | 0.6321 ± 0.0130 | 2266.3 |
+| XGBoost | 0.7377 ± 0.0093 | 0.5950 ± 0.0087 | 0.6587 ± 0.0084 | 0.5985 ± 0.0130 | 315.1 |
+| Random Forest | 0.7127 ± 0.0116 | 0.5990 ± 0.0064 | 0.6508 ± 0.0024 | 0.5907 ± 0.0149 | 420.9 |
 
 ---
 
-## Fase 1.2 — Análise de Overfitting (com SMOTE)
+## Phase 1.2 — Overfitting Analysis (with SMOTE)
 
-Threshold fixo 0.5 em todas as colunas para comparação direta entre treino (CV), validação (CV) e teste final. Métricas de treino calculadas nos dados originais do fold (sem amostras sintéticas).
+Fixed threshold 0.5 across all columns for direct comparison between train (CV), validation (CV), and final test. Train metrics are computed on original fold data (no synthetic SMOTE samples).
 
-Gap Treino-Val > 0 indica possível overfitting dentro dos folds. Gap Val-Teste > 0 indica queda de desempenho no holdout.
+Gap Train-Val > 0 indicates possible overfitting within folds. Gap Val-Test > 0 indicates performance drop on the holdout set.
 
-| Modelo | Métrica | Treino (CV) | Validação (CV) | Teste Final | Gap Treino-Val | Gap Val-Teste |
+| Model | Metric | Train (CV) | Validation (CV) | Test | Gap Train-Val | Gap Val-Test |
 | --- | --- | --- | --- | --- | --- | --- |
-| PyTorch NN | Recall | 0.9698 ± 0.0023 | 0.8928 ± 0.0102 | 0.9019 | 0.0770 | -0.0091 |
-| PyTorch NN | Precision | 0.5695 ± 0.0032 | 0.5389 ± 0.0105 | 0.5331 | 0.0306 | 0.0058 |
-| PyTorch NN | F1 | 0.7176 ± 0.0021 | 0.6721 ± 0.0106 | 0.6701 | 0.0455 | 0.0020 |
-| XGBoost | Recall | 0.9805 ± 0.0011 | 0.7377 ± 0.0088 | 0.7565 | 0.2428 | -0.0188 |
-| XGBoost | Precision | 0.8162 ± 0.0030 | 0.5987 ± 0.0079 | 0.5899 | 0.2175 | 0.0088 |
-| XGBoost | F1 | 0.8908 ± 0.0018 | 0.6609 ± 0.0075 | 0.6629 | 0.2299 | -0.0020 |
-| Random Forest | Recall | 0.9879 ± 0.0003 | 0.6239 ± 0.0052 | 0.6498 | 0.3641 | -0.0259 |
-| Random Forest | Precision | 0.8495 ± 0.0046 | 0.6059 ± 0.0077 | 0.5956 | 0.2436 | 0.0103 |
-| Random Forest | F1 | 0.9135 ± 0.0026 | 0.6147 ± 0.0049 | 0.6215 | 0.2987 | -0.0068 |
+| Neural network (MLP) | Recall | 0.9782 ± 0.0024 | 0.8665 ± 0.0090 | 0.8497 | 0.1117 | 0.0168 |
+| Neural network (MLP) | Precision | 0.6008 ± 0.0040 | 0.5512 ± 0.0089 | 0.5391 | 0.0496 | 0.0121 |
+| Neural network (MLP) | F1 | 0.7444 ± 0.0028 | 0.6737 ± 0.0082 | 0.6597 | 0.0707 | 0.0140 |
+| XGBoost | Recall | 0.9804 ± 0.0009 | 0.7377 ± 0.0093 | 0.7619 | 0.2427 | -0.0242 |
+| XGBoost | Precision | 0.8174 ± 0.0026 | 0.5950 ± 0.0087 | 0.5929 | 0.2224 | 0.0021 |
+| XGBoost | F1 | 0.8915 ± 0.0017 | 0.6587 ± 0.0084 | 0.6668 | 0.2328 | -0.0081 |
+| Random Forest | Recall | 0.9948 ± 0.0007 | 0.7127 ± 0.0116 | 0.7182 | 0.2822 | -0.0055 |
+| Random Forest | Precision | 0.8184 ± 0.0035 | 0.5990 ± 0.0064 | 0.5877 | 0.2194 | 0.0113 |
+| Random Forest | F1 | 0.8980 ± 0.0022 | 0.6508 ± 0.0024 | 0.6465 | 0.2472 | 0.0044 |
 
 ---
 
@@ -100,30 +100,30 @@ Gap Treino-Val > 0 indica possível overfitting dentro dos folds. Gap Val-Teste 
 
 Comparação lado a lado usando o mesmo pipeline de CV (5 folds). Em ambas as condições, cost-sensitive learning permanece ativo (pos_weight na NN, class_weight='balanced' no RF, scale_pos_weight no XGBoost).
 
-| Modelo | Condição | Recall (CV) | Precision (CV) | F1-micro (CV) | F1-macro (CV) | Tempo treino CV (s) |
+| Model | Condition | Recall (CV) | Precision (CV) | F1-micro (CV) | F1-macro (CV) | CV Time (s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| PyTorch NN | Sem SMOTE | 0.9511 ± 0.0098 | 0.5122 ± 0.0077 | 0.6657 ± 0.0071 | 0.6044 ± 0.0114 | 417.4 |
-| PyTorch NN | Com SMOTE | 0.8928 ± 0.0102 | 0.5389 ± 0.0105 | 0.6721 ± 0.0106 | 0.6093 ± 0.0147 | 366.4 |
-| PyTorch NN | Δ (Com - Sem) | -0.0583 | +0.0268 | +0.0064 | +0.0049 | -51.0 |
-| XGBoost | Sem SMOTE | 0.8576 ± 0.0123 | 0.5488 ± 0.0107 | 0.6692 ± 0.0100 | 0.6045 ± 0.0129 | 120.2 |
-| XGBoost | Com SMOTE | 0.7377 ± 0.0088 | 0.5987 ± 0.0079 | 0.6609 ± 0.0075 | 0.5809 ± 0.0107 | 329.9 |
-| XGBoost | Δ (Com - Sem) | -0.1199 | +0.0499 | -0.0083 | -0.0236 | +209.7 |
-| Random Forest | Sem SMOTE | 0.8204 ± 0.0114 | 0.5491 ± 0.0151 | 0.6578 ± 0.0138 | 0.5663 ± 0.0313 | 204.5 |
-| Random Forest | Com SMOTE | 0.6239 ± 0.0052 | 0.6059 ± 0.0077 | 0.6147 ± 0.0049 | 0.5207 ± 0.0152 | 949.0 |
-| Random Forest | Δ (Com - Sem) | -0.1966 | +0.0568 | -0.0431 | -0.0456 | +744.5 |
+| Neural network (MLP) | No SMOTE | 0.9513 ± 0.0102 | 0.5127 ± 0.0133 | 0.6662 ± 0.0122 | 0.6286 ± 0.0142 | 350.8 |
+| Neural network (MLP) | With SMOTE | 0.8665 ± 0.0090 | 0.5512 ± 0.0089 | 0.6737 ± 0.0082 | 0.6321 ± 0.0130 | 2266.3 |
+| Neural network (MLP) | Delta (With - No) | -0.0849 | +0.0385 | +0.0075 | +0.0035 | +1915.5 |
+| XGBoost | No SMOTE | 0.8569 ± 0.0102 | 0.5491 ± 0.0119 | 0.6692 ± 0.0103 | 0.6231 ± 0.0157 | 157.7 |
+| XGBoost | With SMOTE | 0.7377 ± 0.0093 | 0.5950 ± 0.0087 | 0.6587 ± 0.0084 | 0.5985 ± 0.0130 | 315.1 |
+| XGBoost | Delta (With - No) | -0.1192 | +0.0459 | -0.0105 | -0.0246 | +157.4 |
+| Random Forest | No SMOTE | 0.9436 ± 0.0041 | 0.5200 ± 0.0106 | 0.6705 ± 0.0093 | 0.6319 ± 0.0147 | 57541.6 |
+| Random Forest | With SMOTE | 0.7127 ± 0.0116 | 0.5990 ± 0.0064 | 0.6508 ± 0.0024 | 0.5907 ± 0.0149 | 420.9 |
+| Random Forest | Delta (With - No) | -0.2309 | +0.0790 | -0.0196 | -0.0412 | -57120.6 |
 
 ### Recomendações por modelo
 
-- **PyTorch NN**: SMOTE sem ganho relevante (ΔF1=+0.0064, ΔRecall=-0.0583) — considerar apenas cost-sensitive learning.
-- **XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0083, ΔRecall=-0.1199) — considerar apenas cost-sensitive learning.
-- **Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0431, ΔRecall=-0.1966) — considerar apenas cost-sensitive learning.
+- **Neural network (MLP)**: SMOTE sem ganho relevante (ΔF1=+0.0075, ΔRecall=-0.0849) — considerar apenas cost-sensitive learning.
+- **XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0105, ΔRecall=-0.1192) — considerar apenas cost-sensitive learning.
+- **Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0196, ΔRecall=-0.2309) — considerar apenas cost-sensitive learning.
 
 ### Decisão da Fase 1
 
 - **SMOTE REMOVIDO** — configuração oficial passa a usar apenas cost-sensitive learning
-- Ganho médio de F1-micro: -0.0150
-- Ganho médio de recall: -0.1249
-- Aumento médio do gap treino-val: +0.0410
+- Ganho médio de F1-micro: -0.0076
+- Ganho médio de recall: -0.1450
+- Aumento médio do gap treino-val: +0.0693
 - Critério: Manter SMOTE se ganho médio de F1-micro >= 0.005 ou de recall >= 0.01 na validação (CV), com aumento médio de gap treino-val <= 0.05.
 
 ---
@@ -134,17 +134,17 @@ Comparação lado a lado usando o mesmo pipeline de CV (5 folds). Em ambas as co
 
 Métricas do modelo final calculadas no próprio conjunto de treino balanceado (contendo amostras sintéticas) vs no teste nunca visto. Gap grande indica overfitting, possivelmente inflado pelo SMOTE.
 
-| Modelo | Métrica | Treino (pós-SMOTE) | Teste (isolado) | Gap Treino-Teste |
+| Model | Metric | Train (post-SMOTE) | Test (holdout) | Gap Train-Test |
 | --- | --- | --- | --- | --- |
-| PyTorch NN | Recall | 0.9933 | 0.9019 | 0.0914 |
-| PyTorch NN | Precision | 0.5848 | 0.5331 | 0.0517 |
-| PyTorch NN | F1 | 0.7362 | 0.6701 | 0.0660 |
-| XGBoost | Recall | 0.9882 | 0.7565 | 0.2317 |
-| XGBoost | Precision | 0.7691 | 0.5899 | 0.1792 |
-| XGBoost | F1 | 0.8650 | 0.6629 | 0.2021 |
-| Random Forest | Recall | 0.9955 | 0.6498 | 0.3458 |
-| Random Forest | Precision | 0.8227 | 0.5956 | 0.2272 |
-| Random Forest | F1 | 0.9009 | 0.6215 | 0.2794 |
+| Neural network (MLP) | Recall | 0.9958 | 0.8497 | 0.1462 |
+| Neural network (MLP) | Precision | 0.6064 | 0.5391 | 0.0672 |
+| Neural network (MLP) | F1 | 0.7538 | 0.6597 | 0.0941 |
+| XGBoost | Recall | 0.9882 | 0.7619 | 0.2264 |
+| XGBoost | Precision | 0.7689 | 0.5929 | 0.1760 |
+| XGBoost | F1 | 0.8649 | 0.6668 | 0.1980 |
+| Random Forest | Recall | 0.9981 | 0.7182 | 0.2798 |
+| Random Forest | Precision | 0.7921 | 0.5877 | 0.2044 |
+| Random Forest | F1 | 0.8833 | 0.6465 | 0.2368 |
 
 ### Curvas de aprendizado
 
@@ -152,36 +152,36 @@ Métricas do modelo final calculadas no próprio conjunto de treino balanceado (
 
 | Modelo | Condição | Fração treino | N treino (orig.) | N treino (efetivo) | F1 treino (orig.) | F1 treino (pós-SMOTE) | F1 validação | Recall validação |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| pytorch_nn | Sem SMOTE | 10% | 1600 | 1600 | 0.7103 | 0.7103 | 0.6271 | 0.8637 |
-| pytorch_nn | Sem SMOTE | 25% | 4000 | 4000 | 0.6865 | 0.6865 | 0.6614 | 0.9205 |
-| pytorch_nn | Sem SMOTE | 50% | 8000 | 8000 | 0.6860 | 0.6860 | 0.6632 | 0.9386 |
-| pytorch_nn | Sem SMOTE | 75% | 12000 | 12000 | 0.6961 | 0.6961 | 0.6718 | 0.9490 |
-| pytorch_nn | Sem SMOTE | 100% | 16000 | 16000 | 0.6828 | 0.6828 | 0.6742 | 0.9658 |
-| pytorch_nn | Com SMOTE | 10% | 1600 | 3451 | 0.8054 | 0.7619 | 0.6389 | 0.7539 |
-| pytorch_nn | Com SMOTE | 25% | 4000 | 8266 | 0.7578 | 0.7550 | 0.6554 | 0.7771 |
-| pytorch_nn | Com SMOTE | 50% | 8000 | 17027 | 0.7420 | 0.7366 | 0.6725 | 0.8372 |
-| pytorch_nn | Com SMOTE | 75% | 12000 | 25485 | 0.7231 | 0.7388 | 0.6862 | 0.8928 |
-| pytorch_nn | Com SMOTE | 100% | 16000 | 33706 | 0.7146 | 0.7343 | 0.6860 | 0.9160 |
-| random_forest | Sem SMOTE | 10% | 1600 | 1600 | 0.9889 | 0.9889 | 0.4381 | 0.3282 |
-| random_forest | Sem SMOTE | 25% | 4000 | 4000 | 0.9573 | 0.9573 | 0.5677 | 0.5252 |
-| random_forest | Sem SMOTE | 50% | 8000 | 8000 | 0.8741 | 0.8741 | 0.6370 | 0.7080 |
-| random_forest | Sem SMOTE | 75% | 12000 | 12000 | 0.8368 | 0.8368 | 0.6564 | 0.7855 |
-| random_forest | Sem SMOTE | 100% | 16000 | 16000 | 0.8244 | 0.8244 | 0.6733 | 0.8301 |
-| random_forest | Com SMOTE | 10% | 1600 | 3451 | 0.9833 | 0.9597 | 0.3902 | 0.2791 |
-| random_forest | Com SMOTE | 25% | 4000 | 8266 | 0.9566 | 0.9452 | 0.4912 | 0.4141 |
-| random_forest | Com SMOTE | 50% | 8000 | 17027 | 0.9371 | 0.9168 | 0.5652 | 0.5291 |
-| random_forest | Com SMOTE | 75% | 12000 | 25485 | 0.9258 | 0.9178 | 0.6143 | 0.6137 |
-| random_forest | Com SMOTE | 100% | 16000 | 33706 | 0.9156 | 0.9059 | 0.6071 | 0.6150 |
-| xgboost | Sem SMOTE | 10% | 1600 | 1600 | 0.9968 | 0.9968 | 0.5421 | 0.5678 |
-| xgboost | Sem SMOTE | 25% | 4000 | 4000 | 0.9986 | 0.9986 | 0.5982 | 0.6415 |
-| xgboost | Sem SMOTE | 50% | 8000 | 8000 | 0.9913 | 0.9913 | 0.6591 | 0.7733 |
-| xgboost | Sem SMOTE | 75% | 12000 | 12000 | 0.9628 | 0.9628 | 0.6796 | 0.8501 |
-| xgboost | Sem SMOTE | 100% | 16000 | 16000 | 0.9356 | 0.9356 | 0.6852 | 0.8760 |
-| xgboost | Com SMOTE | 10% | 1600 | 3451 | 0.9842 | 0.9727 | 0.4785 | 0.3844 |
-| xgboost | Com SMOTE | 25% | 4000 | 8266 | 0.9446 | 0.9368 | 0.5458 | 0.5026 |
-| xgboost | Com SMOTE | 50% | 8000 | 17027 | 0.9256 | 0.8937 | 0.6332 | 0.6512 |
-| xgboost | Com SMOTE | 75% | 12000 | 25485 | 0.9045 | 0.8878 | 0.6590 | 0.7242 |
-| xgboost | Com SMOTE | 100% | 16000 | 33706 | 0.8939 | 0.8738 | 0.6613 | 0.7461 |
+| pytorch_nn | Sem SMOTE | 10% | 1600 | 1600 | 0.6729 | 0.6729 | 0.5870 | 0.8630 |
+| pytorch_nn | Sem SMOTE | 25% | 4000 | 4000 | 0.7077 | 0.7077 | 0.6581 | 0.8811 |
+| pytorch_nn | Sem SMOTE | 50% | 8000 | 8000 | 0.6986 | 0.6986 | 0.6647 | 0.9296 |
+| pytorch_nn | Sem SMOTE | 75% | 12000 | 12000 | 0.6976 | 0.6976 | 0.6764 | 0.9457 |
+| pytorch_nn | Sem SMOTE | 100% | 16000 | 16000 | 0.6794 | 0.6794 | 0.6725 | 0.9703 |
+| pytorch_nn | Com SMOTE | 10% | 1600 | 3451 | 0.8463 | 0.8087 | 0.5964 | 0.6434 |
+| pytorch_nn | Com SMOTE | 25% | 4000 | 8266 | 0.8090 | 0.7983 | 0.6244 | 0.6809 |
+| pytorch_nn | Com SMOTE | 50% | 8000 | 17027 | 0.7743 | 0.7591 | 0.6642 | 0.8017 |
+| pytorch_nn | Com SMOTE | 75% | 12000 | 25485 | 0.7597 | 0.7671 | 0.6736 | 0.8398 |
+| pytorch_nn | Com SMOTE | 100% | 16000 | 33706 | 0.7473 | 0.7595 | 0.6780 | 0.8760 |
+| random_forest | Sem SMOTE | 10% | 1600 | 1600 | 0.8526 | 0.8526 | 0.6104 | 0.7119 |
+| random_forest | Sem SMOTE | 25% | 4000 | 4000 | 0.8100 | 0.8100 | 0.6571 | 0.8172 |
+| random_forest | Sem SMOTE | 50% | 8000 | 8000 | 0.7544 | 0.7544 | 0.6716 | 0.9121 |
+| random_forest | Sem SMOTE | 75% | 12000 | 12000 | 0.7377 | 0.7377 | 0.6755 | 0.9354 |
+| random_forest | Sem SMOTE | 100% | 16000 | 16000 | 0.7264 | 0.7264 | 0.6813 | 0.9503 |
+| random_forest | Com SMOTE | 10% | 1600 | 3451 | 0.9726 | 0.9270 | 0.4810 | 0.3882 |
+| random_forest | Com SMOTE | 25% | 4000 | 8266 | 0.9320 | 0.9159 | 0.5490 | 0.5084 |
+| random_forest | Com SMOTE | 50% | 8000 | 17027 | 0.9168 | 0.8934 | 0.6138 | 0.6253 |
+| random_forest | Com SMOTE | 75% | 12000 | 25485 | 0.9077 | 0.8974 | 0.6419 | 0.6964 |
+| random_forest | Com SMOTE | 100% | 16000 | 33706 | 0.9017 | 0.8876 | 0.6479 | 0.7119 |
+| xgboost | Sem SMOTE | 10% | 1600 | 1600 | 0.9968 | 0.9968 | 0.5354 | 0.5640 |
+| xgboost | Sem SMOTE | 25% | 4000 | 4000 | 0.9979 | 0.9979 | 0.6014 | 0.6492 |
+| xgboost | Sem SMOTE | 50% | 8000 | 8000 | 0.9923 | 0.9923 | 0.6573 | 0.7694 |
+| xgboost | Sem SMOTE | 75% | 12000 | 12000 | 0.9629 | 0.9629 | 0.6791 | 0.8495 |
+| xgboost | Sem SMOTE | 100% | 16000 | 16000 | 0.9359 | 0.9359 | 0.6815 | 0.8702 |
+| xgboost | Com SMOTE | 10% | 1600 | 3451 | 0.9857 | 0.9730 | 0.4796 | 0.3844 |
+| xgboost | Com SMOTE | 25% | 4000 | 8266 | 0.9440 | 0.9376 | 0.5580 | 0.5161 |
+| xgboost | Com SMOTE | 50% | 8000 | 17027 | 0.9264 | 0.8939 | 0.6315 | 0.6505 |
+| xgboost | Com SMOTE | 75% | 12000 | 25485 | 0.9048 | 0.8876 | 0.6626 | 0.7332 |
+| xgboost | Com SMOTE | 100% | 16000 | 33706 | 0.8942 | 0.8737 | 0.6623 | 0.7461 |
 
 ---
 
@@ -196,52 +196,55 @@ Baselines estatísticos adicionados: Regressão Logística L2 (Ridge) e L1 (Lass
 
 | Modelo | Recall (teste) | Precision (teste) | F1-micro (teste) | F1-macro (teste) | Recall (CV) | F1-micro (CV) | Treino (s) | Inferência (ms/100) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| PyTorch NN | 0.9930 | 0.4986 | 0.6639 | 0.6088 | 0.9511 ± 0.0098 | 0.6657 ± 0.0071 | 48.5 | 0.30 |
-| XGBoost | 0.9811 | 0.4984 | 0.6610 | 0.6200 | 0.8576 ± 0.0123 | 0.6692 ± 0.0100 | 23.4 | 16.96 |
-| Random Forest | 0.9968 | 0.4137 | 0.5847 | 0.5600 | 0.8204 ± 0.0114 | 0.6578 ± 0.0138 | 55.8 | 1269.45 |
-| Regressão Logística (L2/Ridge) | 0.9844 | 0.4999 | 0.6630 | 0.6206 | 0.9384 ± 0.0065 | 0.6721 ± 0.0089 | 11.3 | 2.85 |
-| Regressão Logística (L1/Lasso) | 0.9844 | 0.5005 | 0.6636 | 0.6191 | 0.9452 ± 0.0063 | 0.6730 ± 0.0084 | 510.2 | 2.77 |
+| Neural network (MLP) | 0.9865 | 0.4648 | 0.6319 | 0.5923 | 0.9513 ± 0.0102 | 0.6662 ± 0.0122 | 171.8 | 0.50 |
+| XGBoost | 0.9795 | 0.4789 | 0.6433 | 0.6190 | 0.8569 ± 0.0102 | 0.6692 ± 0.0103 | 31.3 | 35.04 |
+| Random Forest | 0.9952 | 0.4400 | 0.6102 | 0.5903 | 0.9436 ± 0.0041 | 0.6705 ± 0.0093 | 44.5 | 1801.89 |
+| Logistic Regression (L2/Ridge) | 0.9811 | 0.4855 | 0.6495 | 0.6253 | 0.9392 ± 0.0059 | 0.6725 ± 0.0086 | 8.3 | 5.64 |
+| Logistic Regression (L1/Lasso) | 0.9806 | 0.4826 | 0.6469 | 0.6177 | 0.9452 ± 0.0063 | 0.6730 ± 0.0084 | 615.6 | 7.22 |
 
 ---
 
 
 # Fase 3 — Diagnósticos e interpretação
 
-## Fase 3.2 — Estratégias de threshold (Precision × Recall)
+### Thresholds oficiais (seleção out-of-fold, sem uso do teste)
 
-Quatro estratégias comparadas nos 5 modelos finais, sobre as mesmas probabilidades de teste (nenhum retreino).
+Fonte: `threshold_selection_oof.py` → `reports/oof_threshold_results.json`. Thresholds por defeito selecionados nas predições out-of-fold do conjunto de desenvolvimento (CV 5-fold) e aplicados, inalterados, ao conjunto de teste.
 
-| Modelo | Estratégia | Recall | Precision | F1-micro | F1-macro | F2-micro |
-| --- | --- | --- | --- | --- | --- | --- |
-| PyTorch NN | Recall-first (atual) | 0.9925 | 0.4876 | 0.6539 | 0.5995 | 0.8222 |
-| PyTorch NN | F1 (equilíbrio) | 0.8879 | 0.5708 | 0.6949 | 0.6377 | 0.7991 |
-| PyTorch NN | F-beta β=2 (recall moderado) | 0.9828 | 0.5068 | 0.6687 | 0.6150 | 0.8274 |
-| PyTorch NN | F-beta β=0.5 (precisão) | 0.6789 | 0.6360 | 0.6568 | 0.6022 | 0.6699 |
-| XGBoost | Recall-first (atual) | 0.9903 | 0.4806 | 0.6472 | 0.6099 | 0.8170 |
-| XGBoost | F1 (equilíbrio) | 0.8863 | 0.5620 | 0.6879 | 0.6427 | 0.7946 |
-| XGBoost | F-beta β=2 (recall moderado) | 0.9774 | 0.5084 | 0.6689 | 0.6264 | 0.8251 |
-| XGBoost | F-beta β=0.5 (precisão) | 0.7306 | 0.6054 | 0.6621 | 0.6128 | 0.7016 |
-| Random Forest | Recall-first (atual) | 0.9989 | 0.4067 | 0.5780 | 0.5549 | 0.7736 |
-| Random Forest | F1 (equilíbrio) | 0.9213 | 0.5355 | 0.6774 | 0.6316 | 0.8053 |
-| Random Forest | F-beta β=2 (recall moderado) | 0.9709 | 0.5045 | 0.6640 | 0.6201 | 0.8194 |
-| Random Forest | F-beta β=0.5 (precisão) | 0.7166 | 0.5836 | 0.6433 | 0.5860 | 0.6854 |
-| Regressão Logística (L2/Ridge) | Recall-first (atual) | 0.9865 | 0.4981 | 0.6620 | 0.6194 | 0.8248 |
-| Regressão Logística (L2/Ridge) | F1 (equilíbrio) | 0.9359 | 0.5486 | 0.6918 | 0.6421 | 0.8201 |
-| Regressão Logística (L2/Ridge) | F-beta β=2 (recall moderado) | 0.9758 | 0.5218 | 0.6799 | 0.6328 | 0.8311 |
-| Regressão Logística (L2/Ridge) | F-beta β=0.5 (precisão) | 0.8869 | 0.5604 | 0.6868 | 0.6355 | 0.7943 |
-| Regressão Logística (L1/Lasso) | Recall-first (atual) | 0.9876 | 0.4972 | 0.6614 | 0.6163 | 0.8249 |
-| Regressão Logística (L1/Lasso) | F1 (equilíbrio) | 0.9364 | 0.5505 | 0.6934 | 0.6431 | 0.8213 |
-| Regressão Logística (L1/Lasso) | F-beta β=2 (recall moderado) | 0.9752 | 0.5246 | 0.6822 | 0.6323 | 0.8323 |
-| Regressão Logística (L1/Lasso) | F-beta β=0.5 (precisão) | 0.8939 | 0.5618 | 0.6900 | 0.6389 | 0.7994 |
+- Estratégia oficial: `fbeta_2`
+- Faixa de thresholds (defeitos com positivos no teste): 0.13 – 0.66
 
-### Decisão — estratégia oficial
+#### Rede neural — teste (IC 95% bootstrap)
 
-- **F-beta β=2 (recall moderado)** (critério: Maior F-beta(β=2)-micro no teste para o modelo em produção (NN): mantém prioridade em recall, penalizando excesso de falsos positivos.)
-- NN com estratégia oficial: Recall=0.9828, Precision=0.5068, F1=0.6687
+| Métrica | Valor | IC 95% |
+|---------|-------|--------|
+| Recall (micro) | 0.9725 | [0.9617, 0.9818] |
+| Precisão (micro) | 0.4928 | [0.4687, 0.5153] |
+| F1 (micro) | 0.6541 | [0.6321, 0.6736] |
+| F1 (macro) | 0.6151 | [0.5884, 0.6370] |
 
-Tabela por defeito (NN): `figures/table_phase3_threshold_per_defect.csv`
+Matriz de confusão agregada (28 defeitos × teste): TP = 1805, TN = 136286, FP = 1858, FN = 51.
 
-![Trade-off](phase3_threshold_tradeoff.png)
+#### F2-micro no desenvolvimento (OOF) por estratégia — rede neural
+
+| Estratégia | F2-micro (OOF) |
+|------------|----------------|
+| recall_first | 0.7987 |
+| f1 | 0.7896 |
+| fbeta_2 | 0.8206 |
+| fbeta_05 | 0.6498 |
+
+#### Todos os modelos — estratégia oficial, teste
+
+| Modelo | Recall (micro) | Precisão (micro) | F1 (micro) | F1 (macro) |
+|--------|---|---|---|---|
+| pytorch_nn | 0.9725 | 0.4928 | 0.6541 | 0.6151 |
+| xgboost | 0.9634 | 0.5020 | 0.6600 | 0.6329 |
+| random_forest | 0.8922 | 0.5170 | 0.6547 | 0.6159 |
+| logistic_regression_l2 | 0.9709 | 0.5021 | 0.6619 | 0.6361 |
+| logistic_regression_l1 | 0.9671 | 0.5035 | 0.6622 | 0.6307 |
+
+*Legado:* `reports/phase3_threshold_tradeoff_test_selected.md` (threshold_tradeoff_analysis.py) contém o procedimento anterior, com thresholds escolhidos no conjunto de teste; não é usado nos resultados oficiais.
 
 ---
 
@@ -249,57 +252,57 @@ Tabela por defeito (NN): `figures/table_phase3_threshold_per_defect.csv`
 
 Pergunta da banca: *as variáveis da etapa de injeção são as que mais impactam?*
 
-**Resposta:** A fase com maior importância agregada é **Agregada/Global**. A fase de injeção concentra 24.6% da importância total média entre os 5 modelos.
+**Resposta:** A fase com maior importância agregada é **Agregada/Global**. A fase de injeção concentra 25.2% da importância total média entre os 5 modelos.
 
 ### Importância agregada por fase do processo
 
-| fase_processo | PyTorch NN | XGBoost | Random Forest | Regressão Logística (L2/Ridge) | Regressão Logística (L1/Lasso) | importancia_media | n_features |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Agregada/Global | 0.0556 | 0.7056000232696533 | 0.6276 | 0.053 | 0.064 | 0.3012 | 4 |
-| Injeção | 0.3788 | 0.09080000221729279 | 0.1481 | 0.3122 | 0.2996 | 0.2459 | 36 |
-| Configuração/Manutenção | 0.1556 | 0.0966000035405159 | 0.0779 | 0.2695 | 0.2795 | 0.1758 | 35 |
-| Intensificação | 0.2564 | 0.04969999939203262 | 0.0699 | 0.1685 | 0.1666 | 0.1422 | 16 |
-| Resfriamento | 0.1536 | 0.042500000447034836 | 0.061 | 0.1392 | 0.1396 | 0.1072 | 14 |
-| Múltiplas fases | 0.0 | 0.01489999983459711 | 0.0155 | 0.0577 | 0.0507 | 0.0277 | 5 |
+| fase_processo | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) | importancia_media | n_features | process_phase |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Agregada/Global | 0.046 | 0.6635000109672546 | 0.5719 | 0.053 | 0.064 | 0.2797 | 4 | Global/Aggregation |
+| Injeção | 0.3818 | 0.10890000313520432 | 0.1571 | 0.3122 | 0.2996 | 0.2519 | 36 | Injection |
+| Configuração/Manutenção | 0.1331 | 0.09359999746084213 | 0.0658 | 0.2695 | 0.2795 | 0.1683 | 35 | Configuration/Maintenance |
+| Intensificação | 0.2537 | 0.06549999862909317 | 0.0844 | 0.1685 | 0.1666 | 0.1477 | 16 | Intensification |
+| Resfriamento | 0.1814 | 0.05939999967813492 | 0.0996 | 0.1392 | 0.1396 | 0.1238 | 14 | Cooling |
+| Múltiplas fases | 0.004 | 0.009200000204145908 | 0.0211 | 0.0577 | 0.0507 | 0.0285 | 5 | Multiple phases |
 
 ### Importância agregada por categoria de feature engineering
 
-| categoria_fe | PyTorch NN | XGBoost | Random Forest | Regressão Logística (L2/Ridge) | Regressão Logística (L1/Lasso) | importancia_media | n_features |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Agregação estatística | 0.0556 | 0.7056000232696533 | 0.6276 | 0.053 | 0.064 | 0.3012 | 4 |
-| Distância de faixa ideal | 0.5572 | 0.1103999987244606 | 0.1833 | 0.279 | 0.3009 | 0.2862 | 28 |
-| Binária de faixa | 0.3632 | 0.07649999856948853 | 0.0854 | 0.2663 | 0.2536 | 0.209 | 42 |
-| Original | 0.0174 | 0.0544000007212162 | 0.0377 | 0.151 | 0.1426 | 0.0806 | 15 |
-| Ratio | 0.0043 | 0.016899999231100082 | 0.0229 | 0.103 | 0.101 | 0.0496 | 6 |
-| Diferença | 0.0 | 0.010900000110268593 | 0.0126 | 0.0472 | 0.0545 | 0.025 | 4 |
-| Específica de domínio | 0.0016 | 0.014499999582767487 | 0.0132 | 0.0433 | 0.0318 | 0.0209 | 5 |
-| Produto | 0.0008 | 0.006599999964237213 | 0.0066 | 0.0294 | 0.0321 | 0.0151 | 2 |
-| Transformação matemática | 0.0 | 0.00430000014603138 | 0.0106 | 0.0278 | 0.0194 | 0.0124 | 4 |
+| categoria_fe | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) | importancia_media | n_features | feature_category |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Distância de faixa ideal | 0.5204 | 0.11659999936819077 | 0.1978 | 0.279 | 0.3009 | 0.283 | 28 | Ideal-range distance |
+| Agregação estatística | 0.046 | 0.6635000109672546 | 0.5719 | 0.053 | 0.064 | 0.2797 | 4 | Statistical aggregation |
+| Binária de faixa | 0.3859 | 0.15039999783039093 | 0.1044 | 0.2663 | 0.2536 | 0.2321 | 42 | Range flag |
+| Original | 0.0303 | 0.03139999881386757 | 0.0412 | 0.151 | 0.1426 | 0.0793 | 15 | Original |
+| Ratio | 0.0043 | 0.011099999770522118 | 0.0295 | 0.103 | 0.101 | 0.0498 | 6 | Ratio |
+| Diferença | 0.0025 | 0.007499999832361937 | 0.0162 | 0.0472 | 0.0545 | 0.0256 | 4 | Difference |
+| Específica de domínio | 0.0043 | 0.009499999694526196 | 0.017 | 0.0433 | 0.0318 | 0.0212 | 5 | Domain-specific |
+| Produto | 0.0 | 0.004100000020116568 | 0.0088 | 0.0294 | 0.0321 | 0.0149 | 2 | Product |
+| Transformação matemática | 0.0061 | 0.005900000222027302 | 0.0133 | 0.0278 | 0.0194 | 0.0145 | 4 | Mathematical transform |
 
 ### Top 20 features (média entre modelos)
 
-| feature | fase_processo | categoria_fe | importancia_media | PyTorch NN | XGBoost | Random Forest | Regressão Logística (L2/Ridge) | Regressão Logística (L1/Lasso) |
+| feature | fase_processo | categoria_fe | importancia_media | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| n_vars_in_range | Agregada/Global | Agregação estatística | 0.11357 | 0.01682 | 0.4000900089740753 | 0.13559 | 0.00698 | 0.00836 |
-| n_vars_out_of_range | Agregada/Global | Agregação estatística | 0.08524 | 0.03856 | 0.1998099982738495 | 0.17297 | 0.00698 | 0.00789 |
-| max_distance_from_ideal | Agregada/Global | Agregação estatística | 0.07114 | 0.0 | 0.05948000028729439 | 0.21659 | 0.03344 | 0.04618 |
-| avg_distance_from_ideal | Agregada/Global | Agregação estatística | 0.03121 | 0.00019 | 0.04619999974966049 | 0.10251 | 0.00561 | 0.00156 |
-| metal_velocity_gate_distance_from_range | Injeção | Distância de faixa ideal | 0.02498 | 0.07809 | 0.0035099999513477087 | 0.0091 | 0.01623 | 0.01798 |
-| intensification_pressure_distance_from_range | Intensificação | Distância de faixa ideal | 0.02485 | 0.08944 | 0.003659999929368496 | 0.01071 | 0.00991 | 0.01053 |
-| cycle_time_distance_from_range | Resfriamento | Distância de faixa ideal | 0.02443 | 0.07546 | 0.011289999820291996 | 0.01124 | 0.01101 | 0.01314 |
-| intensification_pressure_in_range | Intensificação | Binária de faixa | 0.02007 | 0.0555 | 0.012620000168681145 | 0.00836 | 0.00805 | 0.01582 |
-| intensification_time_phase3_distance_from_range | Intensificação | Distância de faixa ideal | 0.01746 | 0.05286 | 0.003599999938160181 | 0.00589 | 0.01127 | 0.0137 |
-| fill_time_distance_from_range | Injeção | Distância de faixa ideal | 0.0166 | 0.03276 | 0.008009999990463257 | 0.01239 | 0.01309 | 0.01674 |
-| phase_transition_position_distance_from_range | Injeção | Distância de faixa ideal | 0.01628 | 0.05579 | 0.0037899999879300594 | 0.00605 | 0.0079 | 0.0079 |
-| phase_transition_position_in_range | Injeção | Binária de faixa | 0.01319 | 0.04072 | 0.00267999991774559 | 0.00606 | 0.00654 | 0.00991 |
-| solidification_time_distance_from_range | Resfriamento | Distância de faixa ideal | 0.01269 | 0.03063 | 0.002309999894350767 | 0.00346 | 0.0133 | 0.01378 |
-| solidification_ratio | Resfriamento | Ratio | 0.01234 | 0.00156 | 0.002139999996870756 | 0.00329 | 0.026 | 0.02872 |
-| piston_velocity_phase1_distance_from_range | Injeção | Distância de faixa ideal | 0.0123 | 0.03823 | 0.0011699999449774623 | 0.00484 | 0.00875 | 0.00851 |
-| plunger_lubricant | Configuração/Manutenção | Original | 0.01213 | 0.01425 | 0.017100000753998756 | 0.00705 | 0.01029 | 0.01195 |
-| sleeve_length_distance_from_range | Configuração/Manutenção | Distância de faixa ideal | 0.01174 | 0.03362 | 0.003280000062659383 | 0.00229 | 0.00934 | 0.01018 |
-| fill_time_in_range | Injeção | Binária de faixa | 0.01167 | 0.02041 | 0.01018999982625246 | 0.01029 | 0.00681 | 0.01064 |
-| pressure_time_ratio | Intensificação | Ratio | 0.01162 | 0.0 | 0.00343000004068017 | 0.0047 | 0.02584 | 0.02414 |
-| cycle_time_in_range | Resfriamento | Binária de faixa | 0.01122 | 0.01722 | 0.005150000099092722 | 0.00906 | 0.0096 | 0.01506 |
+| n_vars_out_of_range | Agregada/Global | Agregação estatística | 0.09845 | 0.00964 | 0.2995699942111969 | 0.16818 | 0.00698 | 0.00789 |
+| n_vars_in_range | Agregada/Global | Agregação estatística | 0.09557 | 0.02896 | 0.2989799976348877 | 0.13458 | 0.00698 | 0.00836 |
+| max_distance_from_ideal | Agregada/Global | Agregação estatística | 0.05886 | 0.00543 | 0.04019000008702278 | 0.16906 | 0.03344 | 0.04618 |
+| cycle_time_distance_from_range | Resfriamento | Distância de faixa ideal | 0.02881 | 0.08169 | 0.01906999945640564 | 0.01915 | 0.01101 | 0.01314 |
+| avg_distance_from_ideal | Agregada/Global | Agregação estatística | 0.02679 | 0.00193 | 0.024720000103116035 | 0.1001 | 0.00561 | 0.00156 |
+| metal_velocity_gate_distance_from_range | Injeção | Distância de faixa ideal | 0.02508 | 0.07448 | 0.005570000037550926 | 0.01113 | 0.01623 | 0.01798 |
+| intensification_pressure_distance_from_range | Intensificação | Distância de faixa ideal | 0.02355 | 0.08168 | 0.0033400000538676977 | 0.01228 | 0.00991 | 0.01053 |
+| intensification_pressure_in_range | Intensificação | Binária de faixa | 0.01896 | 0.03637 | 0.02490999922156334 | 0.00963 | 0.00805 | 0.01582 |
+| intensification_time_phase3_distance_from_range | Intensificação | Distância de faixa ideal | 0.01611 | 0.04224 | 0.006169999949634075 | 0.00716 | 0.01127 | 0.0137 |
+| fill_time_distance_from_range | Injeção | Distância de faixa ideal | 0.01595 | 0.02275 | 0.012769999913871288 | 0.0144 | 0.01309 | 0.01674 |
+| phase_transition_position_distance_from_range | Injeção | Distância de faixa ideal | 0.01591 | 0.05381 | 0.0041600000113248825 | 0.0058 | 0.0079 | 0.0079 |
+| cycle_time_in_range | Resfriamento | Binária de faixa | 0.01581 | 0.0284 | 0.009990000165998936 | 0.01602 | 0.0096 | 0.01506 |
+| phase_transition_position_in_range | Injeção | Binária de faixa | 0.0153 | 0.04807 | 0.005249999929219484 | 0.00672 | 0.00654 | 0.00991 |
+| metal_velocity_gate_in_range | Injeção | Binária de faixa | 0.01411 | 0.02373 | 0.01083999965339899 | 0.01097 | 0.00928 | 0.01575 |
+| solidification_ratio | Resfriamento | Ratio | 0.01238 | 0.00072 | 0.001509999972768128 | 0.00495 | 0.026 | 0.02872 |
+| intensification_time_phase3_in_range | Intensificação | Binária de faixa | 0.01234 | 0.03181 | 0.003379999892786145 | 0.00666 | 0.00776 | 0.0121 |
+| pressure_time_ratio | Intensificação | Ratio | 0.01184 | 0.00072 | 0.0017600000137463212 | 0.00675 | 0.02584 | 0.02414 |
+| fill_time_in_range | Injeção | Binária de faixa | 0.01178 | 0.01067 | 0.020320000126957893 | 0.01049 | 0.00681 | 0.01064 |
+| plunger_lubricant | Configuração/Manutenção | Original | 0.01174 | 0.01756 | 0.010259999893605709 | 0.00863 | 0.01029 | 0.01195 |
+| solidification_time_distance_from_range | Resfriamento | Distância de faixa ideal | 0.01171 | 0.02117 | 0.004170000087469816 | 0.00615 | 0.0133 | 0.01378 |
 
 ![Top 25 features](phase3_feature_importance_top25.png)
 ![Por fase](phase3_importance_by_phase.png)
@@ -308,30 +311,30 @@ Pergunta da banca: *as variáveis da etapa de injeção são as que mais impacta
 
 ## Fase 3.3 — Curvas ROC e AUC
 
-Estratégia oficial de threshold (item 3.2): **F-beta β=2 (recall moderado)** — ponto de operação marcado nas curvas dos defeitos mais frequentes.
+Estratégia oficial de threshold (item 3.2): **F-beta β=2 (recall-weighted)** — ponto de operação marcado nas curvas dos defeitos mais frequentes.
 
 ### AUC micro-average por modelo
 
-| Modelo | AUC micro | AUC médio por defeito |
+| Model | AUC micro | Mean AUC per defect |
 | --- | --- | --- |
-| PyTorch NN | 0.9955 | 0.9951 |
+| Neural network (MLP) | 0.9956 | 0.9950 |
 | XGBoost | 0.9952 | 0.9947 |
 | Random Forest | 0.9945 | 0.9940 |
-| Regressão Logística (L2/Ridge) | 0.9929 | 0.9929 |
-| Regressão Logística (L1/Lasso) | 0.9932 | 0.9893 |
+| Logistic Regression (L2/Ridge) | 0.9929 | 0.9929 |
+| Logistic Regression (L1/Lasso) | 0.9932 | 0.9893 |
 
 ### AUC-ROC por defeito (10 mais frequentes)
 
-| defeito | positivos_teste | PyTorch NN | XGBoost | Random Forest | Regressão Logística (L2/Ridge) | Regressão Logística (L1/Lasso) |
+| defect | test_positives | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) |
 | --- | --- | --- | --- | --- | --- | --- |
-| gas_porosity | 141 | 0.9941 | 0.994 | 0.9904 | 0.9937 | 0.9937 |
-| density_deviation | 140 | 0.9932 | 0.9922 | 0.9904 | 0.9945 | 0.9945 |
-| cold_shut | 138 | 0.9951 | 0.9938 | 0.9913 | 0.9959 | 0.9959 |
+| gas_porosity | 141 | 0.9946 | 0.994 | 0.9904 | 0.9937 | 0.9937 |
+| density_deviation | 140 | 0.993 | 0.9922 | 0.9904 | 0.9945 | 0.9945 |
+| cold_shut | 138 | 0.9943 | 0.9938 | 0.9913 | 0.9959 | 0.9959 |
 | gas_bubbles | 129 | 0.9938 | 0.993 | 0.9909 | 0.9947 | 0.9948 |
-| incomplete_fill | 105 | 0.9942 | 0.9939 | 0.9931 | 0.9948 | 0.9948 |
-| surface_blisters | 93 | 0.9916 | 0.9906 | 0.9887 | 0.9925 | 0.9925 |
+| incomplete_fill | 105 | 0.9939 | 0.9939 | 0.9931 | 0.9948 | 0.9948 |
+| surface_blisters | 93 | 0.991 | 0.9906 | 0.9887 | 0.9925 | 0.9925 |
 | blisters_post_treatment | 92 | 0.9951 | 0.9946 | 0.9937 | 0.9954 | 0.9954 |
-| volumetric_variation | 84 | 0.9961 | 0.9962 | 0.9965 | 0.9851 | 0.9871 |
+| volumetric_variation | 84 | 0.9966 | 0.9962 | 0.9965 | 0.9851 | 0.9871 |
 | low_elongation | 84 | 0.9941 | 0.9937 | 0.9928 | 0.9938 | 0.9939 |
 | dimensional_deviation | 83 | 0.9967 | 0.9964 | 0.9961 | 0.9963 | 0.9964 |
 
@@ -348,11 +351,11 @@ Adaptação para classificação multi-label: (1) diagramas de calibração (pro
 
 ### Matrizes de confusão (NN, thresholds oficiais)
 
-| defeito | threshold | tn | fp | fn | tp | recall | precision |
+| defect | threshold | tn | fp | fn | tp | recall | precision |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| gas_porosity | 0.05 | 4739 | 120 | 0 | 141 | 1.0 | 0.5402 |
-| density_deviation | 0.1 | 4765 | 95 | 0 | 140 | 1.0 | 0.5957 |
-| cold_shut | 0.21000000000000002 | 4766 | 96 | 0 | 138 | 1.0 | 0.5897 |
+| gas_porosity | 0.17000000000000004 | 4741 | 118 | 0 | 141 | 1.0 | 0.5444 |
+| density_deviation | 0.4100000000000001 | 4763 | 97 | 0 | 140 | 1.0 | 0.5907 |
+| cold_shut | 0.34 | 4771 | 91 | 4 | 134 | 0.971 | 0.5956 |
 
 ![Calibração por modelo](phase3_calibration_by_model.png)
 ![Calibração por defeito](phase3_calibration_top_defects_nn.png)

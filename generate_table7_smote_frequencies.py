@@ -31,7 +31,8 @@ sys.path.insert(0, str(ROOT))
 from train_model import load_and_prepare_data, apply_smote_balancing  # noqa: E402
 
 
-# Same eight defect types as the methodology table (ordered by original frequency, descending)
+# Same eight defect types as the methodology table (a fixed illustrative selection spanning
+# frequent to rare defects -- NOT the eight most frequent ones)
 DEFECT_KEYS = [
     "gas_porosity",
     "density_deviation",

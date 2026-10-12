@@ -788,12 +788,16 @@
         0
       ]
     },
-    "influence_weights": {
-      "0": 0.0,
-      "1": 0.33,
-      "2": 0.67,
-      "3": 1.0
-    }
+    "max_prob_by_influence": {
+      "1": 0.4,
+      "2": 0.75,
+      "3": 0.95
+    },
+    "min_prob_fraction_by_influence": {
+      "2": 0.5,
+      "3": 0.6
+    },
+    "note": "defect_chance_pct in variable_ranges is informative only (not used by the generator). 'statistics' below describe the file written by this run; the dataset used in the study is aluminum_diecasting_dataset_with_features.csv, a different realization (see README)."
   },
   "n_samples": 25000,
   "statistics": {

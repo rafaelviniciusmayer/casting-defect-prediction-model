@@ -1,5 +1,7 @@
 # Table 10. Confusion Matrix Metrics per Defect Type (Test Set, n=5,000)
 
+*Per-defect thresholds of the official strategy, selected on out-of-fold development predictions (the test set is not used to choose them).*
+
 **Acronyms:**
 - **TP (True Positives):** Correctly predicted defects.
 - **TN (True Negatives):** Correctly predicted non-defects.
@@ -10,32 +12,32 @@
 
 | Defect Type | TP | TN | FP | FN | Recall | Precision |
 |-------------|----|----|----|----|--------|-----------|
-| Blisters Post Treatment | 92 | 4815 | 93 | 0 | 1.000 | 0.497 |
-| Surface Blisters | 91 | 4795 | 112 | 2 | 0.978 | 0.448 |
-| Die Sticking | 54 | 4879 | 66 | 1 | 0.982 | 0.450 |
-| Flow Lines | 50 | 4887 | 63 | 0 | 1.000 | 0.442 |
-| Surface Streaks | 7 | 4979 | 14 | 0 | 1.000 | 0.333 |
-| Cold Shut | 138 | 4767 | 95 | 0 | 1.000 | 0.592 |
-| Heat Cracks | 8 | 4971 | 21 | 0 | 1.000 | 0.276 |
-| Ejector Pin Marks | 0 | 5000 | 0 | 0 | 0.000 | 0.000 |
-| Die Soldering | 66 | 4864 | 69 | 1 | 0.985 | 0.489 |
-| Surface Oxide Inclusions | 38 | 4904 | 56 | 2 | 0.950 | 0.404 |
-| Low Tensile Strength | 77 | 4848 | 72 | 3 | 0.962 | 0.517 |
-| Low Elongation | 82 | 4845 | 71 | 2 | 0.976 | 0.536 |
-| Low Ultimate Strength | 68 | 4849 | 81 | 2 | 0.971 | 0.456 |
-| Low Fatigue Resistance | 74 | 4864 | 60 | 2 | 0.974 | 0.552 |
-| Low Surface Hardness | 63 | 4893 | 42 | 2 | 0.969 | 0.600 |
-| Density Deviation | 140 | 4767 | 93 | 0 | 1.000 | 0.601 |
-| Incomplete Fill | 104 | 4797 | 98 | 1 | 0.990 | 0.515 |
-| Flash | 46 | 4864 | 87 | 3 | 0.939 | 0.346 |
-| Warpage | 35 | 4889 | 74 | 2 | 0.946 | 0.321 |
-| Shrinkage Porosity | 17 | 4962 | 18 | 3 | 0.850 | 0.486 |
-| Volumetric Variation | 79 | 4864 | 52 | 5 | 0.940 | 0.603 |
-| Dimensional Deviation | 81 | 4862 | 55 | 2 | 0.976 | 0.596 |
-| Gas Porosity | 140 | 4739 | 120 | 1 | 0.993 | 0.538 |
-| Gas Bubbles | 129 | 4764 | 107 | 0 | 1.000 | 0.547 |
-| Internal Shrinkage | 42 | 4907 | 51 | 0 | 1.000 | 0.452 |
-| Cracks | 27 | 4940 | 29 | 4 | 0.871 | 0.482 |
-| Hard Inclusions | 17 | 4948 | 31 | 4 | 0.810 | 0.354 |
-| Oxide Inclusions | 44 | 4893 | 58 | 5 | 0.898 | 0.431 |
-| Overall (micro-avg) | 1809 | 136356 | 1788 | 47 | 0.975 | 0.503 |
+| Blisters Post Treatment | 91 | 4813 | 95 | 1 | 0.989 | 0.489 |
+| Surface Blisters | 88 | 4794 | 113 | 5 | 0.946 | 0.438 |
+| Die Sticking | 55 | 4859 | 86 | 0 | 1.000 | 0.390 |
+| Flow Lines | 49 | 4889 | 61 | 1 | 0.980 | 0.445 |
+| Surface Streaks | 6 | 4976 | 17 | 1 | 0.857 | 0.261 |
+| Cold Shut | 134 | 4771 | 91 | 4 | 0.971 | 0.596 |
+| Heat Cracks | 8 | 4962 | 30 | 0 | 1.000 | 0.211 |
+| Ejector Pin Marks | 0 | 5000 | 0 | 0 | n/a | n/a |
+| Die Soldering | 67 | 4858 | 75 | 0 | 1.000 | 0.472 |
+| Surface Oxide Inclusions | 33 | 4914 | 46 | 7 | 0.825 | 0.418 |
+| Low Tensile Strength | 80 | 4842 | 78 | 0 | 1.000 | 0.506 |
+| Low Elongation | 82 | 4843 | 73 | 2 | 0.976 | 0.529 |
+| Low Ultimate Strength | 70 | 4845 | 85 | 0 | 1.000 | 0.452 |
+| Low Fatigue Resistance | 76 | 4854 | 70 | 0 | 1.000 | 0.521 |
+| Low Surface Hardness | 63 | 4889 | 46 | 2 | 0.969 | 0.578 |
+| Density Deviation | 140 | 4763 | 97 | 0 | 1.000 | 0.591 |
+| Incomplete Fill | 100 | 4802 | 93 | 5 | 0.952 | 0.518 |
+| Flash | 48 | 4857 | 94 | 1 | 0.980 | 0.338 |
+| Warpage | 37 | 4881 | 82 | 0 | 1.000 | 0.311 |
+| Shrinkage Porosity | 17 | 4960 | 20 | 3 | 0.850 | 0.459 |
+| Volumetric Variation | 82 | 4863 | 53 | 2 | 0.976 | 0.607 |
+| Dimensional Deviation | 82 | 4858 | 59 | 1 | 0.988 | 0.582 |
+| Gas Porosity | 141 | 4741 | 118 | 0 | 1.000 | 0.544 |
+| Gas Bubbles | 129 | 4769 | 102 | 0 | 1.000 | 0.558 |
+| Internal Shrinkage | 38 | 4914 | 44 | 4 | 0.905 | 0.463 |
+| Cracks | 31 | 4936 | 33 | 0 | 1.000 | 0.484 |
+| Hard Inclusions | 13 | 4944 | 35 | 8 | 0.619 | 0.271 |
+| Oxide Inclusions | 45 | 4889 | 62 | 4 | 0.918 | 0.421 |
+| Overall (micro-avg) | 1805 | 136286 | 1858 | 51 | 0.973 | 0.493 |

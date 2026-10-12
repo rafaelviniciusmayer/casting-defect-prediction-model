@@ -2,11 +2,11 @@
 
 ## Decisões tomadas
 
-- **SMOTE: REMOVIDO** na configuração oficial do pipeline (ganho médio F1-micro -0.0150, recall -0.1249, aumento de gap treino-val +0.0410).
+- **SMOTE: REMOVIDO** na configuração oficial do pipeline (ganho médio F1-micro -0.0076, recall -0.1450, aumento de gap treino-val +0.0693).
 - **CV unificada**: os 3 modelos passam a usar a mesma CV estratificada em 5 folds (random_state=42) sobre o dev set (80%), com SMOTE (quando habilitado) aplicado apenas no fold de treino.
 - **Cost-sensitive learning** ativo em todos os modelos: pos_weight na NN, class_weight='balanced' no RF, scale_pos_weight no XGBoost (novidade desta fase — antes o XGBoost não tinha ponderação).
-- Melhor recall (validação CV, com SMOTE): **PyTorch NN** (0.8928).
-- Melhor F1-micro (validação CV, com SMOTE): **PyTorch NN** (0.6721).
+- Melhor recall (validação CV, com SMOTE): **Neural network (MLP)** (0.8665).
+- Melhor F1-micro (validação CV, com SMOTE): **Neural network (MLP)** (0.6737).
 
 ## Referência para as próximas fases
 

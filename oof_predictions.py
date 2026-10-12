@@ -30,5 +30,7 @@ def run(model_type):
     print(f"[OK] {model_type}", flush=True)
 
 if __name__ == "__main__":
+    if len(sys.argv) < 2 or any(m not in ucv.MODEL_DISPLAY_NAMES for m in sys.argv[1:]):
+        sys.exit(f"usage: python oof_predictions.py <model_type> [...]  (one of {list(ucv.MODEL_DISPLAY_NAMES)})")
     for m in sys.argv[1:]:
         run(m)

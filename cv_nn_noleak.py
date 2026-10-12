@@ -3,6 +3,8 @@ python cv_nn_noleak.py nosmote|smote  ->  reports/nn_noleak_cv_<cond>.json"""
 import sys, json
 import nn_noleak; nn_noleak.install()
 import unified_cv_pipeline as ucv
+if len(sys.argv) != 2 or sys.argv[1] not in ("nosmote", "smote"):
+    sys.exit("usage: python cv_nn_noleak.py nosmote|smote")
 cond = sys.argv[1]
 data = ucv.load_pipeline_data(verbose=False); split = ucv.prepare_split_data(data, verbose=False)
 r = ucv.run_cross_validation(ucv.MODEL_PYTORCH, split, use_smote=(cond == "smote"), verbose=True)
