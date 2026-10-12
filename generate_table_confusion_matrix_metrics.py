@@ -1,11 +1,19 @@
 """
-Generate Table 10: Confusion Matrix Metrics per Defect Type (Test Set).
+Table 10 (Markdown) - confusion-matrix metrics per defect type on the test set.
 ======================================================================
 Computes TP, TN, FP, FN, Recall, and Precision for each defect from the
-saved model and test set, then writes a CSV and a Markdown table.
+deployment model models/best_model.pkl (built by train_model.py with the
+leak-free network and the official per-defect thresholds selected on
+out-of-fold development predictions), then writes the Markdown table.
+
+The CSV version (figures/table10_confusion_matrix_metrics.csv) is written by
+threshold_selection_oof.py from the same model and thresholds; this script
+does not overwrite it.
 
 Run after train_model.py. Uses same 80/20 split (random_state=42).
-Output: figures/table10_confusion_matrix_metrics.csv, figures/table10_confusion_matrix_metrics.md
+Output: figures/table10_confusion_matrix_metrics.md
+Recall/Precision are NaN ("n/a" in Markdown) when undefined (no positives /
+no positive predictions, e.g. ejector_pin_marks).
 """
 
 import pickle
@@ -48,6 +56,11 @@ def defect_display_name(name: str) -> str:
     return name.replace('_', ' ').title()
 
 
+def _fmt(v) -> str:
+    """3-decimal metric, or 'n/a' when undefined (NaN)."""
+    return 'n/a' if v != v else f'{v:.3f}'
+
+
 def main():
     # Load model (need PyTorch classes in __main__ for pickle)
     import train_model as tm
@@ -71,7 +84,7 @@ def main():
     for i, defect_name in enumerate(defect_names):
         y_true = y_test[:, i]
         y_pred_d = y_pred[:, i]
-        cm = confusion_matrix(y_true, y_pred_d)
+        cm = confusion_matrix(y_true, y_pred_d, labels=[0, 1])
         if cm.shape == (2, 2):
             tn, fp, fn, tp = cm.ravel()
         else:
@@ -83,8 +96,8 @@ def main():
             else:
                 fp = int((y_pred_d == 1).sum())
 
-        recall = tp / (tp + fn) if (tp + fn) > 0 else 0.0
-        precision = tp / (tp + fp) if (tp + fp) > 0 else 0.0
+        recall = tp / (tp + fn) if (tp + fn) > 0 else float('nan')
+        precision = tp / (tp + fp) if (tp + fp) > 0 else float('nan')
 
         rows.append({
             'defect_type': defect_display_name(defect_name),
@@ -102,8 +115,8 @@ def main():
     total_tn = sum(r['TN'] for r in rows)
     total_fp = sum(r['FP'] for r in rows)
     total_fn = sum(r['FN'] for r in rows)
-    recall_micro = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else 0.0
-    precision_micro = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else 0.0
+    recall_micro = total_tp / (total_tp + total_fn) if (total_tp + total_fn) > 0 else float('nan')
+    precision_micro = total_tp / (total_tp + total_fp) if (total_tp + total_fp) > 0 else float('nan')
 
     rows.append({
         'defect_type': 'Overall (micro-avg)',
@@ -122,14 +135,15 @@ def main():
 
     out_dir = ROOT / 'figures'
     out_dir.mkdir(exist_ok=True)
-    csv_path = out_dir / 'table10_confusion_matrix_metrics.csv'
-    df_export.to_csv(csv_path, index=False)
-    print(f"  [OK] {csv_path}")
+    print(df_export.to_string(index=False))
 
     # Markdown table with caption and acronym definitions
     md_path = out_dir / 'table10_confusion_matrix_metrics.md'
     md_lines = [
         '# Table 10. Confusion Matrix Metrics per Defect Type (Test Set, n=' + f'{n_test:,}' + ')',
+        '',
+        '*Per-defect thresholds of the official strategy, selected on out-of-fold development '
+        'predictions (the test set is not used to choose them).*',
         '',
         '**Acronyms:**',
         '- **TP (True Positives):** Correctly predicted defects.',
@@ -144,7 +158,7 @@ def main():
     ]
     for r in rows:
         md_lines.append(
-            f"| {r['defect_type']} | {r['TP']} | {r['TN']} | {r['FP']} | {r['FN']} | {r['Recall']:.3f} | {r['Precision']:.3f} |"
+            f"| {r['defect_type']} | {r['TP']} | {r['TN']} | {r['FP']} | {r['FN']} | {_fmt(r['Recall'])} | {_fmt(r['Precision'])} |"
         )
     with open(md_path, 'w', encoding='utf-8') as f:
         f.write('\n'.join(md_lines))
@@ -159,6 +173,6 @@ if __name__ == '__main__':
     try:
         main()
     except FileNotFoundError as e:
-        print(f"\n[INFO] Model or data not found. Table structure is in figures/table10_confusion_matrix_metrics.*")
+        print(f"\n[INFO] Model or data not found. Legacy table: figures/table10_confusion_matrix_metrics_legacy_test_selected.*")
         print(f"       Run train_model.py, then run this script to fill with real metrics.\n")
         raise

@@ -1,0 +1,12 @@
+# Tested with Python 3.14, pandas 3.0, numpy 2.5, scikit-learn 1.9, torch 2.14, xgboost 3.4
+pandas>=2.2
+numpy>=2.0
+# The article's numbers were produced with scikit-learn 1.7.2; newer versions give slightly
+# different Random Forest / XGBoost / logistic results (see README, "Library versions")
+scikit-learn>=1.7
+torch>=2.2
+xgboost>=2.0
+imbalanced-learn>=0.12
+matplotlib>=3.8
+scipy>=1.11
+streamlit>=1.50  # width='stretch'

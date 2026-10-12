@@ -14,7 +14,7 @@ The training pipeline (`train_model.py`) covers data preparation, feature engine
 ### Python dependencies
 
 ```bash
-pip install pandas numpy scikit-learn torch matplotlib imbalanced-learn streamlit
+pip install -r requirements.txt
 ```
 
 Optional (GPU PyTorch): install the build that matches your CUDA setup from [pytorch.org](https://pytorch.org).
@@ -29,9 +29,9 @@ python train_model.py
 
 What this does:
 
-1. **Data preparation** — loads the CSV, separates process/engineered features from the 28 defect labels, and computes class weights.
-2. **Feature engineering** — keeps the engineered feature set when the `*_with_features.csv` is available.
-3. **Training** — stratified 80/20 split, 5-fold CV, SMOTE (if `imbalanced-learn` is installed), PyTorch MLP (`input → 128 → 64 → 32 → 28`), per-defect threshold optimization for recall-oriented operation.
+1. **Data preparation** — loads `aluminum_diecasting_dataset_with_features.csv`, separates the 110 process/engineered features from the 28 defect labels, and computes class weights (same pipeline as `unified_cv_pipeline.py`).
+2. **Training** — stratified 80/20 split, PyTorch MLP (`input → 128 → 64 → 32 → 28`) with cost-sensitive loss and no SMOTE (Phase 1 decision), trained with the leak-free routine of `nn_noleak.py` (early stopping on an internal 10 % hold-out of the development data).
+3. **Thresholds** — the per-defect thresholds of the official strategy, selected on out-of-fold development predictions (`reports/phase3_official_thresholds.json`, written by `threshold_selection_oof.py`). The test set is used only for the final report, so run `oof_predictions.py` / `threshold_selection_oof.py` first.
 4. **Artifacts** written to disk:
    - `models/best_model.pkl` — primary artifact used by Streamlit
    - `models/pytorch_stable_model.pkl` — same payload (stable copy)
@@ -41,7 +41,7 @@ What this does:
 
 Training can take several minutes depending on CPU/GPU. When it finishes, confirm that `models/best_model.pkl` exists.
 
-> **Note:** The Streamlit UI collects only the **15 original process variables**. The saved model may expect the full engineered feature vector (~110). Always regenerate with `train_model.py` before running the app if you changed data or training code, so `models/best_model.pkl` stays in sync with `train_model.py` / `streamlit_app.py`.
+> **Note:** The Streamlit UI collects only the **15 original process variables**; the model expects the full engineered feature vector (110). The app builds it with `feature_engineering.compute_engineered_features`, which reproduces the engineered columns of `aluminum_diecasting_dataset_with_features.csv` exactly (ranges read from `aluminum_diecasting_dataset_metadata.json`). Always regenerate with `train_model.py` before running the app if you changed data or training code, so `models/best_model.pkl` stays in sync with `train_model.py` / `streamlit_app.py`.
 
 ## Run the Streamlit app
 
@@ -67,7 +67,7 @@ If the model file is missing, the app stops with a message to run `python train_
 
 ```bash
 # 1) Install deps (once)
-pip install pandas numpy scikit-learn torch matplotlib imbalanced-learn streamlit
+pip install -r requirements.txt
 
 # 2) Train / regenerate artifacts
 python train_model.py
@@ -90,8 +90,8 @@ streamlit run streamlit_app.py
 
 - **Task:** multilabel classification (28 defect types)
 - **Architecture:** PyTorch MLP with BatchNorm and Dropout
-- **Operating point:** per-defect thresholds favoring recall (defect escape risk)
-- **Reference metrics** (last saved run in `model_metrics.json`): F1-micro ≈ 0.66, recall-micro ≈ 0.97, accuracy ≈ 0.94
+- **Operating point:** per-defect thresholds of the official strategy (F-beta, β = 2, favoring recall), selected on out-of-fold development predictions
+- **Reference metrics** (test set, `model_metrics.json`): recall-micro ≈ 0.97, precision-micro ≈ 0.49, F1-micro ≈ 0.65, subset accuracy ≈ 0.94
 
 ## Reproducibility notes (added during the manuscript revision)
 
@@ -110,5 +110,32 @@ streamlit run streamlit_app.py
   metrics with this training function. The previous cache is kept as `models/phase3_final_models_test_early_stopping.pkl`.
 * `calibration_smote_v2.py`, `l1_sweep_oof.py`, `threshold_analysis_oof.py` and
   `figures/redraw_feature_importance_readable.py` regenerate the remaining new figures/tables of the revision.
-* The Streamlit app still loads the original deployment artifacts (`models/best_model.pkl`, `optimal_thresholds.pkl`);
-  they were not regenerated.
+* **Deployment artifacts regenerated.** `models/best_model.pkl`, `optimal_thresholds.pkl`, `model_metrics.json` and
+  `confusion_matrices/` now come from `train_model.py`, i.e. the leak-free network with the OOF-selected official
+  thresholds (the same model and operating point reported in the article). The original `train_model()` routine, which
+  used the test set for early stopping and threshold selection, is kept in the file only for reference.
+* **Legacy, test-selected outputs** are kept with the suffix `_test_selected` (`threshold_tradeoff_analysis.py` writes
+  only such files and never touches `reports/phase3_official_thresholds.json`). `l1_sweep.py`, `compare_models.py` and
+  `gerar_calibracao_com_sem_smote.py` are also legacy (test-selected thresholds / superseded by `l1_sweep_oof.py` and
+  `calibration_smote_v2.py`).
+* **F1-macro** is averaged over the defect types that occur in the evaluated set: `ejector_pin_marks` has no positive
+  record in the whole dataset, so including it would add a constant F1 = 0 (macro over 27 types = macro over 28 × 28/27).
+  The stored L1/L2 sweep results (`models/sweep_oof/`) and `reports/nn_noleak_final.json` /
+  `nn_noleak_smote_test05.json` were updated with this definition without retraining (exact conversion / recomputation
+  from the saved probabilities).
+* **Engineered features.** `feature_engineering.py` reproduces every engineered column of the study CSV from the 15
+  process variables (max. abs. difference < 1e-10); the Streamlit app uses it to build the model input. Note that
+  `fill_time_ratio` divides `fill_time` (ms) by `cycle_time` (s), so `process_efficiency` = `fill_time_ratio` / 1000;
+  the definitions are kept as they are because the trained models depend on them.
+* **Synthetic generator.** Running `generate_synthetic_dataset.py` reproduces `aluminum_diecasting_dataset.csv`
+  byte-for-byte, not the study CSV (which came from an earlier run/version of the generator and is the canonical data
+  of the article). The metadata `statistics` therefore describe the generated file, not the study data.
+* **Library versions.** The article's numbers (and `models/phase3_final_models.pkl`, from which the official tables
+  are computed) were produced with scikit-learn 1.7.2. Re-running the Phase 1/Phase 2 scripts with a newer
+  scikit-learn (1.9.1 was used for the last re-run of `reports/phase1_*` and `reports/phase2_*`) reproduces the neural
+  network exactly but gives different Random Forest results (e.g. CV recall without SMOTE 0.944 instead of 0.820) and
+  slightly different XGBoost / logistic-regression results. Use scikit-learn 1.7.2 to reproduce the published values;
+  the code selects the logistic-regression penalty in a way that is valid for both versions.
+* **Known modelling choices** (documented, not changed): early stopping is patience-based and returns the weights of the
+  last epoch (not the best one); with SMOTE, the internal early-stopping hold-out is drawn after oversampling; OOF
+  thresholds come from fold models and are applied to the model refitted on the whole development set.

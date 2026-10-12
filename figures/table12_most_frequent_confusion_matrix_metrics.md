@@ -1,17 +1,17 @@
 # Table 12. Confusion Matrix Metrics — 8 Most Frequent Defect Types (Test Set, *n* = 5,000)
 
-*Selection criterion:* highest number of **positive** test instances (**TP + FN**) among the 28 labels. Full per-defect table (all 28 + overall): `figures/table10_confusion_matrix_metrics.csv`.*
+*Selection criterion:* highest number of **positive** test instances (**TP + FN**) among the 28 labels. Thresholds: official per-defect thresholds selected on out-of-fold development predictions (`threshold_selection_oof.py`), never on the test set. Full per-defect table (all 28): `figures/table10_confusion_matrix_metrics.csv`.*
 
 | Defect Type | TP | TN | FP | FN | Recall | Precision |
 |-------------|----|----|----|----|--------|-----------|
-| Gas Porosity | 140 | 4739 | 120 | 1 | 0.993 | 0.538 |
-| Density Deviation | 140 | 4767 | 93 | 0 | 1.000 | 0.601 |
-| Cold Shut | 138 | 4767 | 95 | 0 | 1.000 | 0.592 |
-| Gas Bubbles | 129 | 4764 | 107 | 0 | 1.000 | 0.547 |
-| Incomplete Fill | 104 | 4797 | 98 | 1 | 0.990 | 0.515 |
-| Surface Blisters | 91 | 4795 | 112 | 2 | 0.978 | 0.448 |
-| Blisters Post Treatment | 92 | 4815 | 93 | 0 | 1.000 | 0.497 |
-| Low Elongation | 82 | 4845 | 71 | 2 | 0.976 | 0.536 |
-| **Overall (micro-avg, all 28 defects)** | 1809 | 136356 | 1788 | 47 | 0.975 | 0.503 |
+| Gas Porosity | 141 | 4741 | 118 | 0 | 1.000 | 0.544 |
+| Density Deviation | 140 | 4763 | 97 | 0 | 1.000 | 0.591 |
+| Cold Shut | 134 | 4771 | 91 | 4 | 0.971 | 0.596 |
+| Gas Bubbles | 129 | 4769 | 102 | 0 | 1.000 | 0.558 |
+| Incomplete Fill | 100 | 4802 | 93 | 5 | 0.952 | 0.518 |
+| Surface Blisters | 88 | 4794 | 113 | 5 | 0.946 | 0.438 |
+| Blisters Post Treatment | 91 | 4813 | 95 | 1 | 0.989 | 0.489 |
+| Low Elongation | 82 | 4843 | 73 | 2 | 0.976 | 0.529 |
+| **Overall (micro-avg, all 28 defects)** | 1805 | 136286 | 1858 | 51 | 0.973 | 0.493 |
 
 *The overall row sums TP/TN/FP/FN across **all 28** binary defect heads (5,000 × 28 decisions), not only the eight rows above.*

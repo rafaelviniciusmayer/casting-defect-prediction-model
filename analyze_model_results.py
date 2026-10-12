@@ -19,6 +19,15 @@ import sys
 def load_artifacts_safely():
     """Loads model artifacts safely."""
     try:
+        # best_model.pkl was pickled from train_model.py run as __main__: expose
+        # the PyTorch classes on __main__ so pickle can resolve them.
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import train_model
+        import __main__ as main_module
+        for attr in ('PyTorchModelWrapper', 'DefectPredictionNN'):
+            if hasattr(train_model, attr):
+                setattr(main_module, attr, getattr(train_model, attr))
+    
         with open('models/best_model.pkl', 'rb') as f:
             artifacts = pickle.load(f)
         return artifacts
@@ -105,7 +114,7 @@ def analyze_model_results():
     print(f"  Precision:                  {precision:.4f} ({precision*100:.2f}%)")
     print(f"  F1-Score (Micro):           {f1_micro:.4f} ({f1_micro*100:.2f}%)")
     print(f"  F1-Score (Macro):           {f1_macro:.4f} ({f1_macro*100:.2f}%)")
-    print(f"  Accuracy:                   {accuracy:.4f} ({accuracy*100:.2f}%)")
+    print(f"  Subset (exact-match) accuracy: {accuracy:.4f} ({accuracy*100:.2f}%)")
     
     # =============================================================================
     # 2. DEFECT DETECTION ANALYSIS (MAIN FOCUS)
@@ -123,9 +132,9 @@ def analyze_model_results():
     print(f"    False Negative Rate:         {false_negative_rate:.4f} ({false_negative_rate*100:.2f}%)")
     
     # Estimate production impact
-    print(f"\n[*] Estimated Production Impact (per 1000 parts):")
-    print(f"    Defects Detected:              ~{recall*1000:.0f} parts")
-    print(f"    Defects That Slip Through (FN): ~{false_negative_rate*1000:.0f} parts")
+    print(f"\n[*] Estimated Impact (per 1000 actual defect labels):")
+    print(f"    Defect Labels Detected (TP):         ~{recall*1000:.0f}")
+    print(f"    Defect Labels That Slip Through (FN): ~{false_negative_rate*1000:.0f}")
     
     # Recall interpretation
     if recall >= 0.90:
@@ -153,14 +162,16 @@ def analyze_model_results():
     print("3. PRECISION ANALYSIS (Trade-off with Recall)")
     print("="*70)
     
-    false_positive_rate = 1 - precision
+    # 1 - precision = FP / (TP + FP): false discovery rate (not the false
+    # positive rate FP / (FP + TN))
+    false_discovery_rate = 1 - precision
     
     print(f"\n[*] Prediction Precision:")
     print(f"    Precision:                     {precision:.4f} ({precision*100:.2f}%)")
-    print(f"    False Positive Rate:           {false_positive_rate:.4f} ({false_positive_rate*100:.2f}%)")
+    print(f"    False Discovery Rate (1-Prec): {false_discovery_rate:.4f} ({false_discovery_rate*100:.2f}%)")
     
-    print(f"\n[*] Estimated Production Impact (per 1000 parts):")
-    print(f"    Good Parts Rejected (FP):      ~{false_positive_rate*1000:.0f} parts")
+    print(f"\n[*] Estimated Impact (per 1000 positive predictions):")
+    print(f"    False Alarms (FP):             ~{false_discovery_rate*1000:.0f}")
     
     # Precision interpretation
     if precision >= 0.80:
@@ -305,7 +316,7 @@ def analyze_model_results():
         'f1_macro': float(f1_macro),
         'accuracy': float(accuracy),
         'false_negative_rate': float(false_negative_rate),
-        'false_positive_rate': float(false_positive_rate),
+        'false_discovery_rate': float(false_discovery_rate),
         'recommendation': recommendation,
         'recall_status': recall_status,
         'precision_status': precision_status

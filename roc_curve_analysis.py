@@ -50,7 +50,7 @@ TOP_DEFECTS_FOR_PLOT = 3
 def load_official_thresholds() -> Dict[str, Any]:
     if not OFFICIAL_THRESHOLDS_PATH.exists():
         raise FileNotFoundError(
-            "Execute threshold_tradeoff_analysis.py antes (item 3.2): "
+            "Execute threshold_selection_oof.py antes (item 3.2): "
             f"{OFFICIAL_THRESHOLDS_PATH} não encontrado"
         )
     with open(OFFICIAL_THRESHOLDS_PATH, encoding="utf-8") as f:

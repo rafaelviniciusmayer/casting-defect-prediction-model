@@ -6,8 +6,9 @@ impactam a ocorrência de defeitos?"
 
 Métodos por modelo:
   - Random Forest / XGBoost: feature_importances_ nativo (média entre os 28
-    estimadores one-vs-rest) + SHAP TreeExplainer (média |SHAP| em amostra
-    do teste, média entre defeitos mais frequentes).
+    estimadores one-vs-rest); SHAP TreeExplainer (média |SHAP| em amostra
+    do teste) é combinado APENAS se o pacote `shap` estiver instalado -- o
+    método efetivamente usado é registrado no JSON de saída.
   - PyTorch NN: permutation importance (queda de F1-micro ao permutar cada
     feature no teste).
   - Regressão Logística: |coeficiente| médio entre defeitos (features já
@@ -344,6 +345,10 @@ def main() -> None:
     Path("reports/phase3_feature_importance.md").write_text(md, encoding="utf-8")
 
     payload = {
+        "tree_importance_method": (
+            "native feature_importances_ + mean |SHAP|" if SHAP_AVAILABLE
+            else "native feature_importances_ (shap not installed)"
+        ),
         "answer": answer,
         "injection_share": injection_share,
         "by_phase": by_phase.to_dict(orient="records"),

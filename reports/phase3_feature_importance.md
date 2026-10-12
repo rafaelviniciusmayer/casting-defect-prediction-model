@@ -6,7 +6,7 @@ Pergunta da banca: *as variáveis da etapa de injeção são as que mais impacta
 
 ## Importância agregada por fase do processo
 
-| fase_processo | PyTorch NN | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) | importancia_media | n_features | process_phase |
+| fase_processo | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) | importancia_media | n_features | process_phase |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Agregada/Global | 0.046 | 0.6635000109672546 | 0.5719 | 0.053 | 0.064 | 0.2797 | 4 | Global/Aggregation |
 | Injeção | 0.3818 | 0.10890000313520432 | 0.1571 | 0.3122 | 0.2996 | 0.2519 | 36 | Injection |
@@ -17,7 +17,7 @@ Pergunta da banca: *as variáveis da etapa de injeção são as que mais impacta
 
 ## Importância agregada por categoria de feature engineering
 
-| categoria_fe | PyTorch NN | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) | importancia_media | n_features | feature_category |
+| categoria_fe | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) | importancia_media | n_features | feature_category |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Distância de faixa ideal | 0.5204 | 0.11659999936819077 | 0.1978 | 0.279 | 0.3009 | 0.283 | 28 | Ideal-range distance |
 | Agregação estatística | 0.046 | 0.6635000109672546 | 0.5719 | 0.053 | 0.064 | 0.2797 | 4 | Statistical aggregation |
@@ -31,7 +31,7 @@ Pergunta da banca: *as variáveis da etapa de injeção são as que mais impacta
 
 ## Top 20 features (média entre modelos)
 
-| feature | fase_processo | categoria_fe | importancia_media | PyTorch NN | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) |
+| feature | fase_processo | categoria_fe | importancia_media | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | n_vars_out_of_range | Agregada/Global | Agregação estatística | 0.09845 | 0.00964 | 0.2995699942111969 | 0.16818 | 0.00698 | 0.00789 |
 | n_vars_in_range | Agregada/Global | Agregação estatística | 0.09557 | 0.02896 | 0.2989799976348877 | 0.13458 | 0.00698 | 0.00836 |

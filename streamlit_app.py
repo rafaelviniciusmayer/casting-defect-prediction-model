@@ -7,13 +7,12 @@ Run with: streamlit run streamlit_app.py
 """
 
 import streamlit as st
-import numpy as np
-import torch
-import json
 import pickle
 import pandas as pd
 from typing import Dict
-from train_model import PyTorchModelWrapper, DefectPredictionNN
+# The pickled model references these classes; importing them makes unpickling work
+from train_model import PyTorchModelWrapper, DefectPredictionNN  # noqa: F401
+from feature_engineering import compute_engineered_features, load_variable_ranges
 
 # 15 original process variables shown in the UI
 PROCESS_VARS_15 = [
@@ -169,18 +168,23 @@ def load_model():
         metadata = {
             # UI uses only the 15 process variables
             'process_variables': PROCESS_VARS_15,
-            # Model may expect engineered features (e.g., velocity_ratio)
+            # Model expects the 15 variables + engineered features (computed in predict_defects)
             'model_variables': process_vars,
             'defects': defect_cols,
             'model_name': artifacts.get('model_name', 'pytorch_model'),
             'metrics': artifacts.get('metrics', {}),
-            'prob_stats': artifacts.get('prob_stats', {})
+            'optimal_thresholds': {
+                k: float(v) for k, v in artifacts.get('optimal_thresholds', {}).items()
+            },
         }
-        
+
         return model, scaler, metadata
-        
+
     except FileNotFoundError:
         st.error("❌ Model not found! Run 'python train_model.py' first.")
+        st.stop()
+    except (pickle.UnpicklingError, AttributeError, KeyError, ModuleNotFoundError) as e:
+        st.error(f"❌ Model file could not be loaded (incompatible or corrupt): {e}")
         st.stop()
 
 
@@ -189,10 +193,12 @@ def predict_defects(values: Dict[str, float], model, scaler, metadata) -> Dict:
     variables = metadata.get('model_variables', metadata['process_variables'])
     defects = metadata['defects']
     
-    # Prepare features
-    # For engineered variables not present in sidebar inputs, fallback to 0.0
-    features = np.array([[values.get(var, 0.0) for var in variables]], dtype=np.float32)
-    
+    thresholds = metadata.get('optimal_thresholds', {})
+
+    # Build the full feature vector (15 inputs + engineered features) in model order
+    raw = pd.DataFrame([{var: float(values[var]) for var in PROCESS_VARS_15}])
+    features = compute_engineered_features(raw)[variables].to_numpy(dtype='float32')
+
     # Run prediction using the model wrapper
     probs = model.predict_proba(features)[0]
     
@@ -219,7 +225,8 @@ def predict_defects(values: Dict[str, float], model, scaler, metadata) -> Dict:
         'sorted_probs': sorted_probs,
         'max_risk': max_risk,
         'classification': classification,
-        'probable_defects': [d for d, p in sorted_probs if p >= 10]
+        # Defects at or above their optimized decision threshold
+        'probable_defects': [d for d, p in sorted_probs if p >= 100 * thresholds.get(d, 0.5)]
     }
 
 
@@ -238,8 +245,21 @@ def analyze_variables(values: Dict[str, float], metadata) -> Dict:
             continue
         
         var_cfg = config[var]
-        
-        if var_cfg.get('type') == 'continuous':
+
+        if var_cfg.get('type') == 'categorical':
+            entry = {
+                'variable': var,
+                'name': var_cfg.get('name', var),
+                'value': value,
+                'unit': '',
+                'ideal_range': ('Normal', 'Normal')
+            }
+            if value == 0:
+                in_range.append(entry)
+            else:
+                issues.append({**entry, 'severity': 100.0,
+                               'direction': 'INSUFFICIENT' if value == 1 else 'EXCESSIVE'})
+        elif var_cfg.get('type') == 'continuous':
             range_ok = var_cfg.get('defect_free_range')
             range_def = var_cfg.get('defect_prone_range')
             
@@ -304,16 +324,15 @@ def main():
         st.sidebar.markdown("### 📊 Model Information")
         st.sidebar.info(f"""
         **Model:** {metadata.get('model_name', 'PyTorch NN').upper()}  
-        **F1-Score:** {metadata.get('metrics', {}).get('f1_micro', 0):.4f}  
-        **Max Prob.:** {metadata.get('prob_stats', {}).get('max_prob', 0):.4f}
+        **F1-Score:** {metadata.get('metrics', {}).get('f1_micro', 0):.4f}
         """)
         
         st.sidebar.success("✨ PyTorch model with defect weighting!")
         
         variables = metadata['process_variables']
-        defects = metadata['defects']
-        
-        # Variable configuration (default values)
+
+        # Display names/units; ranges are replaced below by the ones used to
+        # generate the dataset (single source of truth)
         var_config = {
             'piston_velocity_phase1': {
                 'name': 'Piston Velocity Phase 1',
@@ -422,6 +441,10 @@ def main():
             }
         }
         
+        for var, (range_ok, range_def) in load_variable_ranges().items():
+            var_config[var]['defect_free_range'] = list(range_ok)
+            var_config[var]['defect_prone_range'] = list(range_def)
+
         # Add configuration metadata
         metadata['variable_config'] = var_config
         
@@ -533,7 +556,7 @@ def main():
             })
         
         df = pd.DataFrame(param_df)
-        st.dataframe(df, use_container_width=True, hide_index=True)
+        st.dataframe(df, width='stretch', hide_index=True)
     
     with col2:
         st.markdown("## 🎯 Quick Stats")
@@ -554,7 +577,7 @@ def main():
         predict_button = st.button(
             "🔍 CHECK DEFECT PROBABILITY",
             type="primary",
-            use_container_width=True
+            width='stretch'
         )
     
     if predict_button:
@@ -567,7 +590,7 @@ def main():
             #         {'Variable': var, 'Value': values[var]} 
             #         for var in variables
             #     ])
-            #     st.dataframe(debug_df, use_container_width=True, hide_index=True)
+            #     st.dataframe(debug_df, width='stretch', hide_index=True)
             #     st.code(f"values = {values}", language='python')
             
             # Get predictions
@@ -603,7 +626,7 @@ def main():
                     "Ideal": ideal,
                     "Status": status
                 })
-            st.dataframe(pd.DataFrame(param_rows), use_container_width=True, hide_index=True, height=210)
+            st.dataframe(pd.DataFrame(param_rows), width='stretch', hide_index=True, height=210)
 
         with top_right:
             st.markdown("**Defect probabilities (28 types, threshold)**")
@@ -614,9 +637,10 @@ def main():
                 defect_rows.append({
                     "Defect": defect.replace('_', ' ').title(),
                     "P(%)": round(prob, 1),
-                    "Thr(%)": round(float(th) * 100, 0)
+                    "Thr(%)": round(float(th) * 100, 0),
+                    "Flag": "⚠️" if defect in result['probable_defects'] else ""
                 })
-            st.dataframe(pd.DataFrame(defect_rows), use_container_width=True, hide_index=True, height=210)
+            st.dataframe(pd.DataFrame(defect_rows), width='stretch', hide_index=True, height=210)
 
         bottom_left, bottom_right = st.columns(2)
 
@@ -630,9 +654,9 @@ def main():
                         "Value": f"{issue['value']} {issue['unit']}",
                         "Ideal": f"{issue['ideal_range'][0]}-{issue['ideal_range'][1]} {issue['unit']}",
                         "Sev%": issue['severity'],
-                        "Dir": "Below" if issue['direction'] == 'BELOW' else "Above"
+                        "Dir": issue['direction'].title()
                     })
-                st.dataframe(pd.DataFrame(out_rows), use_container_width=True, hide_index=True, height=165)
+                st.dataframe(pd.DataFrame(out_rows), width='stretch', hide_index=True, height=165)
             else:
                 st.caption("All variables are within ideal range.")
 
@@ -641,11 +665,16 @@ def main():
             if analysis['issues']:
                 recs = []
                 for issue in analysis['issues']:
+                    if issue['direction'] in ('INSUFFICIENT', 'EXCESSIVE'):
+                        recs.append(f"• <b>{issue['name']}</b>: restore normal lubrication")
+                        continue
                     direction = "increase" if issue['direction'] == 'BELOW' else "decrease"
                     recs.append(
-                        f"- **{issue['name']}**: {direction} toward {issue['ideal_range'][0]}-{issue['ideal_range'][1]} {issue['unit']}"
+                        f"• <b>{issue['name']}</b>: {direction} toward {issue['ideal_range'][0]}-{issue['ideal_range'][1]} {issue['unit']}"
                     )
-                st.markdown('<div class="recommendations-text">' + "<br>".join(recs[:8]) + '</div>', unsafe_allow_html=True)
+                if len(recs) > 8:
+                    recs = recs[:8] + [f"… and {len(recs) - 8} more"]
+                st.markdown('<div class="recommendations-text">' + "<br>".join(recs) + '</div>', unsafe_allow_html=True)
             else:
                 st.caption("No adjustments needed.")
     

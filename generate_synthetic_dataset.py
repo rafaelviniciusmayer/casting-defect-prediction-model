@@ -897,7 +897,13 @@ def save_dataset(df_production: pd.DataFrame,
                                    if kk not in ['defect_free_values', 'defect_prone_values']} 
                               for k, v in PROCESS_VARIABLES.items()},
             'influence_matrix': INFLUENCE_MATRIX,
-            'influence_weights': INFLUENCE_WEIGHTS
+            # Mapping actually used by calculate_defect_probability (INFLUENCE_WEIGHTS is not used)
+            'max_prob_by_influence': {1: 0.40, 2: 0.75, 3: 0.95},
+            'min_prob_fraction_by_influence': {2: 0.50, 3: 0.60},
+            'note': ("defect_chance_pct in variable_ranges is informative only (not used by the "
+                     "generator). 'statistics' below describe the file written by this run; the "
+                     "dataset used in the study is aluminum_diecasting_dataset_with_features.csv, "
+                     "a different realization (see README).")
         },
         'n_samples': len(df_production),
         'statistics': {

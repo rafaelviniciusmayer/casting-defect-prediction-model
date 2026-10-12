@@ -14,8 +14,9 @@ All figure labels and text are in English.
 
 import pickle
 import sys
+from pathlib import Path
 # Required for unpickling PyTorchModelWrapper from train_model
-sys.path.insert(0, str(__file__).rsplit('/', 1)[0] if '/' in __file__ else '.')
+sys.path.insert(0, str(Path(__file__).resolve().parent))
 import numpy as np
 import pandas as pd
 from pathlib import Path
@@ -83,7 +84,7 @@ def regenerate_confusion_matrices():
         y_true_defect = y_test[:, i]
         y_pred_defect = y_pred_binary[:, i]
         
-        cm = confusion_matrix(y_true_defect, y_pred_defect)
+        cm = confusion_matrix(y_true_defect, y_pred_defect, labels=[0, 1])
         
         if cm.shape == (2, 2):
             fig, ax = plt.subplots(figsize=(8, 7))

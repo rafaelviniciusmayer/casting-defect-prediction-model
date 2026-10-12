@@ -4,7 +4,8 @@ Fase 3 — Diagnósticos e interpretação (ajustes solicitados pela banca)
 
 Orquestra os itens da Fase 3 na ordem correta:
   3.1 Importância de features (feature_importance_analysis.py)
-  3.2 Estratégias de threshold Precision × Recall (threshold_tradeoff_analysis.py)
+  3.2 Estratégias de threshold Precision × Recall (threshold_selection_oof.py,
+      thresholds escolhidos nas predições OOF do desenvolvimento, sem usar o teste)
   3.3 Curvas ROC e AUC (roc_curve_analysis.py) — usa thresholds do 3.2
   3.4 Previsto × realizado (predicted_vs_actual.py) — usa thresholds do 3.2
 
@@ -17,6 +18,7 @@ Execute: python run_phase3_diagnostics.py
 
 from __future__ import annotations
 
+import runpy
 import sys
 import time
 from pathlib import Path
@@ -28,7 +30,6 @@ if hasattr(sys.stdout, "reconfigure"):
 import feature_importance_analysis
 import predicted_vs_actual
 import roc_curve_analysis
-import threshold_tradeoff_analysis
 from phase3_utils import build_or_load_final_models
 
 
@@ -41,7 +42,7 @@ def main() -> None:
     # Garante que o cache de modelos finais existe (treina se necessário)
     build_or_load_final_models(verbose=True)
 
-    threshold_tradeoff_analysis.main()   # 3.2 primeiro: define thresholds oficiais
+    runpy.run_path("threshold_selection_oof.py")   # 3.2 primeiro: thresholds oficiais (OOF)
     feature_importance_analysis.main()   # 3.1 (independe de threshold)
     roc_curve_analysis.main()            # 3.3 (usa thresholds do 3.2)
     predicted_vs_actual.main()           # 3.4 (usa thresholds do 3.2)
@@ -62,7 +63,7 @@ def main() -> None:
         "",
         "## Arquivos gerados\n",
         "- `reports/phase3_feature_importance.md` (3.1)",
-        "- `reports/phase3_threshold_tradeoff.md` (3.2)",
+        "- `reports/oof_threshold_results.json` e `reports/phase3_official_thresholds.json` (3.2)",
         "- `reports/phase3_roc_analysis.md` (3.3)",
         "- `reports/phase3_predicted_vs_actual.md` (3.4)",
         "- Figuras e CSVs correspondentes em `figures/`",

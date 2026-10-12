@@ -19,6 +19,7 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
+import sklearn
 import torch
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
@@ -32,8 +33,10 @@ from train_model import (
     apply_feature_engineering,
     apply_smote_balancing,
     load_and_prepare_data,
-    train_single_model,
 )
+# Leak-free NN training: early stopping on an internal hold-out of the training
+# data, never on the CV validation fold or the test set (see nn_noleak.py)
+from nn_noleak import train_single_model_noleak as train_single_model
 
 try:
     import xgboost as xgb
@@ -43,6 +46,19 @@ except ImportError:
     XGBOOST_AVAILABLE = False
 
 RANDOM_STATE = 42
+SKLEARN_VERSION = tuple(int(p) for p in sklearn.__version__.split(".")[:2])
+
+
+def logistic_penalty_kwargs(penalty: str) -> Dict[str, Any]:
+    """LogisticRegression arguments selecting an L1 or L2 penalty on any scikit-learn version.
+
+    From scikit-learn 1.8 `penalty` is deprecated in favour of `l1_ratio` (1.0 = L1, 0.0 = L2);
+    before 1.8 `l1_ratio` is ignored unless penalty="elasticnet", so `penalty` must be used.
+    Both give identical models.
+    """
+    if SKLEARN_VERSION >= (1, 8):
+        return {"l1_ratio": 1.0 if penalty == "l1" else 0.0}
+    return {"penalty": penalty}
 N_FOLDS = 5
 TEST_SIZE = 0.2
 METRIC_KEYS = ("recall_micro", "precision_micro", "f1_micro", "f1_macro")
@@ -184,6 +200,16 @@ def compute_pos_weights(y_train: np.ndarray) -> List[float]:
     return pos_weights
 
 
+def macro_f1_observed(y_true: np.ndarray, y_pred_binary: np.ndarray) -> float:
+    """F1-macro over the defect types with at least one positive in y_true.
+
+    A defect type with no positives (e.g. ejector_pin_marks, absent from the whole
+    dataset) always scores F1=0 and would only pull the average down.
+    """
+    labels = np.flatnonzero(np.asarray(y_true).sum(axis=0) > 0)
+    return f1_score(y_true, y_pred_binary, labels=labels, average="macro", zero_division=0)
+
+
 def compute_multilabel_metrics(
     y_true: np.ndarray,
     y_pred_proba: np.ndarray,
@@ -197,7 +223,7 @@ def compute_multilabel_metrics(
             y_true, y_pred_binary, average="micro", zero_division=0
         ),
         "f1_micro": f1_score(y_true, y_pred_binary, average="micro", zero_division=0),
-        "f1_macro": f1_score(y_true, y_pred_binary, average="macro", zero_division=0),
+        "f1_macro": macro_f1_observed(y_true, y_pred_binary),
     }
 
 
@@ -254,7 +280,6 @@ class MultiLabelXGBoost:
                 subsample=0.8,
                 colsample_bytree=0.8,
                 random_state=self.random_state,
-                use_label_encoder=False,
                 eval_metric="logloss",
                 scale_pos_weight=scale_pos_weight,
                 n_jobs=-1,
@@ -282,7 +307,6 @@ def _build_xgboost_model(
         subsample=0.8,
         colsample_bytree=0.8,
         random_state=RANDOM_STATE,
-        use_label_encoder=False,
         eval_metric="logloss",
         n_jobs=-1,
     )
@@ -322,7 +346,7 @@ class MultiLabelLogisticRegression:
                 self.estimators_.append(_ConstantProbaEstimator(int(y_col[0])))
                 continue
             clf = LogisticRegression(
-                penalty=self.penalty,
+                **logistic_penalty_kwargs(self.penalty),
                 C=1.0,
                 class_weight="balanced",
                 solver=solver,

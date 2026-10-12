@@ -1,17 +1,22 @@
 """
 Script to generate visualizations and tables for the methodology document.
+
+Uses aluminum_diecasting_dataset_with_features.csv (the data actually used in the
+study; see README "Reproducibility notes"). Defect and process-variable lists come
+from aluminum_diecasting_dataset_metadata.json ['columns']. Plain matplotlib only
+(no seaborn dependency).
 """
 
+import json
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 from pathlib import Path
 import warnings
 warnings.filterwarnings('ignore')
 
-# Set style
-sns.set_style("whitegrid")
+# Set style (matplotlib built-in equivalent of seaborn "whitegrid")
+plt.style.use('seaborn-v0_8-whitegrid')
 plt.rcParams['figure.dpi'] = 300
 plt.rcParams['savefig.dpi'] = 300
 plt.rcParams['font.size'] = 10
@@ -22,19 +27,53 @@ Path('figures/supplementary').mkdir(exist_ok=True)
 
 # Load dataset
 print("Loading dataset...")
-df = pd.read_csv('aluminum_diecasting_dataset.csv')
+df = pd.read_csv('aluminum_diecasting_dataset_with_features.csv')
 
-# Process variables (continuous) - all 15 from dataset
-process_vars = [
-    'piston_velocity_phase1', 'metal_velocity_gate', 'fill_time',
-    'phase_transition_position', 'intensification_time_phase3',
-    'intensification_pressure', 'solidification_time', 'cycle_time',
-    'sleeve_fill_percentage', 'sleeve_diameter', 'sleeve_length',
-    'plunger_lubricant', 'plunger_sleeve_clearance', 'sleeve_temperature', 'plunger_temperature'
-]
+with open('aluminum_diecasting_dataset_metadata.json', 'r', encoding='utf-8') as f:
+    metadata = json.load(f)
+meta_columns = metadata.get('columns', {})
+for key in ('process_variables', 'defects'):
+    if key not in meta_columns:
+        raise KeyError(f"aluminum_diecasting_dataset_metadata.json has no ['columns']['{key}']")
+variable_ranges = metadata.get('generation_config', {}).get('variable_ranges', {})
 
-# Defects
-defects = [col for col in df.columns if col not in process_vars + ['id', 'total_defects', 'has_defect']]
+# Process variables - all 15 from metadata
+process_vars = list(meta_columns['process_variables'])
+
+# Defects - the 28 defect labels from metadata (not by exclusion: the dataset
+# also contains engineered features)
+defects = list(meta_columns['defects'])
+missing = [c for c in process_vars + defects if c not in df.columns]
+if missing:
+    raise KeyError(f"Columns missing from dataset: {missing}")
+
+
+def plot_heatmap(ax, data, fmt='.2f', cmap='RdBu_r', vmin=-1, vmax=1,
+                 annot_size=10, cbar_shrink=0.8, linewidth=0.5):
+    """Annotated heatmap with plain matplotlib (replacement for sns.heatmap)."""
+    values = data.values
+    im = ax.imshow(values, cmap=cmap, vmin=vmin, vmax=vmax, aspect='equal')
+    plt.colorbar(im, ax=ax, shrink=cbar_shrink)
+    ax.set_xticks(np.arange(values.shape[1]))
+    ax.set_yticks(np.arange(values.shape[0]))
+    ax.set_xticklabels(data.columns)
+    ax.set_yticklabels(data.index)
+    # Cell borders
+    ax.set_xticks(np.arange(values.shape[1] + 1) - 0.5, minor=True)
+    ax.set_yticks(np.arange(values.shape[0] + 1) - 0.5, minor=True)
+    ax.grid(which='minor', color='white', linewidth=linewidth)
+    ax.grid(which='major', visible=False)
+    ax.tick_params(which='minor', length=0)
+    norm = im.norm
+    for i in range(values.shape[0]):
+        for j in range(values.shape[1]):
+            v = values[i, j]
+            if np.isnan(v):
+                continue
+            color = 'white' if abs(norm(v) - 0.5) > 0.3 else 'black'
+            ax.text(j, i, format(v, fmt), ha='center', va='center',
+                    fontsize=annot_size, color=color)
+    return im
 
 print(f"Dataset shape: {df.shape}")
 print(f"Process variables: {len(process_vars)}")
@@ -148,9 +187,7 @@ corr_df = pd.DataFrame(corr_data,
 
 # Plot correlation matrix (6 vars x 10 defects - with annotations)
 fig, ax = plt.subplots(figsize=(16, 9))
-sns.heatmap(corr_df, annot=True, fmt='.2f', cmap='RdBu_r', center=0,
-            vmin=-1, vmax=1, square=True, linewidths=0.5, cbar_kws={"shrink": 0.8},
-            ax=ax, annot_kws={'size': 10})
+plot_heatmap(ax, corr_df, annot_size=10, cbar_shrink=0.8, linewidth=0.5)
 ax.set_title('Correlation Matrix: Process Variables vs Defects', 
              fontsize=14, fontweight='bold', pad=20)
 ax.set_xlabel('Defects', fontsize=11, fontweight='bold')
@@ -249,9 +286,7 @@ corr_df = pd.DataFrame(
 )
 
 fig, ax = plt.subplots(figsize=(18, 22))
-sns.heatmap(corr_df, annot=True, fmt='.2f', cmap='RdBu_r', center=0,
-            vmin=-1, vmax=1, square=True, linewidths=0.3, cbar_kws={"shrink": 0.7},
-            ax=ax, annot_kws={'size': 7})
+plot_heatmap(ax, corr_df, annot_size=7, cbar_shrink=0.7, linewidth=0.3)
 ax.set_title('Correlation Matrix: All 28 Defects vs All 15 Process Variables (Supplementary)',
              fontsize=14, fontweight='bold', pad=20)
 ax.set_xlabel('Process Variables', fontsize=11, fontweight='bold')
@@ -272,7 +307,7 @@ print("\nGenerating tables for Chapter 3...")
 
 # Table 1: Process variables with ranges
 table1_data = []
-for var in process_vars[:8]:  # First 8 variables
+for var in process_vars:  # All process variables
     if var == 'piston_velocity_phase1':
         table1_data.append({
             'Variable': 'Piston Velocity Phase 1',
@@ -329,6 +364,17 @@ for var in process_vars[:8]:  # First 8 variables
             'Defect-Free Range': '60 - 90',
             'Defect-Prone Range': '55 - 100'
         })
+    else:
+        # Remaining variables: ranges from metadata generation_config
+        info = variable_ranges.get(var, {})
+        free = info.get('defect_free_range')
+        prone = info.get('defect_prone_range')
+        table1_data.append({
+            'Variable': var.replace('_', ' ').title(),
+            'Unit': info.get('unit', ''),
+            'Defect-Free Range': f"{free[0]:g} - {free[1]:g}" if free else 'n/a',
+            'Defect-Prone Range': f"{prone[0]:g} - {prone[1]:g}" if prone else 'n/a'
+        })
 
 table1_df = pd.DataFrame(table1_data)
 table1_df.to_csv('figures/table_process_variables.csv', index=False)
@@ -348,20 +394,19 @@ table2_df = pd.DataFrame(table2_data)
 table2_df.to_csv('figures/table_top_defects.csv', index=False)
 print("  Saved: figures/table_top_defects.csv")
 
-# Table 3: Variables out of range distribution
+# Table 3: Variables out of range distribution (computed from data, defective parts)
+# Out-of-range count = continuous variables outside their defect-free range
+# (n_vars_out_of_range) + plunger lubricant not in its normal state (!= 0).
 defect_scenarios = df[df['has_defect'] == 1]
+n_out = (defect_scenarios['n_vars_out_of_range'].astype(int)
+         + (defect_scenarios['plunger_lubricant'] != 0).astype(int))
+n_out_counts = n_out.value_counts().sort_index()
 var_out_counts = {}
-for i in range(1, 8):
-    # Count samples with i variables out of range (approximate)
-    # Since we don't have exact count, we'll estimate based on defect scenarios
-    if i == 1:
-        var_out_counts[i] = {'Count': int(len(defect_scenarios) * 0.65), 'Percentage': '65.0'}
-    elif i == 2:
-        var_out_counts[i] = {'Count': int(len(defect_scenarios) * 0.27), 'Percentage': '27.0'}
-    elif i == 3:
-        var_out_counts[i] = {'Count': int(len(defect_scenarios) * 0.05), 'Percentage': '5.0'}
-    else:
-        var_out_counts[i] = {'Count': int(len(defect_scenarios) * 0.03 / 4), 'Percentage': '0.75'}
+for i, count in n_out_counts.items():
+    var_out_counts[int(i)] = {
+        'Count': int(count),
+        'Percentage': f"{100 * count / len(defect_scenarios):.2f}"
+    }
 
 table3_data = []
 for n_vars, data in var_out_counts.items():

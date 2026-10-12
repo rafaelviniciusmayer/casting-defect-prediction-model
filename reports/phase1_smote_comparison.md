@@ -2,28 +2,28 @@
 
 Comparação lado a lado usando o mesmo pipeline de CV (5 folds). Em ambas as condições, cost-sensitive learning permanece ativo (pos_weight na NN, class_weight='balanced' no RF, scale_pos_weight no XGBoost).
 
-| Modelo | Condição | Recall (CV) | Precision (CV) | F1-micro (CV) | F1-macro (CV) | Tempo treino CV (s) |
+| Model | Condition | Recall (CV) | Precision (CV) | F1-micro (CV) | F1-macro (CV) | CV Time (s) |
 | --- | --- | --- | --- | --- | --- | --- |
-| PyTorch NN | Sem SMOTE | 0.9511 ± 0.0098 | 0.5122 ± 0.0077 | 0.6657 ± 0.0071 | 0.6044 ± 0.0114 | 417.4 |
-| PyTorch NN | Com SMOTE | 0.8928 ± 0.0102 | 0.5389 ± 0.0105 | 0.6721 ± 0.0106 | 0.6093 ± 0.0147 | 366.4 |
-| PyTorch NN | Δ (Com - Sem) | -0.0583 | +0.0268 | +0.0064 | +0.0049 | -51.0 |
-| XGBoost | Sem SMOTE | 0.8576 ± 0.0123 | 0.5488 ± 0.0107 | 0.6692 ± 0.0100 | 0.6045 ± 0.0129 | 120.2 |
-| XGBoost | Com SMOTE | 0.7377 ± 0.0088 | 0.5987 ± 0.0079 | 0.6609 ± 0.0075 | 0.5809 ± 0.0107 | 329.9 |
-| XGBoost | Δ (Com - Sem) | -0.1199 | +0.0499 | -0.0083 | -0.0236 | +209.7 |
-| Random Forest | Sem SMOTE | 0.8204 ± 0.0114 | 0.5491 ± 0.0151 | 0.6578 ± 0.0138 | 0.5663 ± 0.0313 | 204.5 |
-| Random Forest | Com SMOTE | 0.6239 ± 0.0052 | 0.6059 ± 0.0077 | 0.6147 ± 0.0049 | 0.5207 ± 0.0152 | 949.0 |
-| Random Forest | Δ (Com - Sem) | -0.1966 | +0.0568 | -0.0431 | -0.0456 | +744.5 |
+| Neural network (MLP) | No SMOTE | 0.9513 ± 0.0102 | 0.5127 ± 0.0133 | 0.6662 ± 0.0122 | 0.6286 ± 0.0142 | 350.8 |
+| Neural network (MLP) | With SMOTE | 0.8665 ± 0.0090 | 0.5512 ± 0.0089 | 0.6737 ± 0.0082 | 0.6321 ± 0.0130 | 2266.3 |
+| Neural network (MLP) | Delta (With - No) | -0.0849 | +0.0385 | +0.0075 | +0.0035 | +1915.5 |
+| XGBoost | No SMOTE | 0.8569 ± 0.0102 | 0.5491 ± 0.0119 | 0.6692 ± 0.0103 | 0.6231 ± 0.0157 | 157.7 |
+| XGBoost | With SMOTE | 0.7377 ± 0.0093 | 0.5950 ± 0.0087 | 0.6587 ± 0.0084 | 0.5985 ± 0.0130 | 315.1 |
+| XGBoost | Delta (With - No) | -0.1192 | +0.0459 | -0.0105 | -0.0246 | +157.4 |
+| Random Forest | No SMOTE | 0.9436 ± 0.0041 | 0.5200 ± 0.0106 | 0.6705 ± 0.0093 | 0.6319 ± 0.0147 | 57541.6 |
+| Random Forest | With SMOTE | 0.7127 ± 0.0116 | 0.5990 ± 0.0064 | 0.6508 ± 0.0024 | 0.5907 ± 0.0149 | 420.9 |
+| Random Forest | Delta (With - No) | -0.2309 | +0.0790 | -0.0196 | -0.0412 | -57120.6 |
 
 ## Recomendações por modelo
 
-- **PyTorch NN**: SMOTE sem ganho relevante (ΔF1=+0.0064, ΔRecall=-0.0583) — considerar apenas cost-sensitive learning.
-- **XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0083, ΔRecall=-0.1199) — considerar apenas cost-sensitive learning.
-- **Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0431, ΔRecall=-0.1966) — considerar apenas cost-sensitive learning.
+- **Neural network (MLP)**: SMOTE sem ganho relevante (ΔF1=+0.0075, ΔRecall=-0.0849) — considerar apenas cost-sensitive learning.
+- **XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0105, ΔRecall=-0.1192) — considerar apenas cost-sensitive learning.
+- **Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0196, ΔRecall=-0.2309) — considerar apenas cost-sensitive learning.
 
 ## Decisão da Fase 1
 
 - **SMOTE REMOVIDO** — configuração oficial passa a usar apenas cost-sensitive learning
-- Ganho médio de F1-micro: -0.0150
-- Ganho médio de recall: -0.1249
-- Aumento médio do gap treino-val: +0.0410
+- Ganho médio de F1-micro: -0.0076
+- Ganho médio de recall: -0.1450
+- Aumento médio do gap treino-val: +0.0693
 - Critério: Manter SMOTE se ganho médio de F1-micro >= 0.005 ou de recall >= 0.01 na validação (CV), com aumento médio de gap treino-val <= 0.05.

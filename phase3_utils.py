@@ -221,6 +221,11 @@ def build_or_load_final_models(force: bool = False, verbose: bool = True) -> Dic
             print(f"[*] Carregando cache de modelos finais: {CACHE_PATH}")
         with open(CACHE_PATH, "rb") as f:
             return pickle.load(f)
+    if not force:
+        raise FileNotFoundError(
+            f"{CACHE_PATH} not found. Rebuild it explicitly with "
+            "build_or_load_final_models(force=True) and then `python rebuild_nn.py final`."
+        )
 
     use_smote = load_official_use_smote()
     if verbose:

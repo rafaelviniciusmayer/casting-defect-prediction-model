@@ -6,7 +6,7 @@
     "recall_micro": 0.9725215517241379,
     "precision_micro": 0.49276549276549275,
     "f1_micro": 0.6541040043486138,
-    "f1_macro": 0.5931316661182899
+    "f1_macro": 0.6150995056041525
   },
   "thresholds_by_model": {
     "pytorch_nn": {

@@ -8,7 +8,9 @@ from sklearn.metrics import f1_score, precision_score, recall_score
 import unified_cv_pipeline as ucv
 from compare_models import _optimize_thresholds_silent
 
-pen, C = sys.argv[1], float(sys.argv[2]); solver = 'liblinear' if pen == 'l1' else 'lbfgs'
+if len(sys.argv) != 3 or sys.argv[1] not in ('l1', 'l2'):
+    sys.exit('usage: python l1_sweep_oof.py <l1|l2> <C>')
+pen, C = sys.argv[1], float(sys.argv[2]); solver= 'liblinear' if pen == 'l1' else 'lbfgs'
 out = Path('models/sweep_oof'); out.mkdir(parents=True, exist_ok=True)
 
 def fit_predict(Xtr, ytr, Xev):
@@ -16,7 +18,7 @@ def fit_predict(Xtr, ytr, Xev):
     for k in range(ytr.shape[1]):
         if len(np.unique(ytr[:, k])) < 2:
             P[:, k] = float(ytr[0, k]); continue
-        clf = LogisticRegression(penalty=pen, C=C, class_weight='balanced', solver=solver, max_iter=2000, random_state=42).fit(Xtr, ytr[:, k])
+        clf = LogisticRegression(**ucv.logistic_penalty_kwargs(pen), C=C,class_weight='balanced', solver=solver, max_iter=2000, random_state=42).fit(Xtr, ytr[:, k])
         P[:, k] = clf.predict_proba(Xev)[:, 1]; nz += int((np.abs(clf.coef_) > 1e-8).sum()); tot += clf.coef_.size
     return P, nz, tot
 
@@ -32,5 +34,5 @@ thr, _ = _optimize_thresholds_silent(split.y_dev.astype(int), oof, split.defect_
 pred = (Pt >= np.array([thr[n] for n in split.defect_names])).astype(int); y = split.y_test.astype(int)
 r = dict(penalty=pen, C=C, time=t_final, nonzero=nz, total=tot,
          recall=recall_score(y, pred, average='micro'), precision=precision_score(y, pred, average='micro'),
-         f1=f1_score(y, pred, average='micro'), f1_macro=f1_score(y, pred, average='macro', zero_division=0))
+         f1=f1_score(y, pred, average='micro'), f1_macro=ucv.macro_f1_observed(y, pred))
 json.dump(r, open(out / f'{pen}_{C}.json', 'w')); print(r, flush=True)

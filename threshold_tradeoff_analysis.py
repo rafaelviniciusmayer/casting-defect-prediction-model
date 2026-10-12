@@ -16,12 +16,17 @@ F-beta(β=2)-micro no teste — mantém a prioridade em recall (contexto
 industrial: defeito que passa custa caro), mas penaliza o excesso de falsos
 positivos da estratégia recall-first pura.
 
+LEGADO: os thresholds aqui são otimizados no conjunto de TESTE. Os thresholds
+oficiais do artigo vêm de threshold_selection_oof.py (OOF, sem vazamento); por
+isso todas as saídas deste script levam o sufixo _test_selected e NUNCA
+sobrescrevem reports/phase3_official_thresholds.json.
+
 Saídas:
-  figures/table_phase3_threshold_strategies.csv       (micro, por modelo)
-  figures/table_phase3_threshold_per_defect.csv       (por defeito, modelo NN)
-  figures/phase3_threshold_tradeoff.png
-  reports/phase3_threshold_tradeoff.{json,md}
-  reports/phase3_official_thresholds.json             (estratégia + thresholds)
+  figures/table_phase3_threshold_strategies_test_selected.csv   (micro, por modelo)
+  figures/table_phase3_threshold_per_defect_test_selected.csv   (por defeito, modelo NN)
+  figures/phase3_threshold_tradeoff_test_selected.png
+  reports/phase3_threshold_tradeoff_test_selected.{json,md}
+  reports/phase3_official_thresholds_test_selected.json         (estratégia + thresholds)
 """
 
 from __future__ import annotations
@@ -45,7 +50,7 @@ if hasattr(sys.stdout, "reconfigure"):
 from sklearn.metrics import f1_score, fbeta_score, precision_score, recall_score
 
 from phase3_utils import build_or_load_final_models
-from unified_cv_pipeline import MODEL_DISPLAY_NAMES, MODEL_PYTORCH, dataframe_to_markdown
+from unified_cv_pipeline import MODEL_DISPLAY_NAMES, MODEL_PYTORCH, dataframe_to_markdown, macro_f1_observed
 
 THRESHOLD_GRID = np.arange(0.05, 0.91, 0.01)
 
@@ -115,12 +120,16 @@ def micro_metrics(y_true: np.ndarray, y_pred: np.ndarray) -> Dict[str, float]:
         "recall_micro": recall_score(y_true, y_pred, average="micro", zero_division=0),
         "precision_micro": precision_score(y_true, y_pred, average="micro", zero_division=0),
         "f1_micro": f1_score(y_true, y_pred, average="micro", zero_division=0),
-        "f1_macro": f1_score(y_true, y_pred, average="macro", zero_division=0),
+        "f1_macro": macro_f1_observed(y_true, y_pred),
         "fbeta2_micro": fbeta_score(y_true, y_pred, beta=2, average="micro", zero_division=0),
     }
 
 
-def plot_tradeoff(results: List[Dict[str, Any]], path: str) -> str:
+def plot_tradeoff(
+    results: List[Dict[str, Any]],
+    path: str,
+    subtitle: str = "test set; thresholds selected on out-of-fold development predictions",
+) -> str:
     """Scatter precision x recall por modelo/estratégia."""
     markers = {"recall_first": "o", "f1": "s", "fbeta_2": "^", "fbeta_05": "D"}
     model_names = sorted({r["model_name"] for r in results})
@@ -144,7 +153,7 @@ def plot_tradeoff(results: List[Dict[str, Any]], path: str) -> str:
         ax.scatter([], [], color="gray", marker=marker, label=STRATEGIES[strategy])
     ax.set_xlabel("Recall (micro)")
     ax.set_ylabel("Precision (micro)")
-    ax.set_title("Precision–Recall trade-off by threshold strategy\n(test set; thresholds selected on out-of-fold development predictions)", fontsize=10)
+    ax.set_title(f"Precision–Recall trade-off by threshold strategy\n({subtitle})", fontsize=10)
     ax.grid(alpha=0.3)
     ax.legend(fontsize=8, loc="best")
     fig.tight_layout()
@@ -203,7 +212,7 @@ def main() -> None:
         for r in results
     ]
     df = pd.DataFrame(rows)
-    df.to_csv("figures/table_phase3_threshold_strategies.csv", index=False)
+    df.to_csv("figures/table_phase3_threshold_strategies_test_selected.csv", index=False)
 
     # Tabela por defeito para o modelo em produção (NN)
     nn_proba = cache["models"][MODEL_PYTORCH]["test_proba"]
@@ -225,9 +234,13 @@ def main() -> None:
                 }
             )
     per_defect_df = pd.DataFrame(per_defect_rows)
-    per_defect_df.to_csv("figures/table_phase3_threshold_per_defect.csv", index=False)
+    per_defect_df.to_csv("figures/table_phase3_threshold_per_defect_test_selected.csv", index=False)
 
-    fig_path = plot_tradeoff(results, "figures/phase3_threshold_tradeoff.png")
+    fig_path = plot_tradeoff(
+        results,
+        "figures/phase3_threshold_tradeoff_test_selected.png",
+        subtitle="LEGACY: thresholds selected on the test set",
+    )
     print(f"    [OK] {fig_path}")
 
     # Decisão da estratégia oficial: maior F2-micro no modelo em produção (NN)
@@ -251,7 +264,7 @@ def main() -> None:
             for model_type, strategies in all_thresholds.items()
         },
     }
-    with open("reports/phase3_official_thresholds.json", "w", encoding="utf-8") as f:
+    with open("reports/phase3_official_thresholds_test_selected.json", "w", encoding="utf-8") as f:
         json.dump(official_payload, f, indent=2, ensure_ascii=False)
 
     md = "\n".join([
@@ -267,13 +280,13 @@ def main() -> None:
         f"Precision={official['metrics']['precision_micro']:.4f}, "
         f"F1={official['metrics']['f1_micro']:.4f}",
         "",
-        "Tabela por defeito (NN): `figures/table_phase3_threshold_per_defect.csv`\n",
-        "![Trade-off](phase3_threshold_tradeoff.png)",
+        "Tabela por defeito (NN): `figures/table_phase3_threshold_per_defect_test_selected.csv`\n",
+        "![Trade-off](../figures/phase3_threshold_tradeoff_test_selected.png)",
         "",
     ])
-    Path("reports/phase3_threshold_tradeoff.md").write_text(md, encoding="utf-8")
+    Path("reports/phase3_threshold_tradeoff_test_selected.md").write_text(md, encoding="utf-8")
 
-    with open("reports/phase3_threshold_tradeoff.json", "w", encoding="utf-8") as f:
+    with open("reports/phase3_threshold_tradeoff_test_selected.json", "w", encoding="utf-8") as f:
         json.dump(
             {
                 "results": [
@@ -288,7 +301,7 @@ def main() -> None:
         )
 
     print(f"\n[DECISÃO] Estratégia oficial de threshold: {STRATEGIES[official_strategy]}")
-    print("[OK] reports/phase3_threshold_tradeoff.{json,md}")
+    print("[OK] reports/phase3_threshold_tradeoff_test_selected.{json,md}")
 
 
 if __name__ == "__main__":

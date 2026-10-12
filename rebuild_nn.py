@@ -6,7 +6,9 @@ import numpy as np, torch
 import nn_noleak; nn_noleak.install()
 import unified_cv_pipeline as ucv
 
-stage = sys.argv[1]; MT = ucv.MODEL_PYTORCH
+if len(sys.argv) != 2 or sys.argv[1] not in ("final", "oof", "smote"):
+    sys.exit("usage: python rebuild_nn.py final|oof|smote")
+stage = sys.argv[1]; MT= ucv.MODEL_PYTORCH
 data = ucv.load_pipeline_data(verbose=False); split = ucv.prepare_split_data(data, verbose=False)
 
 if stage == "final":

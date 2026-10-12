@@ -2,57 +2,57 @@
   "models": [
     {
       "model_type": "pytorch_nn",
-      "model_name": "PyTorch NN",
+      "model_name": "Neural network (MLP)",
       "without_smote": {
         "use_smote": false,
         "cv_val_mean": {
-          "recall_micro": 0.9510797696173245,
-          "precision_micro": 0.5121546774405353,
-          "f1_micro": 0.6657384233740814,
-          "f1_macro": 0.6044025015623393
+          "recall_micro": 0.9513186046066957,
+          "precision_micro": 0.5127348308567099,
+          "f1_micro": 0.6662400937336896,
+          "f1_macro": 0.6286475982961348
         },
         "cv_val_std": {
-          "recall_micro": 0.009786453368753301,
-          "precision_micro": 0.007724276767225793,
-          "f1_micro": 0.007111195018334936,
-          "f1_macro": 0.011420953999168404
+          "recall_micro": 0.010245591075247818,
+          "precision_micro": 0.013321933522806393,
+          "f1_micro": 0.0122356018975004,
+          "f1_macro": 0.014211111647598564
         },
         "cv_train_mean": {
-          "recall_micro": 0.9947013336768954,
-          "precision_micro": 0.5275878529112639,
-          "f1_micro": 0.6894197828403563,
-          "f1_macro": 0.6403737516931691
+          "recall_micro": 0.9873575615663425,
+          "precision_micro": 0.5271524772052061,
+          "f1_micro": 0.6873003656773935,
+          "f1_macro": 0.6580688314146531
         },
-        "total_train_time_sec": 417.40449520002585
+        "total_train_time_sec": 350.7668984999764
       },
       "with_smote": {
         "use_smote": true,
         "cv_val_mean": {
-          "recall_micro": 0.8928184115806859,
-          "precision_micro": 0.5389122120963268,
-          "f1_micro": 0.6720966180298606,
-          "f1_macro": 0.6092779134842303
+          "recall_micro": 0.866454123627045,
+          "precision_micro": 0.551200157081224,
+          "f1_micro": 0.6737386103414922,
+          "f1_macro": 0.6321284856923552
         },
         "cv_val_std": {
-          "recall_micro": 0.01015748739617645,
-          "precision_micro": 0.010544354930342144,
-          "f1_micro": 0.010570230835421184,
-          "f1_macro": 0.014663597127191267
+          "recall_micro": 0.008969576774863493,
+          "precision_micro": 0.008907024049513776,
+          "f1_micro": 0.008239403306248151,
+          "f1_macro": 0.0129935404558419
         },
         "cv_train_mean": {
-          "recall_micro": 0.9698043848951071,
-          "precision_micro": 0.5695124069738466,
-          "f1_micro": 0.7176014373793689,
-          "f1_macro": 0.6726508280702547
+          "recall_micro": 0.9781833497077349,
+          "precision_micro": 0.600845588007824,
+          "f1_micro": 0.7444167447824643,
+          "f1_macro": 0.7318336461542131
         },
-        "total_train_time_sec": 366.41987669980153
+        "total_train_time_sec": 2266.261424000011
       },
       "delta_with_minus_without": {
-        "recall_micro": -0.05826135803663868,
-        "precision_micro": 0.02675753465579145,
-        "f1_micro": 0.006358194655779248,
-        "f1_macro": 0.004875411921891004,
-        "train_time_sec": -50.984618500224315
+        "recall_micro": -0.08486448097965071,
+        "precision_micro": 0.03846532622451415,
+        "f1_micro": 0.007498516607802541,
+        "f1_macro": 0.0034808873962204334,
+        "train_time_sec": 1915.4945255000348
       }
     },
     {
@@ -61,53 +61,53 @@
       "without_smote": {
         "use_smote": false,
         "cv_val_mean": {
-          "recall_micro": 0.8575728699326959,
-          "precision_micro": 0.5487867827965733,
-          "f1_micro": 0.6692179645427856,
-          "f1_macro": 0.6045284439273273
+          "recall_micro": 0.8569211847522377,
+          "precision_micro": 0.5490733880989085,
+          "f1_micro": 0.6692214849685434,
+          "f1_macro": 0.6230780931575473
         },
         "cv_val_std": {
-          "recall_micro": 0.01227972110028489,
-          "precision_micro": 0.010739540596555668,
-          "f1_micro": 0.010010904104673765,
-          "f1_macro": 0.012921596514753067
+          "recall_micro": 0.010155767758455395,
+          "precision_micro": 0.011889954172231126,
+          "f1_micro": 0.010279817582258268,
+          "f1_macro": 0.015678470858266413
         },
         "cv_train_mean": {
           "recall_micro": 1.0,
-          "precision_micro": 0.8748143972316524,
-          "f1_micro": 0.9332261235229706,
-          "f1_macro": 0.9141298876787181
+          "precision_micro": 0.8742316737771013,
+          "f1_micro": 0.9328913163296264,
+          "f1_macro": 0.9481087745905645
         },
-        "total_train_time_sec": 120.18602120003197
+        "total_train_time_sec": 157.68565630000376
       },
       "with_smote": {
         "use_smote": true,
         "cv_val_mean": {
-          "recall_micro": 0.7376682169657329,
-          "precision_micro": 0.5986794487193292,
-          "f1_micro": 0.6609264923739447,
-          "f1_macro": 0.5809343275260608
+          "recall_micro": 0.7376715836654457,
+          "precision_micro": 0.5949924029641187,
+          "f1_micro": 0.6586767203418992,
+          "f1_macro": 0.5984748248975749
         },
         "cv_val_std": {
-          "recall_micro": 0.00875254220661622,
-          "precision_micro": 0.007888058145206392,
-          "f1_micro": 0.007507562479419554,
-          "f1_macro": 0.010682402873515875
+          "recall_micro": 0.009295227389258066,
+          "precision_micro": 0.008733617996943614,
+          "f1_micro": 0.008403458381871108,
+          "f1_macro": 0.012977618451088066
         },
         "cv_train_mean": {
-          "recall_micro": 0.9805049054225055,
-          "precision_micro": 0.8161560559861393,
-          "f1_micro": 0.8908100187956188,
-          "f1_macro": 0.8643986478775874
+          "recall_micro": 0.9804077700280625,
+          "precision_micro": 0.8173830861955456,
+          "f1_micro": 0.8915020908531683,
+          "f1_macro": 0.8979660119069484
         },
-        "total_train_time_sec": 329.85394409974106
+        "total_train_time_sec": 315.12266460002866
       },
       "delta_with_minus_without": {
-        "recall_micro": -0.11990465296696295,
-        "precision_micro": 0.049892665922755874,
-        "f1_micro": -0.008291472168840852,
-        "f1_macro": -0.02359411640126652,
-        "train_time_sec": 209.66792289970908
+        "recall_micro": -0.11924960108679195,
+        "precision_micro": 0.04591901486521022,
+        "f1_micro": -0.01054476462664422,
+        "f1_macro": -0.02460326825997239,
+        "train_time_sec": 157.4370083000249
       }
     },
     {
@@ -116,66 +116,66 @@
       "without_smote": {
         "use_smote": false,
         "cv_val_mean": {
-          "recall_micro": 0.8204181390059562,
-          "precision_micro": 0.5490915538247368,
-          "f1_micro": 0.6578173853719204,
-          "f1_macro": 0.5663430289901119
+          "recall_micro": 0.9435652807251611,
+          "precision_micro": 0.5200331805111624,
+          "f1_micro": 0.6704604041284891,
+          "f1_macro": 0.6319199799813136
         },
         "cv_val_std": {
-          "recall_micro": 0.011353217847003792,
-          "precision_micro": 0.015063795763818694,
-          "f1_micro": 0.013822972806700461,
-          "f1_macro": 0.03134030502630021
+          "recall_micro": 0.004071767992297018,
+          "precision_micro": 0.010631030143628753,
+          "f1_micro": 0.009283175123191854,
+          "f1_macro": 0.014718261141422965
         },
         "cv_train_mean": {
           "recall_micro": 1.0,
-          "precision_micro": 0.6968284223092519,
-          "f1_micro": 0.8212972548191688,
-          "f1_macro": 0.8342196785886999
+          "precision_micro": 0.5730753141135736,
+          "f1_micro": 0.7285979739061611,
+          "f1_macro": 0.7296943262753086
         },
-        "total_train_time_sec": 204.5248821999412
+        "total_train_time_sec": 57541.55783649998
       },
       "with_smote": {
         "use_smote": true,
         "cv_val_mean": {
-          "recall_micro": 0.6238656765440745,
-          "precision_micro": 0.6058997077079484,
-          "f1_micro": 0.6147200472181323,
-          "f1_macro": 0.52069873859086
+          "recall_micro": 0.7126726789758608,
+          "precision_micro": 0.5990384711080674,
+          "f1_micro": 0.6508226158564939,
+          "f1_macro": 0.5907350868415243
         },
         "cv_val_std": {
-          "recall_micro": 0.005175819545449299,
-          "precision_micro": 0.007733225560128422,
-          "f1_micro": 0.0049251020568594935,
-          "f1_macro": 0.01519119545230987
+          "recall_micro": 0.011575974455201206,
+          "precision_micro": 0.006443617883212465,
+          "f1_micro": 0.0023620049812004837,
+          "f1_macro": 0.014882006954646044
         },
         "cv_train_mean": {
-          "recall_micro": 0.9879178149656731,
-          "precision_micro": 0.8494597736660972,
-          "f1_micro": 0.9134649312163633,
-          "f1_macro": 0.8791154162137722
+          "recall_micro": 0.9948351876728696,
+          "precision_micro": 0.8184135562538938,
+          "f1_micro": 0.8980381829321745,
+          "f1_macro": 0.8925132316441804
         },
-        "total_train_time_sec": 948.9768594998168
+        "total_train_time_sec": 420.9162449999858
       },
       "delta_with_minus_without": {
-        "recall_micro": -0.19655246246188163,
-        "precision_micro": 0.05680815388321159,
-        "f1_micro": -0.04309733815378802,
-        "f1_macro": -0.045644290399251886,
-        "train_time_sec": 744.4519772998756
+        "recall_micro": -0.23089260174930026,
+        "precision_micro": 0.07900529059690498,
+        "f1_micro": -0.019637788271995138,
+        "f1_macro": -0.041184893139789236,
+        "train_time_sec": -57120.641591499996
       }
     }
   ],
   "recommendations": [
-    "**PyTorch NN**: SMOTE sem ganho relevante (ΔF1=+0.0064, ΔRecall=-0.0583) — considerar apenas cost-sensitive learning.",
-    "**XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0083, ΔRecall=-0.1199) — considerar apenas cost-sensitive learning.",
-    "**Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0431, ΔRecall=-0.1966) — considerar apenas cost-sensitive learning."
+    "**Neural network (MLP)**: SMOTE sem ganho relevante (ΔF1=+0.0075, ΔRecall=-0.0849) — considerar apenas cost-sensitive learning.",
+    "**XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0105, ΔRecall=-0.1192) — considerar apenas cost-sensitive learning.",
+    "**Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0196, ΔRecall=-0.2309) — considerar apenas cost-sensitive learning."
   ],
   "decision": {
     "keep_smote": false,
-    "avg_f1_micro_gain": -0.01501020522228321,
-    "avg_recall_gain": -0.12490615782182775,
-    "avg_train_val_gap_increase": 0.04098794729190162,
+    "avg_f1_micro_gain": -0.007561345430278939,
+    "avg_recall_gain": -0.14500222793858097,
+    "avg_train_val_gap_increase": 0.06928379964848767,
     "criteria": "Manter SMOTE se ganho médio de F1-micro >= 0.005 ou de recall >= 0.01 na validação (CV), com aumento médio de gap treino-val <= 0.05."
   }
 }

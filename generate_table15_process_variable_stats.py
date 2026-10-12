@@ -1,7 +1,8 @@
 """
 Generate Table 15: Summary statistics for key process variables.
 
-Uses aluminum_diecasting_dataset.csv and defect-free ranges from
+Uses aluminum_diecasting_dataset_with_features.csv (the data actually used in
+the study; see README "Reproducibility notes") and defect-free ranges from
 aluminum_diecasting_dataset_metadata.json (generation_config.variable_ranges).
 
 Output:
@@ -17,7 +18,7 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parent
-CSV_PATH = ROOT / "aluminum_diecasting_dataset.csv"
+CSV_PATH = ROOT / "aluminum_diecasting_dataset_with_features.csv"
 META_PATH = ROOT / "aluminum_diecasting_dataset_metadata.json"
 
 # Column key -> display label for manuscript (Table 15)

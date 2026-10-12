@@ -56,6 +56,7 @@ from unified_cv_pipeline import (
     dataframe_to_markdown,
     format_mean_std,
     load_pipeline_data,
+    macro_f1_observed,
     predict_proba_any,
     prepare_split_data,
     run_cross_validation,
@@ -66,6 +67,7 @@ PHASE1_DECISION_PATH = Path("reports/phase1_smote_comparison.json")
 PHASE1_CV_PATH = Path("reports/phase1_cv_comparison.json")
 
 NEW_MODEL_TYPES = [MODEL_LOGISTIC_L2, MODEL_LOGISTIC_L1]
+OOF_DIR = Path("models/oof_proba")
 
 
 def load_phase1_smote_decision() -> bool:
@@ -115,14 +117,19 @@ def evaluate_final_with_thresholds(
     X_test_scaled = final.scaler.transform(split.X_test).astype(np.float32)
     y_pred_proba = predict_proba_any(model_type, final.model, X_test_scaled)
 
-    _, y_pred_binary = _optimize_thresholds_silent(
-        split.y_test, y_pred_proba, split.defect_names
+    oof_path = OOF_DIR / f"{model_type}.npy"
+    if not oof_path.exists():
+        raise FileNotFoundError(f"{oof_path} not found: run `python oof_predictions.py {model_type}` first")
+    thresholds, _ = _optimize_thresholds_silent(
+        split.y_dev, np.load(oof_path), split.defect_names
     )
+    th = np.array([thresholds[n] for n in split.defect_names])
+    y_pred_binary = (y_pred_proba >= th).astype(int)
     optimized_metrics = {
         "recall_micro": recall_score(split.y_test, y_pred_binary, average="micro", zero_division=0),
         "precision_micro": precision_score(split.y_test, y_pred_binary, average="micro", zero_division=0),
         "f1_micro": f1_score(split.y_test, y_pred_binary, average="micro", zero_division=0),
-        "f1_macro": f1_score(split.y_test, y_pred_binary, average="macro", zero_division=0),
+        "f1_macro": macro_f1_observed(split.y_test, y_pred_binary),
     }
 
     # Tempo de inferência: 100 repetições sobre 100 amostras

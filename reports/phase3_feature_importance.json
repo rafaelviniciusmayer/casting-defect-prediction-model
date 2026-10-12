@@ -1,10 +1,11 @@
 {
+  "tree_importance_method": "native feature_importances_ (shap not installed)",
   "answer": "A fase com maior importância agregada é **Agregada/Global**. A fase de injeção concentra 25.2% da importância total média entre os 5 modelos.",
   "injection_share": 0.2519,
   "by_phase": [
     {
       "fase_processo": "Agregada/Global",
-      "PyTorch NN": 0.046,
+      "Neural network (MLP)": 0.046,
       "XGBoost": 0.6635000109672546,
       "Random Forest": 0.5719,
       "Logistic Regression (L2/Ridge)": 0.053,
@@ -15,7 +16,7 @@
     },
     {
       "fase_processo": "Injeção",
-      "PyTorch NN": 0.3818,
+      "Neural network (MLP)": 0.3818,
       "XGBoost": 0.10890000313520432,
       "Random Forest": 0.1571,
       "Logistic Regression (L2/Ridge)": 0.3122,
@@ -26,7 +27,7 @@
     },
     {
       "fase_processo": "Configuração/Manutenção",
-      "PyTorch NN": 0.1331,
+      "Neural network (MLP)": 0.1331,
       "XGBoost": 0.09359999746084213,
       "Random Forest": 0.0658,
       "Logistic Regression (L2/Ridge)": 0.2695,
@@ -37,7 +38,7 @@
     },
     {
       "fase_processo": "Intensificação",
-      "PyTorch NN": 0.2537,
+      "Neural network (MLP)": 0.2537,
       "XGBoost": 0.06549999862909317,
       "Random Forest": 0.0844,
       "Logistic Regression (L2/Ridge)": 0.1685,
@@ -48,7 +49,7 @@
     },
     {
       "fase_processo": "Resfriamento",
-      "PyTorch NN": 0.1814,
+      "Neural network (MLP)": 0.1814,
       "XGBoost": 0.05939999967813492,
       "Random Forest": 0.0996,
       "Logistic Regression (L2/Ridge)": 0.1392,
@@ -59,7 +60,7 @@
     },
     {
       "fase_processo": "Múltiplas fases",
-      "PyTorch NN": 0.004,
+      "Neural network (MLP)": 0.004,
       "XGBoost": 0.009200000204145908,
       "Random Forest": 0.0211,
       "Logistic Regression (L2/Ridge)": 0.0577,
@@ -72,7 +73,7 @@
   "by_category": [
     {
       "categoria_fe": "Distância de faixa ideal",
-      "PyTorch NN": 0.5204,
+      "Neural network (MLP)": 0.5204,
       "XGBoost": 0.11659999936819077,
       "Random Forest": 0.1978,
       "Logistic Regression (L2/Ridge)": 0.279,
@@ -83,7 +84,7 @@
     },
     {
       "categoria_fe": "Agregação estatística",
-      "PyTorch NN": 0.046,
+      "Neural network (MLP)": 0.046,
       "XGBoost": 0.6635000109672546,
       "Random Forest": 0.5719,
       "Logistic Regression (L2/Ridge)": 0.053,
@@ -94,7 +95,7 @@
     },
     {
       "categoria_fe": "Binária de faixa",
-      "PyTorch NN": 0.3859,
+      "Neural network (MLP)": 0.3859,
       "XGBoost": 0.15039999783039093,
       "Random Forest": 0.1044,
       "Logistic Regression (L2/Ridge)": 0.2663,
@@ -105,7 +106,7 @@
     },
     {
       "categoria_fe": "Original",
-      "PyTorch NN": 0.0303,
+      "Neural network (MLP)": 0.0303,
       "XGBoost": 0.03139999881386757,
       "Random Forest": 0.0412,
       "Logistic Regression (L2/Ridge)": 0.151,
@@ -116,7 +117,7 @@
     },
     {
       "categoria_fe": "Ratio",
-      "PyTorch NN": 0.0043,
+      "Neural network (MLP)": 0.0043,
       "XGBoost": 0.011099999770522118,
       "Random Forest": 0.0295,
       "Logistic Regression (L2/Ridge)": 0.103,
@@ -127,7 +128,7 @@
     },
     {
       "categoria_fe": "Diferença",
-      "PyTorch NN": 0.0025,
+      "Neural network (MLP)": 0.0025,
       "XGBoost": 0.007499999832361937,
       "Random Forest": 0.0162,
       "Logistic Regression (L2/Ridge)": 0.0472,
@@ -138,7 +139,7 @@
     },
     {
       "categoria_fe": "Específica de domínio",
-      "PyTorch NN": 0.0043,
+      "Neural network (MLP)": 0.0043,
       "XGBoost": 0.009499999694526196,
       "Random Forest": 0.017,
       "Logistic Regression (L2/Ridge)": 0.0433,
@@ -149,7 +150,7 @@
     },
     {
       "categoria_fe": "Produto",
-      "PyTorch NN": 0.0,
+      "Neural network (MLP)": 0.0,
       "XGBoost": 0.004100000020116568,
       "Random Forest": 0.0088,
       "Logistic Regression (L2/Ridge)": 0.0294,
@@ -160,7 +161,7 @@
     },
     {
       "categoria_fe": "Transformação matemática",
-      "PyTorch NN": 0.0061,
+      "Neural network (MLP)": 0.0061,
       "XGBoost": 0.005900000222027302,
       "Random Forest": 0.0133,
       "Logistic Regression (L2/Ridge)": 0.0278,
@@ -173,7 +174,7 @@
   "top_30_features": [
     {
       "feature": "n_vars_out_of_range",
-      "PyTorch NN": 0.00964,
+      "Neural network (MLP)": 0.00964,
       "XGBoost": 0.2995699942111969,
       "Random Forest": 0.16818,
       "Logistic Regression (L2/Ridge)": 0.00698,
@@ -186,7 +187,7 @@
     },
     {
       "feature": "n_vars_in_range",
-      "PyTorch NN": 0.02896,
+      "Neural network (MLP)": 0.02896,
       "XGBoost": 0.2989799976348877,
       "Random Forest": 0.13458,
       "Logistic Regression (L2/Ridge)": 0.00698,
@@ -199,7 +200,7 @@
     },
     {
       "feature": "max_distance_from_ideal",
-      "PyTorch NN": 0.00543,
+      "Neural network (MLP)": 0.00543,
       "XGBoost": 0.04019000008702278,
       "Random Forest": 0.16906,
       "Logistic Regression (L2/Ridge)": 0.03344,
@@ -212,7 +213,7 @@
     },
     {
       "feature": "cycle_time_distance_from_range",
-      "PyTorch NN": 0.08169,
+      "Neural network (MLP)": 0.08169,
       "XGBoost": 0.01906999945640564,
       "Random Forest": 0.01915,
       "Logistic Regression (L2/Ridge)": 0.01101,
@@ -225,7 +226,7 @@
     },
     {
       "feature": "avg_distance_from_ideal",
-      "PyTorch NN": 0.00193,
+      "Neural network (MLP)": 0.00193,
       "XGBoost": 0.024720000103116035,
       "Random Forest": 0.1001,
       "Logistic Regression (L2/Ridge)": 0.00561,
@@ -238,7 +239,7 @@
     },
     {
       "feature": "metal_velocity_gate_distance_from_range",
-      "PyTorch NN": 0.07448,
+      "Neural network (MLP)": 0.07448,
       "XGBoost": 0.005570000037550926,
       "Random Forest": 0.01113,
       "Logistic Regression (L2/Ridge)": 0.01623,
@@ -251,7 +252,7 @@
     },
     {
       "feature": "intensification_pressure_distance_from_range",
-      "PyTorch NN": 0.08168,
+      "Neural network (MLP)": 0.08168,
       "XGBoost": 0.0033400000538676977,
       "Random Forest": 0.01228,
       "Logistic Regression (L2/Ridge)": 0.00991,
@@ -264,7 +265,7 @@
     },
     {
       "feature": "intensification_pressure_in_range",
-      "PyTorch NN": 0.03637,
+      "Neural network (MLP)": 0.03637,
       "XGBoost": 0.02490999922156334,
       "Random Forest": 0.00963,
       "Logistic Regression (L2/Ridge)": 0.00805,
@@ -277,7 +278,7 @@
     },
     {
       "feature": "intensification_time_phase3_distance_from_range",
-      "PyTorch NN": 0.04224,
+      "Neural network (MLP)": 0.04224,
       "XGBoost": 0.006169999949634075,
       "Random Forest": 0.00716,
       "Logistic Regression (L2/Ridge)": 0.01127,
@@ -290,7 +291,7 @@
     },
     {
       "feature": "fill_time_distance_from_range",
-      "PyTorch NN": 0.02275,
+      "Neural network (MLP)": 0.02275,
       "XGBoost": 0.012769999913871288,
       "Random Forest": 0.0144,
       "Logistic Regression (L2/Ridge)": 0.01309,
@@ -303,7 +304,7 @@
     },
     {
       "feature": "phase_transition_position_distance_from_range",
-      "PyTorch NN": 0.05381,
+      "Neural network (MLP)": 0.05381,
       "XGBoost": 0.0041600000113248825,
       "Random Forest": 0.0058,
       "Logistic Regression (L2/Ridge)": 0.0079,
@@ -316,7 +317,7 @@
     },
     {
       "feature": "cycle_time_in_range",
-      "PyTorch NN": 0.0284,
+      "Neural network (MLP)": 0.0284,
       "XGBoost": 0.009990000165998936,
       "Random Forest": 0.01602,
       "Logistic Regression (L2/Ridge)": 0.0096,
@@ -329,7 +330,7 @@
     },
     {
       "feature": "phase_transition_position_in_range",
-      "PyTorch NN": 0.04807,
+      "Neural network (MLP)": 0.04807,
       "XGBoost": 0.005249999929219484,
       "Random Forest": 0.00672,
       "Logistic Regression (L2/Ridge)": 0.00654,
@@ -342,7 +343,7 @@
     },
     {
       "feature": "metal_velocity_gate_in_range",
-      "PyTorch NN": 0.02373,
+      "Neural network (MLP)": 0.02373,
       "XGBoost": 0.01083999965339899,
       "Random Forest": 0.01097,
       "Logistic Regression (L2/Ridge)": 0.00928,
@@ -355,7 +356,7 @@
     },
     {
       "feature": "solidification_ratio",
-      "PyTorch NN": 0.00072,
+      "Neural network (MLP)": 0.00072,
       "XGBoost": 0.001509999972768128,
       "Random Forest": 0.00495,
       "Logistic Regression (L2/Ridge)": 0.026,
@@ -368,7 +369,7 @@
     },
     {
       "feature": "intensification_time_phase3_in_range",
-      "PyTorch NN": 0.03181,
+      "Neural network (MLP)": 0.03181,
       "XGBoost": 0.003379999892786145,
       "Random Forest": 0.00666,
       "Logistic Regression (L2/Ridge)": 0.00776,
@@ -381,7 +382,7 @@
     },
     {
       "feature": "pressure_time_ratio",
-      "PyTorch NN": 0.00072,
+      "Neural network (MLP)": 0.00072,
       "XGBoost": 0.0017600000137463212,
       "Random Forest": 0.00675,
       "Logistic Regression (L2/Ridge)": 0.02584,
@@ -394,7 +395,7 @@
     },
     {
       "feature": "fill_time_in_range",
-      "PyTorch NN": 0.01067,
+      "Neural network (MLP)": 0.01067,
       "XGBoost": 0.020320000126957893,
       "Random Forest": 0.01049,
       "Logistic Regression (L2/Ridge)": 0.00681,
@@ -407,7 +408,7 @@
     },
     {
       "feature": "plunger_lubricant",
-      "PyTorch NN": 0.01756,
+      "Neural network (MLP)": 0.01756,
       "XGBoost": 0.010259999893605709,
       "Random Forest": 0.00863,
       "Logistic Regression (L2/Ridge)": 0.01029,
@@ -420,7 +421,7 @@
     },
     {
       "feature": "solidification_time_distance_from_range",
-      "PyTorch NN": 0.02117,
+      "Neural network (MLP)": 0.02117,
       "XGBoost": 0.004170000087469816,
       "Random Forest": 0.00615,
       "Logistic Regression (L2/Ridge)": 0.0133,
@@ -433,7 +434,7 @@
     },
     {
       "feature": "sleeve_length_distance_from_range",
-      "PyTorch NN": 0.03219,
+      "Neural network (MLP)": 0.03219,
       "XGBoost": 0.003590000094845891,
       "Random Forest": 0.00167,
       "Logistic Regression (L2/Ridge)": 0.00934,
@@ -446,7 +447,7 @@
     },
     {
       "feature": "sleeve_diameter_distance_from_range",
-      "PyTorch NN": 0.02806,
+      "Neural network (MLP)": 0.02806,
       "XGBoost": 0.00343999988399446,
       "Random Forest": 0.00274,
       "Logistic Regression (L2/Ridge)": 0.01031,
@@ -459,7 +460,7 @@
     },
     {
       "feature": "piston_velocity_phase1_distance_from_range",
-      "PyTorch NN": 0.03276,
+      "Neural network (MLP)": 0.03276,
       "XGBoost": 0.0016899999463930726,
       "Random Forest": 0.0026,
       "Logistic Regression (L2/Ridge)": 0.00875,
@@ -472,7 +473,7 @@
     },
     {
       "feature": "solidification_time_in_range",
-      "PyTorch NN": 0.02029,
+      "Neural network (MLP)": 0.02029,
       "XGBoost": 0.004769999999552965,
       "Random Forest": 0.00539,
       "Logistic Regression (L2/Ridge)": 0.00721,
@@ -485,7 +486,7 @@
     },
     {
       "feature": "sleeve_temperature_distance_from_range",
-      "PyTorch NN": 0.01409,
+      "Neural network (MLP)": 0.01409,
       "XGBoost": 0.0028800000436604023,
       "Random Forest": 0.00458,
       "Logistic Regression (L2/Ridge)": 0.01236,
@@ -498,7 +499,7 @@
     },
     {
       "feature": "temp_ratio",
-      "PyTorch NN": 0.00143,
+      "Neural network (MLP)": 0.00143,
       "XGBoost": 0.002259999979287386,
       "Random Forest": 0.00301,
       "Logistic Regression (L2/Ridge)": 0.01919,
@@ -511,7 +512,7 @@
     },
     {
       "feature": "velocity_distance",
-      "PyTorch NN": 0.00073,
+      "Neural network (MLP)": 0.00073,
       "XGBoost": 0.00171999994199723,
       "Random Forest": 0.00438,
       "Logistic Regression (L2/Ridge)": 0.01855,
@@ -524,7 +525,7 @@
     },
     {
       "feature": "intensification_time_phase3",
-      "PyTorch NN": 0.00036,
+      "Neural network (MLP)": 0.00036,
       "XGBoost": 0.001560000004246831,
       "Random Forest": 0.00242,
       "Logistic Regression (L2/Ridge)": 0.02199,
@@ -537,7 +538,7 @@
     },
     {
       "feature": "intensification_energy",
-      "PyTorch NN": 0.0,
+      "Neural network (MLP)": 0.0,
       "XGBoost": 0.0023499999660998583,
       "Random Forest": 0.00639,
       "Logistic Regression (L2/Ridge)": 0.01561,
@@ -550,7 +551,7 @@
     },
     {
       "feature": "sleeve_fill_percentage_distance_from_range",
-      "PyTorch NN": 0.017,
+      "Neural network (MLP)": 0.017,
       "XGBoost": 0.00279999990016222,
       "Random Forest": 0.00187,
       "Logistic Regression (L2/Ridge)": 0.01023,

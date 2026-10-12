@@ -303,6 +303,9 @@ def main():
         idx = name_to_index[defect_name]
         y_true_defect = y_test[:, idx]
         y_proba_defect = y_pred_proba[:, idx]
+        if y_true_defect.sum() == 0:
+            print(f"  - Skipping {defect_name}: no positive samples in the test set")
+            continue
         table_thr = float(table_thresholds[defect_name])
 
         print(f"  - Generating plot for {defect_name} (threshold={table_thr:.3f})")
