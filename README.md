@@ -130,12 +130,19 @@ streamlit run streamlit_app.py
 * **Synthetic generator.** Running `generate_synthetic_dataset.py` reproduces `aluminum_diecasting_dataset.csv`
   byte-for-byte, not the study CSV (which came from an earlier run/version of the generator and is the canonical data
   of the article). The metadata `statistics` therefore describe the generated file, not the study data.
-* **Library versions.** The article's numbers (and `models/phase3_final_models.pkl`, from which the official tables
-  are computed) were produced with scikit-learn 1.7.2. Re-running the Phase 1/Phase 2 scripts with a newer
-  scikit-learn (1.9.1 was used for the last re-run of `reports/phase1_*` and `reports/phase2_*`) reproduces the neural
-  network exactly but gives different Random Forest results (e.g. CV recall without SMOTE 0.944 instead of 0.820) and
-  slightly different XGBoost / logistic-regression results. Use scikit-learn 1.7.2 to reproduce the published values;
-  the code selects the logistic-regression penalty in a way that is valid for both versions.
+* **Random Forest / XGBoost reproducibility (open issue).** Re-running the Phase 1/Phase 2 scripts in the current
+  environment (scikit-learn 1.9.1; last re-run stored in `reports/phase1_*` and `reports/phase2_*`) reproduces the
+  neural network exactly but NOT the Random Forest values reported in the article (CV recall without SMOTE 0.944
+  instead of 0.820; with SMOTE 0.713 instead of 0.624), and gives slightly different XGBoost / logistic-regression
+  values. Refitting the cached Random Forest of `models/phase3_final_models.pkl` with identical parameters and data
+  also gives a different model, so the published values come from an earlier environment (the legacy scaler was
+  pickled with scikit-learn 1.7.2, but the exact cause was not confirmed). The official tables are computed from the
+  cached models; the code selects the logistic-regression penalty in a way that is valid for old and new versions.
+* **Scripts added in the last revision round.** `feature_engineering_ablation.py` (15 vs. 110 features under the
+  leak-free protocol; Figure 2), `generate_supplementary_dataset_figures.py` (Figures S1-S4 from the study dataset) and
+  `figures/figure4_streamlit_dashboard.png` (screenshot of the current app). In the study dataset the defect-free
+  values follow a normal distribution centered on the zone (sd = width/6, limited to the zone), whereas
+  `generate_synthetic_dataset.py` draws them uniformly.
 * **Known modelling choices** (documented, not changed): early stopping is patience-based and returns the weights of the
   last epoch (not the best one); with SMOTE, the internal early-stopping hold-out is drawn after oversampling; OOF
   thresholds come from fold models and are applied to the model refitted on the whole development set.
