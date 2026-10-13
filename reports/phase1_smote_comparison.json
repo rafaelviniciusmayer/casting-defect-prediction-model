@@ -167,15 +167,15 @@
     }
   ],
   "recommendations": [
-    "**Neural network (MLP)**: SMOTE sem ganho relevante (ΔF1=+0.0075, ΔRecall=-0.0849) — considerar apenas cost-sensitive learning.",
-    "**XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0105, ΔRecall=-0.1192) — considerar apenas cost-sensitive learning.",
-    "**Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0196, ΔRecall=-0.2309) — considerar apenas cost-sensitive learning."
+    "**Neural network (MLP)**: SMOTE brings no relevant gain (ΔF1=+0.0075, ΔRecall=-0.0849) — consider cost-sensitive learning only.",
+    "**XGBoost**: SMOTE brings no relevant gain (ΔF1=-0.0105, ΔRecall=-0.1192) — consider cost-sensitive learning only.",
+    "**Random Forest**: SMOTE brings no relevant gain (ΔF1=-0.0196, ΔRecall=-0.2309) — consider cost-sensitive learning only."
   ],
   "decision": {
     "keep_smote": false,
     "avg_f1_micro_gain": -0.007561345430278939,
     "avg_recall_gain": -0.14500222793858097,
     "avg_train_val_gap_increase": 0.06928379964848767,
-    "criteria": "Manter SMOTE se ganho médio de F1-micro >= 0.005 ou de recall >= 0.01 na validação (CV), com aumento médio de gap treino-val <= 0.05."
+    "criteria": "Keep SMOTE if the mean gain of F1-micro >= 0.005 or of recall >= 0.01 on validation (CV), with a mean train-val gap increase <= 0.05."
   }
 }

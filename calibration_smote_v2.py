@@ -1,5 +1,5 @@
 """
-Calibration with vs. without SMOTE (v2): same procedure as gerar_calibracao_com_sem_smote.py, but
+Calibration with vs. without SMOTE (v2): same procedure as generate_calibration_with_without_smote.py, but
 (1) saves the with-SMOTE test probabilities to disk (one .npy per model) so the figure can be redrawn
     without retraining, and (2) draws the figure at manuscript size and reports ECE.
 Usage (repo root):

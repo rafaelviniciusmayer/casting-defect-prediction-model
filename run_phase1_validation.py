@@ -1,26 +1,26 @@
 """
-Fase 1 — Infraestrutura de validação (ajustes solicitados pela banca)
-=====================================================================
+Phase 1 — Validation infrastructure (adjustments requested by the reviewers)
+============================================================================
 
-Orquestra os itens da Fase 1, executando cada CV uma única vez por
-(modelo, condição) e reutilizando os resultados entre as análises:
+Orchestrates the Phase 1 items, running each CV only once per
+(model, condition) and reusing the results across the analyses:
 
-  1.1 CV estratificada unificada (5 folds) para PyTorch NN, XGBoost e
-      Random Forest — mesma CV da rede neural, SMOTE só no fold de treino.
-  1.2 Análise formal de overfitting: Treino (CV) vs Validação (CV) vs
-      Teste Final (20% isolado), por modelo (overfitting_analysis.py).
-  1.3 Ablation com/sem SMOTE, cost-sensitive sempre ativo (smote_ablation.py).
-  1.4 Overfitting causado pelo SMOTE: treino pós-SMOTE vs teste + curvas
-      de aprendizado (smote_overfitting_check.py).
+  1.1 Unified stratified CV (5 folds) for PyTorch NN, XGBoost and
+      Random Forest — same CV as the neural network, SMOTE only in the training fold.
+  1.2 Formal overfitting analysis: Train (CV) vs Validation (CV) vs
+      Final Test (20% holdout), per model (overfitting_analysis.py).
+  1.3 Ablation with/without SMOTE, cost-sensitive always on (smote_ablation.py).
+  1.4 Overfitting caused by SMOTE: post-SMOTE train vs test + learning
+      curves (smote_overfitting_check.py).
 
-Execute: python run_phase1_validation.py
+Run: python run_phase1_validation.py
 
-Saídas:
+Outputs:
   reports/phase1_cv_comparison.{json,md}           (1.1)
   reports/phase1_overfitting_analysis.{json,md}    (1.2)
   reports/phase1_smote_comparison.{json,md}        (1.3)
   reports/phase1_smote_overfitting.{json,md}       (1.4)
-  reports/PHASE1_CHECKPOINT.md                     (decisões da fase)
+  reports/PHASE1_CHECKPOINT.md                     (phase decisions)
   figures/table_phase1_overfitting.csv
   figures/table_phase1_smote_comparison.csv
   figures/table_phase1_train_vs_test.csv
@@ -35,7 +35,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict
 
-# Console do Windows usa cp1252 por padrão; garante saída UTF-8 (Δ, ±, −)
+# The Windows console uses cp1252 by default; force UTF-8 output (Δ, ±, −)
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
@@ -81,11 +81,11 @@ def _write_text(path: str, text: str) -> None:
 
 def _build_cv_comparison_markdown(payload: Dict[str, Any]) -> str:
     lines = [
-        "# Fase 1.1 — Comparação por Cross-Validation (5 folds)\n",
-        "Métricas médias ± desvio-padrão na **validação** de cada fold "
-        "(threshold fixo 0.5). SMOTE aplicado apenas no treino de cada fold; "
-        "teste final (20%) permanece isolado.\n",
-        "| Modelo | Recall (val) | Precision (val) | F1-micro (val) | F1-macro (val) | Tempo CV (s) |",
+        "# Phase 1.1 — Cross-Validation Comparison (5 folds)\n",
+        "Mean ± standard deviation of the metrics on the **validation** part of each fold "
+        "(fixed threshold 0.5). SMOTE applied only to the training part of each fold; "
+        "the final test set (20%) remains held out.\n",
+        "| Model | Recall (val) | Precision (val) | F1-micro (val) | F1-macro (val) | CV Time (s) |",
         "|--------|--------------|-----------------|----------------|----------------|--------------|",
     ]
     for model in payload["models"]:
@@ -106,36 +106,36 @@ def _build_checkpoint_markdown(
     decision: Dict[str, Any],
     cv_payload: Dict[str, Any],
 ) -> str:
-    smote_status = "MANTIDO" if decision["keep_smote"] else "REMOVIDO"
+    smote_status = "KEPT" if decision["keep_smote"] else "REMOVED"
     best_recall = max(
         cv_payload["models"], key=lambda m: m["val_mean"]["recall_micro"]
     )
     best_f1 = max(cv_payload["models"], key=lambda m: m["val_mean"]["f1_micro"])
     lines = [
-        "# Checkpoint — Fase 1 (Infraestrutura de validação)\n",
-        "## Decisões tomadas\n",
-        f"- **SMOTE: {smote_status}** na configuração oficial do pipeline "
-        f"(ganho médio F1-micro {decision['avg_f1_micro_gain']:+.4f}, "
+        "# Checkpoint — Phase 1 (Validation infrastructure)\n",
+        "## Decisions taken\n",
+        f"- **SMOTE: {smote_status}** in the official pipeline configuration "
+        f"(mean F1-micro gain {decision['avg_f1_micro_gain']:+.4f}, "
         f"recall {decision['avg_recall_gain']:+.4f}, "
-        f"aumento de gap treino-val {decision['avg_train_val_gap_increase']:+.4f}).",
-        "- **CV unificada**: os 3 modelos passam a usar a mesma CV estratificada "
-        "em 5 folds (random_state=42) sobre o dev set (80%), com SMOTE "
-        "(quando habilitado) aplicado apenas no fold de treino.",
-        "- **Cost-sensitive learning** ativo em todos os modelos: pos_weight "
-        "na NN, class_weight='balanced' no RF, scale_pos_weight no XGBoost "
-        "(novidade desta fase — antes o XGBoost não tinha ponderação).",
-        f"- Melhor recall (validação CV, com SMOTE): **{best_recall['model_name']}** "
+        f"train-val gap increase {decision['avg_train_val_gap_increase']:+.4f}).",
+        "- **Unified CV**: the 3 models now use the same stratified CV "
+        "with 5 folds (random_state=42) over the dev set (80%), with SMOTE "
+        "(when enabled) applied only to the training fold.",
+        "- **Cost-sensitive learning** active in all models: pos_weight "
+        "in the NN, class_weight='balanced' in RF, scale_pos_weight in XGBoost "
+        "(new in this phase — XGBoost previously had no weighting).",
+        f"- Best recall (CV validation, with SMOTE): **{best_recall['model_name']}** "
         f"({best_recall['val_mean']['recall_micro']:.4f}).",
-        f"- Melhor F1-micro (validação CV, com SMOTE): **{best_f1['model_name']}** "
+        f"- Best F1-micro (CV validation, with SMOTE): **{best_f1['model_name']}** "
         f"({best_f1['val_mean']['f1_micro']:.4f}).",
         "",
-        "## Referência para as próximas fases\n",
-        "- Fase 2 (novos modelos) deve usar `unified_cv_pipeline.run_cross_validation` "
-        f"com `use_smote={decision['keep_smote']}`.",
-        "- Fase 3 (thresholds/ROC) deve partir dos modelos finais treinados via "
-        "`unified_cv_pipeline.run_final_test_evaluation` na mesma condição.",
+        "## Reference for the next phases\n",
+        "- Phase 2 (new models) must use `unified_cv_pipeline.run_cross_validation` "
+        f"with `use_smote={decision['keep_smote']}`.",
+        "- Phase 3 (thresholds/ROC) must start from the final models trained via "
+        "`unified_cv_pipeline.run_final_test_evaluation` under the same condition.",
         "",
-        "## Arquivos gerados\n",
+        "## Generated files\n",
         "- `reports/phase1_cv_comparison.md` (1.1)",
         "- `reports/phase1_overfitting_analysis.md` (1.2)",
         "- `reports/phase1_smote_comparison.md` (1.3)",
@@ -152,26 +152,26 @@ def _build_checkpoint_markdown(
 def main() -> None:
     t_start = time.perf_counter()
     print("=" * 70)
-    print("FASE 1 — INFRAESTRUTURA DE VALIDAÇÃO")
+    print("PHASE 1 — VALIDATION INFRASTRUCTURE")
     print("=" * 70)
 
     Path("reports").mkdir(exist_ok=True)
     Path("figures").mkdir(exist_ok=True)
 
-    print("\n[*] Carregando dados (pipeline existente)...")
+    print("\n[*] Loading data (existing pipeline)...")
     data = load_pipeline_data(verbose=True)
     split = prepare_split_data(data, verbose=True)
     model_types = available_model_types()
 
     # ------------------------------------------------------------------
-    # Treinos: cada CV roda UMA vez por (modelo, condição) e é reutilizada
+    # Training: each CV runs ONCE per (model, condition) and is reused
     # ------------------------------------------------------------------
     cv_with: Dict[str, Any] = {}
     cv_without: Dict[str, Any] = {}
     final_with: Dict[str, Any] = {}
 
     print("\n" + "=" * 70)
-    print("TREINOS — CV 5-fold por modelo e condição (com/sem SMOTE)")
+    print("TRAINING — 5-fold CV per model and condition (with/without SMOTE)")
     print("=" * 70)
     for model_type in model_types:
         cv_with[model_type] = run_cross_validation(
@@ -186,10 +186,10 @@ def main() -> None:
         final_with[model_type].cv_val_mean = cv_with[model_type].val_mean
 
     # ------------------------------------------------------------------
-    # 1.1 — Comparação por CV unificada (condição oficial atual: com SMOTE)
+    # 1.1 — Unified CV comparison (current official condition: with SMOTE)
     # ------------------------------------------------------------------
     print("\n" + "=" * 70)
-    print("FASE 1.1 — Relatório de CV unificada")
+    print("PHASE 1.1 — Unified CV report")
     print("=" * 70)
     cv_payload = {
         "phase": "1.1_cv_comparison",
@@ -205,10 +205,10 @@ def main() -> None:
     print("[OK] reports/phase1_cv_comparison.{json,md}")
 
     # ------------------------------------------------------------------
-    # 1.2 — Análise formal de overfitting
+    # 1.2 — Formal overfitting analysis
     # ------------------------------------------------------------------
     print("\n" + "=" * 70)
-    print("FASE 1.2 — Análise formal de overfitting")
+    print("PHASE 1.2 — Formal overfitting analysis")
     print("=" * 70)
     overfit_payload = build_overfitting_payload(cv_with, final_with, use_smote=True)
     overfit_df = build_overfitting_table(overfit_payload)
@@ -221,10 +221,10 @@ def main() -> None:
     print("[OK] reports/phase1_overfitting_analysis.{json,md}")
 
     # ------------------------------------------------------------------
-    # 1.3 — Ablation SMOTE
+    # 1.3 — SMOTE ablation
     # ------------------------------------------------------------------
     print("\n" + "=" * 70)
-    print("FASE 1.3 — Contribuição do SMOTE (com vs sem)")
+    print("PHASE 1.3 — SMOTE contribution (with vs without)")
     print("=" * 70)
     smote_payload = build_smote_comparison_payload(cv_without, cv_with)
     smote_df = build_smote_comparison_table(smote_payload)
@@ -238,21 +238,21 @@ def main() -> None:
     smote_payload["decision"] = decision
     _save_json("reports/phase1_smote_comparison.json", smote_payload)
     print(smote_df.to_string(index=False))
-    print(f"\n[DECISÃO] SMOTE {'mantido' if decision['keep_smote'] else 'removido'} "
-          f"na configuração oficial.")
+    print(f"\n[DECISION] SMOTE {'kept' if decision['keep_smote'] else 'removed'} "
+          f"in the official configuration.")
     print("[OK] reports/phase1_smote_comparison.{json,md}")
 
     # ------------------------------------------------------------------
-    # 1.4 — Overfitting causado pelo SMOTE (treino pós-SMOTE vs teste + curvas)
+    # 1.4 — Overfitting caused by SMOTE (post-SMOTE train vs test + curves)
     # ------------------------------------------------------------------
     print("\n" + "=" * 70)
-    print("FASE 1.4 — Overfitting causado pelo SMOTE")
+    print("PHASE 1.4 — Overfitting caused by SMOTE")
     print("=" * 70)
     train_vs_test_df = build_train_vs_test_table(final_with)
     train_vs_test_df.to_csv("figures/table_phase1_train_vs_test.csv", index=False)
     print(train_vs_test_df.to_string(index=False))
 
-    print("\n[*] Curvas de aprendizado (fold 1 como validação fixa)...")
+    print("\n[*] Learning curves (fold 1 as the fixed validation set)...")
     curves = []
     curves += compute_learning_curves(split, model_types, use_smote=True, verbose=True)
     curves += compute_learning_curves(split, model_types, use_smote=False, verbose=True)
@@ -273,14 +273,14 @@ def main() -> None:
     print("[OK] reports/phase1_smote_overfitting.{json,md}")
 
     # ------------------------------------------------------------------
-    # Checkpoint da Fase 1
+    # Phase 1 checkpoint
     # ------------------------------------------------------------------
     checkpoint_md = _build_checkpoint_markdown(decision, cv_payload)
     _write_text("reports/PHASE1_CHECKPOINT.md", checkpoint_md)
 
     elapsed = time.perf_counter() - t_start
     print("\n" + "=" * 70)
-    print(f"[CONCLUÍDO] Fase 1 executada em {elapsed / 60:.1f} min")
+    print(f"[DONE] Phase 1 completed in {elapsed / 60:.1f} min")
     print("=" * 70)
     print("Checkpoint: reports/PHASE1_CHECKPOINT.md")
 

@@ -1,4 +1,4 @@
-feature,Neural network (MLP),XGBoost,Random Forest,Logistic Regression (L2/Ridge),Logistic Regression (L1/Lasso),importancia_media,process_phase,feature_category
+feature,Neural network (MLP),XGBoost,Random Forest,Logistic Regression (L2/Ridge),Logistic Regression (L1/Lasso),mean_importance,process_phase,feature_category
 n_vars_out_of_range,0.00964,0.29957,0.16818,0.00698,0.00789,0.09845,Global/Aggregation,Statistical aggregation
 n_vars_in_range,0.02896,0.29898,0.13458,0.00698,0.00836,0.09557,Global/Aggregation,Statistical aggregation
 max_distance_from_ideal,0.00543,0.04019,0.16906,0.03344,0.04618,0.05886,Global/Aggregation,Statistical aggregation

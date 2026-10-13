@@ -1,32 +1,32 @@
 """
-Item 3.2 (Fase 3) — Balancear Precision x Recall (estratégias de threshold).
+Item 3.2 (Phase 3) — Balancing Precision x Recall (threshold strategies).
 
-Pergunta da banca: "A otimização de threshold está excessivamente focada em
-recall; como fica o trade-off com a precisão?"
+Review committee question: "The threshold optimization is excessively focused
+on recall; what does the trade-off with precision look like?"
 
-Compara 4 estratégias de otimização de threshold por defeito, para cada um
-dos 5 modelos finais (probabilidades reaproveitadas do cache da Fase 3):
-  (a) recall-first  — estratégia atual do artigo (recall máx., F1 desempate)
-  (b) F1            — equilíbrio precision/recall
-  (c) F-beta (β=2)  — prioriza recall moderadamente
-  (d) F-beta (β=0.5)— prioriza precisão
+Compares 4 per-defect threshold optimization strategies, for each of the
+5 final models (probabilities reused from the Phase 3 cache):
+  (a) recall-first  — current strategy of the article (max. recall, F1 tie-break)
+  (b) F1            — precision/recall balance
+  (c) F-beta (β=2)  — moderately prioritizes recall
+  (d) F-beta (β=0.5)— prioritizes precision
 
-Define a estratégia OFICIAL para os itens 3.3/3.4 pelo critério: maior
-F-beta(β=2)-micro no teste — mantém a prioridade em recall (contexto
-industrial: defeito que passa custa caro), mas penaliza o excesso de falsos
-positivos da estratégia recall-first pura.
+Defines the OFFICIAL strategy for items 3.3/3.4 by the criterion: highest
+F-beta(β=2)-micro on the test set — keeps the priority on recall (industrial
+context: a defect that slips through is costly), but penalizes the excess of
+false positives of the pure recall-first strategy.
 
-LEGADO: os thresholds aqui são otimizados no conjunto de TESTE. Os thresholds
-oficiais do artigo vêm de threshold_selection_oof.py (OOF, sem vazamento); por
-isso todas as saídas deste script levam o sufixo _test_selected e NUNCA
-sobrescrevem reports/phase3_official_thresholds.json.
+LEGACY: the thresholds here are optimized on the TEST set. The official
+thresholds of the article come from threshold_selection_oof.py (OOF, no
+leakage); therefore all outputs of this script carry the _test_selected suffix
+and NEVER overwrite reports/phase3_official_thresholds.json.
 
-Saídas:
-  figures/table_phase3_threshold_strategies_test_selected.csv   (micro, por modelo)
-  figures/table_phase3_threshold_per_defect_test_selected.csv   (por defeito, modelo NN)
+Outputs:
+  figures/table_phase3_threshold_strategies_test_selected.csv   (micro, per model)
+  figures/table_phase3_threshold_per_defect_test_selected.csv   (per defect, NN model)
   figures/phase3_threshold_tradeoff_test_selected.png
   reports/phase3_threshold_tradeoff_test_selected.{json,md}
-  reports/phase3_official_thresholds_test_selected.json         (estratégia + thresholds)
+  reports/phase3_official_thresholds_test_selected.json         (strategy + thresholds)
 """
 
 from __future__ import annotations
@@ -63,7 +63,7 @@ STRATEGIES = {
 
 
 def _score_for_strategy(strategy: str, precision: float, recall: float) -> Tuple[float, float]:
-    """Retorna (score_primario, score_desempate) para a estratégia."""
+    """Return (primary_score, tiebreak_score) for the strategy."""
     if precision + recall == 0:
         return 0.0, 0.0
     f1 = 2 * precision * recall / (precision + recall)
@@ -87,14 +87,14 @@ def optimize_thresholds_strategy(
     y_proba: np.ndarray,
     strategy: str,
 ) -> Dict[int, float]:
-    """Threshold ótimo por defeito segundo a estratégia."""
+    """Optimal per-defect threshold according to the strategy."""
     thresholds: Dict[int, float] = {}
     for i in range(y_true.shape[1]):
         y_col = y_true[:, i]
         if y_col.sum() == 0:
             thresholds[i] = 0.5
             continue
-        best = (-1.0, -1.0, 0.5)  # (primario, desempate, threshold)
+        best = (-1.0, -1.0, 0.5)  # (primary, tiebreak, threshold)
         for th in THRESHOLD_GRID:
             y_pred = (y_proba[:, i] >= th).astype(int)
             if y_pred.sum() == 0:
@@ -130,7 +130,7 @@ def plot_tradeoff(
     path: str,
     subtitle: str = "test set; thresholds selected on out-of-fold development predictions",
 ) -> str:
-    """Scatter precision x recall por modelo/estratégia."""
+    """Precision x recall scatter per model/strategy."""
     markers = {"recall_first": "o", "f1": "s", "fbeta_2": "^", "fbeta_05": "D"}
     model_names = sorted({r["model_name"] for r in results})
     cmap = plt.get_cmap("tab10")
@@ -164,7 +164,7 @@ def plot_tradeoff(
 
 def main() -> None:
     print("=" * 70)
-    print("FASE 3.2 — ESTRATÉGIAS DE THRESHOLD (Precision × Recall)")
+    print("PHASE 3.2 — THRESHOLD STRATEGIES (Precision × Recall)")
     print("=" * 70)
     Path("reports").mkdir(exist_ok=True)
     Path("figures").mkdir(exist_ok=True)
@@ -198,7 +198,7 @@ def main() -> None:
                   f"R={metrics['recall_micro']:.4f} P={metrics['precision_micro']:.4f} "
                   f"F1={metrics['f1_micro']:.4f}")
 
-    # Tabela micro por modelo/estratégia
+    # Micro table per model/strategy
     rows = [
         {
             "Model": r["model_name"],
@@ -214,7 +214,7 @@ def main() -> None:
     df = pd.DataFrame(rows)
     df.to_csv("figures/table_phase3_threshold_strategies_test_selected.csv", index=False)
 
-    # Tabela por defeito para o modelo em produção (NN)
+    # Per-defect table for the production model (NN)
     nn_proba = cache["models"][MODEL_PYTORCH]["test_proba"]
     per_defect_rows = []
     for strategy in STRATEGIES:
@@ -225,8 +225,8 @@ def main() -> None:
                 continue
             per_defect_rows.append(
                 {
-                    "defeito": defect,
-                    "estrategia": STRATEGIES[strategy],
+                    "defect": defect,
+                    "strategy": STRATEGIES[strategy],
                     "threshold": thresholds[i],
                     "recall": round(recall_score(y_test[:, i], y_pred[:, i], zero_division=0), 4),
                     "precision": round(precision_score(y_test[:, i], y_pred[:, i], zero_division=0), 4),
@@ -243,7 +243,7 @@ def main() -> None:
     )
     print(f"    [OK] {fig_path}")
 
-    # Decisão da estratégia oficial: maior F2-micro no modelo em produção (NN)
+    # Official strategy decision: highest F2-micro for the production model (NN)
     nn_results = [r for r in results if r["model_type"] == MODEL_PYTORCH]
     official = max(nn_results, key=lambda r: r["metrics"]["fbeta2_micro"])
     official_strategy = official["strategy"]
@@ -252,8 +252,8 @@ def main() -> None:
         "official_strategy": official_strategy,
         "official_strategy_name": STRATEGIES[official_strategy],
         "criteria": (
-            "Maior F-beta(β=2)-micro no teste para o modelo em produção (NN): "
-            "mantém prioridade em recall, penalizando excesso de falsos positivos."
+            "Highest F-beta(β=2)-micro on the test set for the production model (NN): "
+            "keeps the priority on recall while penalizing excess false positives."
         ),
         "nn_metrics": official["metrics"],
         "thresholds_by_model": {
@@ -268,19 +268,19 @@ def main() -> None:
         json.dump(official_payload, f, indent=2, ensure_ascii=False)
 
     md = "\n".join([
-        "# Fase 3.2 — Estratégias de threshold (Precision × Recall)\n",
-        "Quatro estratégias comparadas nos 5 modelos finais, sobre as mesmas "
-        "probabilidades de teste (nenhum retreino).\n",
+        "# Phase 3.2 — Threshold strategies (Precision × Recall)\n",
+        "Four strategies compared on the 5 final models, over the same "
+        "test probabilities (no retraining).\n",
         dataframe_to_markdown(df),
         "",
-        "## Decisão — estratégia oficial\n",
+        "## Decision — official strategy\n",
         f"- **{STRATEGIES[official_strategy]}** "
-        f"(critério: {official_payload['criteria']})",
-        f"- NN com estratégia oficial: Recall={official['metrics']['recall_micro']:.4f}, "
+        f"(criterion: {official_payload['criteria']})",
+        f"- NN with the official strategy: Recall={official['metrics']['recall_micro']:.4f}, "
         f"Precision={official['metrics']['precision_micro']:.4f}, "
         f"F1={official['metrics']['f1_micro']:.4f}",
         "",
-        "Tabela por defeito (NN): `figures/table_phase3_threshold_per_defect_test_selected.csv`\n",
+        "Per-defect table (NN): `figures/table_phase3_threshold_per_defect_test_selected.csv`\n",
         "![Trade-off](../figures/phase3_threshold_tradeoff_test_selected.png)",
         "",
     ])
@@ -300,7 +300,7 @@ def main() -> None:
             ensure_ascii=False,
         )
 
-    print(f"\n[DECISÃO] Estratégia oficial de threshold: {STRATEGIES[official_strategy]}")
+    print(f"\n[DECISION] Official threshold strategy: {STRATEGIES[official_strategy]}")
     print("[OK] reports/phase3_threshold_tradeoff_test_selected.{json,md}")
 
 

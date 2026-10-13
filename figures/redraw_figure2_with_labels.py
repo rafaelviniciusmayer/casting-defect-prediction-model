@@ -36,7 +36,7 @@ def main():
     bars1 = ax.bar(x - width / 2, vals_15, width, label='Original 15 features', color='#1f77b4')
     bars2 = ax.bar(x + width / 2, vals_110, width, label=f'Engineered {n_110} features', color='#ff7f0e')
 
-    # Rótulos de valor em cada barra (acima da barra para boa legibilidade)
+    # Value labels on each bar (above the bar for good readability)
     ax.bar_label(bars1, labels=[f'{v:.0f}%' for v in vals_15], label_type='edge', fontsize=9, padding=2)
     ax.bar_label(bars2, labels=[f'{v:.0f}%' for v in vals_110], label_type='edge', fontsize=9, padding=2)
 

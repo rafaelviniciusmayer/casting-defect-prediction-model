@@ -55,7 +55,7 @@ COLORS = {"Injection": "tab:red", "Intensification": "tab:orange", "Cooling": "t
 
 df = pd.read_csv(ROOT / "figures" / "table_phase3_top_features.csv").head(25).iloc[::-1]
 fig, ax = plt.subplots(figsize=(11, 9.5))
-ax.barh([pretty(f) for f in df["feature"]], df["importancia_media"],
+ax.barh([pretty(f) for f in df["feature"]], df["mean_importance"],
         color=[COLORS.get(p, "tab:gray") for p in df["process_phase"]])
 ax.set_xlabel("Mean normalized importance (5 models)", fontsize=11)
 ax.set_title("Top 25 most important features \u2014 mean across models", fontsize=12)

@@ -1,6 +1,6 @@
-# Fase 3.2 — Estratégias de threshold (Precision × Recall)
+# Phase 3.2 — Threshold strategies (Precision × Recall)
 
-Quatro estratégias comparadas nos 5 modelos finais, sobre as mesmas probabilidades de teste (nenhum retreino).
+Four strategies compared on the 5 final models, over the same test probabilities (no retraining).
 
 | Model | Strategy | Recall | Precision | F1-micro | F1-macro | F2-micro |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -25,11 +25,11 @@ Quatro estratégias comparadas nos 5 modelos finais, sobre as mesmas probabilida
 | Logistic Regression (L1/Lasso) | F-beta β=2 (recall-weighted) | 0.9752 | 0.5246 | 0.6822 | 0.6557 | 0.8323 |
 | Logistic Regression (L1/Lasso) | F-beta β=0.5 (precision-weighted) | 0.8939 | 0.5618 | 0.6900 | 0.6625 | 0.7994 |
 
-## Decisão — estratégia oficial
+## Decision — official strategy
 
-- **F-beta β=2 (recall-weighted)** (critério: Maior F-beta(β=2)-micro no teste para o modelo em produção (NN): mantém prioridade em recall, penalizando excesso de falsos positivos.)
-- NN com estratégia oficial: Recall=0.9752, Precision=0.5152, F1=0.6742
+- **F-beta β=2 (recall-weighted)** (criterion: Highest F-beta(β=2)-micro on the test set for the production model (NN): keeps the priority on recall while penalizing excess false positives.)
+- NN with the official strategy: Recall=0.9752, Precision=0.5152, F1=0.6742
 
-Tabela por defeito (NN): `figures/table_phase3_threshold_per_defect_test_selected.csv`
+Per-defect table (NN): `figures/table_phase3_threshold_per_defect_test_selected.csv`
 
 ![Trade-off](../figures/phase3_threshold_tradeoff_test_selected.png)

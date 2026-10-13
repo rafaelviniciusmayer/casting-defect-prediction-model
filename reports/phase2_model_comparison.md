@@ -1,10 +1,10 @@
-# Fase 2.1 — Comparação com modelos estatísticos e de regressão
+# Phase 2.1 — Comparison with statistical and regression models
 
-Configuração oficial da Fase 1: **sem SMOTE (apenas cost-sensitive)**. Todos os modelos usam o mesmo split 80/20, a mesma CV 5-fold, o mesmo pré-processamento e a mesma otimização de threshold por defeito (maximizar recall) na avaliação final de teste.
+Official Phase 1 configuration: **without SMOTE (cost-sensitive only)**. All models use the same 80/20 split, the same 5-fold CV, the same preprocessing and the same per-defect threshold optimization (maximize recall) in the final test evaluation.
 
-Baselines estatísticos adicionados: Regressão Logística L2 (Ridge) e L1 (Lasso), ambas com `class_weight='balanced'` via `MultiOutputClassifier`.
+Statistical baselines added: Logistic Regression L2 (Ridge) and L1 (Lasso), both with `class_weight='balanced'` via `MultiOutputClassifier`.
 
-| Modelo | Recall (teste) | Precision (teste) | F1-micro (teste) | F1-macro (teste) | Recall (CV) | F1-micro (CV) | Treino (s) | Inferência (ms/100) |
+| Model | Recall (test) | Precision (test) | F1-micro (test) | F1-macro (test) | Recall (CV) | F1-micro (CV) | Train (s) | Inference (ms/100) |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Neural network (MLP) | 0.9865 | 0.4648 | 0.6319 | 0.5923 | 0.9513 ± 0.0102 | 0.6662 ± 0.0122 | 171.8 | 0.50 |
 | XGBoost | 0.9795 | 0.4789 | 0.6433 | 0.6190 | 0.8569 ± 0.0102 | 0.6692 ± 0.0103 | 31.3 | 35.04 |

@@ -37,7 +37,7 @@
   "best_f1_micro": "XGBoost",
   "best_recall": "Random Forest",
   "justification": [
-    "Modelo alternativo (XGBoost) apresentou melhor desempenho. Considere reavaliar a escolha do modelo em produção."
+    "An alternative model (XGBoost) performed better. Consider re-evaluating the choice of the production model."
   ],
   "config": {
     "train_test_split": "80/20",

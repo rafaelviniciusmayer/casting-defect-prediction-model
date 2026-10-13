@@ -116,7 +116,7 @@ streamlit run streamlit_app.py
   used the test set for early stopping and threshold selection, is kept in the file only for reference.
 * **Legacy, test-selected outputs** are kept with the suffix `_test_selected` (`threshold_tradeoff_analysis.py` writes
   only such files and never touches `reports/phase3_official_thresholds.json`). `l1_sweep.py`, `compare_models.py` and
-  `gerar_calibracao_com_sem_smote.py` are also legacy (test-selected thresholds / superseded by `l1_sweep_oof.py` and
+  `generate_calibration_with_without_smote.py` are also legacy (test-selected thresholds / superseded by `l1_sweep_oof.py` and
   `calibration_smote_v2.py`).
 * **F1-macro** is averaged over the defect types that occur in the evaluated set: `ejector_pin_marks` has no positive
   record in the whole dataset, so including it would add a constant F1 = 0 (macro over 27 types = macro over 28 × 28/27).

@@ -1,7 +1,7 @@
 {
   "official_strategy": "fbeta_2",
   "official_strategy_name": "F-beta β=2 (recall-weighted)",
-  "criteria": "Maior F-beta(β=2)-micro no teste para o modelo em produção (NN): mantém prioridade em recall, penalizando excesso de falsos positivos.",
+  "criteria": "Highest F-beta(β=2)-micro on the test set for the production model (NN): keeps the priority on recall while penalizing excess false positives.",
   "nn_metrics": {
     "recall_micro": 0.9752155172413793,
     "precision_micro": 0.5152291488756049,

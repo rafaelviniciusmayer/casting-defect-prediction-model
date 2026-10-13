@@ -1,18 +1,18 @@
 """
-Item 3.4 (Fase 3) — Gráfico de previsto x realizado (validação visual).
+Item 3.4 (Phase 3) — Predicted vs. actual plot (visual validation).
 
-Pergunta da banca: "Mostrar previsto vs realizado como validação da
-metodologia."
+Review committee question: "Show predicted vs. actual as a validation of the
+methodology."
 
-Como o problema é classificação binária multi-label (não regressão), o
-"previsto x realizado" é adaptado em duas visões complementares:
-  1. Diagrama de calibração (reliability diagram): probabilidade prevista
-     (bins) vs frequência real observada de defeito — agregado (todos os
-     defeitos) por modelo, e por defeito frequente para o modelo em produção.
-  2. Matriz de confusão normalizada por defeito (defeitos mais frequentes),
-     usando os thresholds oficiais definidos no item 3.2.
+Since the problem is multi-label binary classification (not regression), the
+"predicted vs. actual" view is adapted into two complementary views:
+  1. Calibration diagram (reliability diagram): predicted probability
+     (bins) vs. observed defect frequency — aggregated (all defects) per
+     model, and per frequent defect for the production model.
+  2. Normalized confusion matrix per defect (most frequent defects),
+     using the official thresholds defined in item 3.2.
 
-Saídas:
+Outputs:
   figures/phase3_calibration_by_model.png
   figures/phase3_calibration_top_defects_nn.png
   figures/phase3_confusion_normalized_nn.png
@@ -52,7 +52,7 @@ def plot_calibration_by_model(
     cache: Dict[str, Any],
     path: str = "figures/phase3_calibration_by_model.png",
 ) -> pd.DataFrame:
-    """Reliability diagram agregado (28 defeitos empilhados) por modelo."""
+    """Aggregated reliability diagram (28 defects stacked) per model."""
     y_test = cache["y_test"]
     fig, ax = plt.subplots(figsize=(8, 7))
     ax.plot([0, 1], [0, 1], "k--", lw=1, label="Perfect calibration")
@@ -90,7 +90,7 @@ def plot_calibration_top_defects_nn(
     cache: Dict[str, Any],
     path: str = "figures/phase3_calibration_top_defects_nn.png",
 ) -> None:
-    """Reliability diagram por defeito frequente, modelo em produção (NN)."""
+    """Reliability diagram per frequent defect, production model (NN)."""
     y_test = cache["y_test"]
     defect_names = cache["defect_names"]
     proba = cache["models"][MODEL_PYTORCH]["test_proba"]
@@ -121,8 +121,8 @@ def plot_confusion_normalized_nn(
     official: Dict[str, Any],
     path: str = "figures/phase3_confusion_normalized_nn.png",
 ) -> List[Dict[str, Any]]:
-    """Matrizes de confusão normalizadas (por linha) para defeitos frequentes,
-    usando o threshold oficial do item 3.2."""
+    """Row-normalized confusion matrices for the most frequent defects,
+    using the official threshold from item 3.2."""
     y_test = cache["y_test"]
     defect_names = cache["defect_names"]
     proba = cache["models"][MODEL_PYTORCH]["test_proba"]
@@ -182,7 +182,7 @@ def plot_confusion_normalized_nn(
 
 def main() -> None:
     print("=" * 70)
-    print("FASE 3.4 — PREVISTO × REALIZADO")
+    print("PHASE 3.4 — PREDICTED × ACTUAL")
     print("=" * 70)
     Path("reports").mkdir(exist_ok=True)
     Path("figures").mkdir(exist_ok=True)
@@ -190,7 +190,7 @@ def main() -> None:
     cache = build_or_load_final_models(verbose=True)
     with open(OFFICIAL_THRESHOLDS_PATH, encoding="utf-8") as f:
         official = json.load(f)
-    print(f"[*] Estratégia oficial (3.2): {official['official_strategy_name']}")
+    print(f"[*] Official strategy (3.2): {official['official_strategy_name']}")
 
     bins_df = plot_calibration_by_model(cache)
     bins_df.to_csv("figures/table_phase3_calibration_bins.csv", index=False)
@@ -203,16 +203,16 @@ def main() -> None:
     print("    [OK] figures/phase3_confusion_normalized_nn.png")
 
     md = "\n".join([
-        "# Fase 3.4 — Previsto × Realizado\n",
-        "Adaptação para classificação multi-label: (1) diagramas de calibração "
-        "(probabilidade prevista vs frequência real) e (2) matrizes de confusão "
-        "normalizadas com os thresholds oficiais do item 3.2.\n",
-        "## Matrizes de confusão (NN, thresholds oficiais)\n",
+        "# Phase 3.4 — Predicted × Actual\n",
+        "Adaptation for multi-label classification: (1) calibration diagrams "
+        "(predicted probability vs. observed frequency) and (2) normalized "
+        "confusion matrices with the official thresholds from item 3.2.\n",
+        "## Confusion matrices (NN, official thresholds)\n",
         dataframe_to_markdown(pd.DataFrame(confusion_stats)),
         "",
-        "![Calibração por modelo](phase3_calibration_by_model.png)",
-        "![Calibração por defeito](phase3_calibration_top_defects_nn.png)",
-        "![Confusão normalizada](phase3_confusion_normalized_nn.png)",
+        "![Calibration by model](phase3_calibration_by_model.png)",
+        "![Calibration by defect](phase3_calibration_top_defects_nn.png)",
+        "![Normalized confusion](phase3_confusion_normalized_nn.png)",
         "",
     ])
     Path("reports/phase3_predicted_vs_actual.md").write_text(md, encoding="utf-8")

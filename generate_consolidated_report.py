@@ -1,23 +1,23 @@
 """
-Relatório consolidado — Ajustes solicitados pela banca (Fases 1-3)
-==================================================================
+Consolidated report — Adjustments requested by the review committee (Phases 1-3)
+================================================================================
 
-Concatena os relatórios markdown das três fases em um único documento
-(reports/RELATORIO_CONSOLIDADO_BANCA.md), na ordem das fases, com os
-checkpoints de decisão no início.
+Concatenates the markdown reports of the three phases into a single document
+(reports/CONSOLIDATED_REPORT.md), in phase order, with the decision
+checkpoints at the beginning.
 
-Thresholds: os thresholds oficiais vêm de threshold_selection_oof.py
-(selecionados nas predições out-of-fold do conjunto de desenvolvimento, sem
-usar o teste); a seção correspondente é gerada a partir de
-reports/oof_threshold_results.json. O antigo reports/phase3_threshold_tradeoff.md
-agora é reports/phase3_threshold_tradeoff_test_selected.md (legado, thresholds
-escolhidos no teste) e não é incorporado ao relatório.
+Thresholds: the official thresholds come from threshold_selection_oof.py
+(selected on the out-of-fold predictions of the development set, without
+using the test set); the corresponding section is generated from
+reports/oof_threshold_results.json. The former reports/phase3_threshold_tradeoff.md
+is now reports/phase3_threshold_tradeoff_test_selected.md (legacy, thresholds
+chosen on the test set) and is not included in the report.
 
-Também oferece --run-all para executar as três fases em sequência antes de
-consolidar (útil para reproduzir tudo do zero):
+Also offers --run-all to run the three phases in sequence before
+consolidating (useful to reproduce everything from scratch):
     python generate_consolidated_report.py --run-all
 
-Todos os caminhos são resolvidos a partir do diretório deste script (ROOT).
+All paths are resolved from this script's directory (ROOT).
 """
 
 from __future__ import annotations
@@ -33,27 +33,27 @@ if hasattr(sys.stdout, "reconfigure"):
 
 ROOT = Path(__file__).resolve().parent
 
-# Marcador de seção gerada a partir do JSON de thresholds OOF
+# Marker of the section generated from the OOF thresholds JSON
 OOF_THRESHOLDS_SECTION = "<oof_threshold_results>"
 OOF_RESULTS_PATH = ROOT / "reports" / "oof_threshold_results.json"
 LEGACY_TRADEOFF_MD = "reports/phase3_threshold_tradeoff_test_selected.md"
 
 REPORT_SECTIONS = [
-    ("Decisões (checkpoints)", [
+    ("Decisions (checkpoints)", [
         "reports/PHASE1_CHECKPOINT.md",
         "reports/PHASE2_CHECKPOINT.md",
         "reports/PHASE3_CHECKPOINT.md",
     ]),
-    ("Fase 1 — Infraestrutura de validação", [
+    ("Phase 1 — Validation infrastructure", [
         "reports/phase1_cv_comparison.md",
         "reports/phase1_overfitting_analysis.md",
         "reports/phase1_smote_comparison.md",
         "reports/phase1_smote_overfitting.md",
     ]),
-    ("Fase 2 — Modelos estatísticos", [
+    ("Phase 2 — Statistical models", [
         "reports/phase2_model_comparison.md",
     ]),
-    ("Fase 3 — Diagnósticos e interpretação", [
+    ("Phase 3 — Diagnostics and interpretation", [
         OOF_THRESHOLDS_SECTION,
         "reports/phase3_feature_importance.md",
         "reports/phase3_roc_analysis.md",
@@ -61,47 +61,47 @@ REPORT_SECTIONS = [
     ]),
 ]
 
-OUTPUT_PATH = ROOT / "reports" / "RELATORIO_CONSOLIDADO_BANCA.md"
+OUTPUT_PATH = ROOT / "reports" / "CONSOLIDATED_REPORT.md"
 
-METRIC_LABELS = ["Recall (micro)", "Precisão (micro)", "F1 (micro)", "F1 (macro)"]
+METRIC_LABELS = ["Recall (micro)", "Precision (micro)", "F1 (micro)", "F1 (macro)"]
 
 
 def run_all_phases() -> None:
-    """Executa as três fases em sequência (reprodução completa)."""
+    """Run the three phases in sequence (full reproduction)."""
     import subprocess
 
     for script in (
         "run_phase1_validation.py",
         "compare_statistical_models.py",
-        "run_phase3_diagnostics.py",  # inclui threshold_selection_oof.py (thresholds oficiais)
+        "run_phase3_diagnostics.py",  # includes threshold_selection_oof.py (official thresholds)
     ):
-        print(f"\n{'=' * 70}\nExecutando {script}...\n{'=' * 70}")
+        print(f"\n{'=' * 70}\nRunning {script}...\n{'=' * 70}")
         result = subprocess.run([sys.executable, "-X", "utf8", str(ROOT / script)], cwd=ROOT)
         if result.returncode != 0:
-            raise RuntimeError(f"{script} falhou (exit code {result.returncode})")
+            raise RuntimeError(f"{script} failed (exit code {result.returncode})")
 
 
 def oof_thresholds_markdown() -> str | None:
-    """Seção de thresholds oficiais a partir de reports/oof_threshold_results.json."""
+    """Official thresholds section built from reports/oof_threshold_results.json."""
     if not OOF_RESULTS_PATH.exists():
         return None
     data = json.loads(OOF_RESULTS_PATH.read_text(encoding="utf-8"))
     off = data["official"]
     lines = [
-        "## Thresholds oficiais (seleção out-of-fold, sem uso do teste)",
+        "## Official thresholds (out-of-fold selection, test set not used)",
         "",
-        "Fonte: `threshold_selection_oof.py` → `reports/oof_threshold_results.json`. "
-        "Thresholds por defeito selecionados nas predições out-of-fold do conjunto de "
-        "desenvolvimento (CV 5-fold) e aplicados, inalterados, ao conjunto de teste.",
+        "Source: `threshold_selection_oof.py` → `reports/oof_threshold_results.json`. "
+        "Per-defect thresholds selected on the out-of-fold predictions of the "
+        "development set (5-fold CV) and applied, unchanged, to the test set.",
         "",
-        f"- Estratégia oficial: `{data['official_strategy']}`",
-        f"- Faixa de thresholds (defeitos com positivos no teste): "
+        f"- Official strategy: `{data['official_strategy']}`",
+        f"- Threshold range (defects with positives in the test set): "
         f"{off['thr_min']:.2f} – {off['thr_max']:.2f}",
         "",
-        "### Rede neural — teste (IC 95% bootstrap)",
+        "### Neural network — test set (95% bootstrap CI)",
         "",
-        "| Métrica | Valor | IC 95% |",
-        "|---------|-------|--------|",
+        "| Metric | Value | 95% CI |",
+        "|--------|-------|--------|",
     ]
     for label, pt, lo, hi in zip(METRIC_LABELS, off["point"], off["lo"], off["hi"]):
         lines.append(f"| {label} | {pt:.4f} | [{lo:.4f}, {hi:.4f}] |")
@@ -110,7 +110,7 @@ def oof_thresholds_markdown() -> str | None:
     if conf:
         lines += [
             "",
-            f"Matriz de confusão agregada (28 defeitos × teste): TP = {conf['tp']}, "
+            f"Aggregated confusion matrix (28 defects × test set): TP = {conf['tp']}, "
             f"TN = {conf['tn']}, FP = {conf['fp']}, FN = {conf['fn']}.",
         ]
 
@@ -118,10 +118,10 @@ def oof_thresholds_markdown() -> str | None:
     if dev:
         lines += [
             "",
-            "### F2-micro no desenvolvimento (OOF) por estratégia — rede neural",
+            "### F2-micro on the development set (OOF) by strategy — neural network",
             "",
-            "| Estratégia | F2-micro (OOF) |",
-            "|------------|----------------|",
+            "| Strategy | F2-micro (OOF) |",
+            "|----------|----------------|",
         ]
         for strategy, value in dev.items():
             lines.append(f"| {strategy} | {value:.4f} |")
@@ -130,29 +130,29 @@ def oof_thresholds_markdown() -> str | None:
     if all_models:
         lines += [
             "",
-            "### Todos os modelos — estratégia oficial, teste",
+            "### All models — official strategy, test set",
             "",
-            "| Modelo | " + " | ".join(METRIC_LABELS) + " |",
-            "|--------|" + "|".join("---" for _ in METRIC_LABELS) + "|",
+            "| Model | " + " | ".join(METRIC_LABELS) + " |",
+            "|-------|" + "|".join("---" for _ in METRIC_LABELS) + "|",
         ]
         for model, values in all_models.items():
             lines.append(f"| {model} | " + " | ".join(f"{v:.4f}" for v in values) + " |")
 
     lines += [
         "",
-        f"*Legado:* `{LEGACY_TRADEOFF_MD}` (threshold_tradeoff_analysis.py) contém o "
-        "procedimento anterior, com thresholds escolhidos no conjunto de teste; não é "
-        "usado nos resultados oficiais.",
+        f"*Legacy:* `{LEGACY_TRADEOFF_MD}` (threshold_tradeoff_analysis.py) contains the "
+        "previous procedure, with thresholds chosen on the test set; it is not "
+        "used in the official results.",
     ]
     return "\n".join(lines)
 
 
 def build_report() -> None:
     parts = [
-        "# Relatório consolidado — Ajustes solicitados pela banca\n",
-        f"Gerado em {datetime.now():%Y-%m-%d %H:%M}. "
-        "Pipeline: split 80/20 estratificado (random_state=42), CV 5-fold "
-        "unificada, configuração oficial definida na Fase 1.\n",
+        "# Consolidated report — Adjustments requested by the review committee\n",
+        f"Generated on {datetime.now():%Y-%m-%d %H:%M}. "
+        "Pipeline: stratified 80/20 split (random_state=42), unified 5-fold "
+        "CV, official configuration defined in Phase 1.\n",
         "---\n",
     ]
     for section_title, files in REPORT_SECTIONS:
@@ -161,17 +161,17 @@ def build_report() -> None:
             if file == OOF_THRESHOLDS_SECTION:
                 content = oof_thresholds_markdown()
                 if content is None:
-                    parts.append("\n> [PENDENTE] reports/oof_threshold_results.json não "
-                                 "encontrado — execute threshold_selection_oof.py.\n")
+                    parts.append("\n> [PENDING] reports/oof_threshold_results.json not "
+                                 "found — run threshold_selection_oof.py.\n")
                     continue
             else:
                 path = ROOT / file
                 if not path.exists():
-                    parts.append(f"\n> [PENDENTE] {file} não encontrado — "
-                                 "execute a fase correspondente.\n")
+                    parts.append(f"\n> [PENDING] {file} not found — "
+                                 "run the corresponding phase.\n")
                     continue
                 content = path.read_text(encoding="utf-8")
-            # Rebaixa títulos em um nível para caber na hierarquia
+            # Demote headings by one level to fit the hierarchy
             content = "\n".join(
                 ("#" + line) if line.startswith("#") else line
                 for line in content.splitlines()
@@ -180,7 +180,7 @@ def build_report() -> None:
             parts.append("\n---\n")
 
     OUTPUT_PATH.write_text("\n".join(parts), encoding="utf-8")
-    print(f"[OK] Relatório consolidado: {OUTPUT_PATH}")
+    print(f"[OK] Consolidated report: {OUTPUT_PATH}")
 
 
 def main() -> None:

@@ -1,20 +1,20 @@
 """
-Item 1.2 — Análise formal de overfitting via 80/20 + cross-validation.
+Item 1.2 — Formal overfitting analysis via 80/20 + cross-validation.
 
-Pergunta da banca: "Os modelos estão sofrendo overfitting?"
+Reviewer question: "Are the models overfitting?"
 
-Consolida, por modelo, Recall/Precision/F1 em três colunas:
-  - Treino (CV): média nos folds de treino (avaliado nos dados ORIGINAIS do
-    fold, sem amostras SMOTE, para não inflar a métrica artificialmente)
-  - Validação (CV): média nos folds de validação
-  - Teste Final: modelo treinado nos 80% completos, avaliado nos 20% isolados
+Consolidates, per model, Recall/Precision/F1 in three columns:
+  - Train (CV): mean over the training folds (evaluated on the ORIGINAL fold
+    data, without SMOTE samples, so as not to inflate the metric artificially)
+  - Validation (CV): mean over the validation folds
+  - Final Test: model trained on the full 80%, evaluated on the held-out 20%
 
-Gaps grandes Treino→Validação indicam overfitting no treinamento;
-gaps grandes Validação→Teste indicam overfitting/shift de distribuição.
+Large Train→Validation gaps indicate overfitting during training;
+large Validation→Test gaps indicate overfitting/distribution shift.
 
-Este módulo NÃO treina nada: consome os resultados já calculados pelo
-pipeline unificado (unified_cv_pipeline.run_cross_validation /
-run_final_test_evaluation), orquestrados por run_phase1_validation.py.
+This module does NOT train anything: it consumes the results already computed by the
+unified pipeline (unified_cv_pipeline.run_cross_validation /
+run_final_test_evaluation), orchestrated by run_phase1_validation.py.
 """
 
 from __future__ import annotations
@@ -43,7 +43,7 @@ def build_overfitting_payload(
     final_results: Dict[str, FinalModelResult],
     use_smote: bool,
 ) -> Dict[str, Any]:
-    """Monta o payload JSON da análise a partir de resultados já computados."""
+    """Builds the JSON payload of the analysis from already computed results."""
     models = []
     for model_type, cv_result in cv_results.items():
         final_result = final_results[model_type]
@@ -75,7 +75,7 @@ def build_overfitting_payload(
 
 
 def build_overfitting_table(payload: Dict[str, Any]) -> pd.DataFrame:
-    """Tabela única: Recall/Precision/F1 em Treino (CV), Validação (CV) e Teste."""
+    """Single table: Recall/Precision/F1 on Train (CV), Validation (CV) and Test."""
     rows: List[Dict[str, Any]] = []
     for model in payload["models"]:
         for metric_key, metric_label in METRIC_LABELS:
