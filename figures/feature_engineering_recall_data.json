@@ -1,45 +1,46 @@
 {
+  "protocol": "leak-free NN, F-beta(2) thresholds selected on out-of-fold development predictions, test set",
+  "labels": [
+    "Gas Porosity",
+    "Density Deviation",
+    "Cold Shut",
+    "Gas Bubbles",
+    "Incomplete Fill",
+    "Surface Blisters",
+    "Blisters Post Treatment",
+    "Low Elongation"
+  ],
   "recall_15": [
-    1.0,
-    1.0,
-    1.0,
-    1.0,
-    1.0,
-    1.0,
-    0.9761904761904762,
-    1.0
+    0.9858156028368794,
+    0.9785714285714285,
+    0.9855072463768116,
+    0.9844961240310077,
+    0.9714285714285714,
+    0.956989247311828,
+    0.967391304347826,
+    0.9880952380952381
   ],
   "recall_110": [
     1.0,
     1.0,
+    0.9710144927536232,
     1.0,
-    1.0,
-    0.9904761904761905,
-    0.989247311827957,
     0.9523809523809523,
-    1.0
-  ],
-  "labels": [
-    "Gas Porosity",
-    "Cold Shut",
-    "Density Deviation",
-    "Gas Bubbles",
-    "Incomplete Fill",
-    "Surface Blisters",
-    "Volumetric Variation",
-    "Blisters Post Treatment"
+    0.946236559139785,
+    0.9891304347826086,
+    0.9761904761904762
   ],
   "n_110": 110,
   "metrics_15": {
-    "f1_micro": 0.6042455158795458,
-    "f1_macro": 0.5537606975697114,
-    "precision_micro": 0.4349680170575693,
-    "recall_micro": 0.9892241379310345
+    "f1_micro": 0.6289173789173789,
+    "f1_macro": 0.5830950737527052,
+    "precision_micro": 0.4696808510638298,
+    "recall_micro": 0.9515086206896551
   },
   "metrics_110": {
-    "f1_micro": 0.6665451230628988,
-    "f1_macro": 0.6101542841465919,
-    "precision_micro": 0.5037200330669606,
-    "recall_micro": 0.9849137931034483
+    "f1_micro": 0.6541040043486139,
+    "f1_macro": 0.6150995056041525,
+    "precision_micro": 0.49276549276549275,
+    "recall_micro": 0.9725215517241379
   }
 }
