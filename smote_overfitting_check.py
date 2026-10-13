@@ -1,21 +1,21 @@
 """
-Item 1.4 — Verificar overfitting causado pelo SMOTE.
+Item 1.4 — Check for overfitting caused by SMOTE.
 
-Pergunta da banca: "As amostras sintéticas do SMOTE estão inflando o
-desempenho aparente (memorização de padrões sintéticos)?"
+Reviewer question: "Are the synthetic SMOTE samples inflating the
+apparent performance (memorization of synthetic patterns)?"
 
-Duas análises complementares ao item 1.2:
-  1. Treino (pós-SMOTE) vs Teste: métricas do modelo final calculadas no
-     próprio conjunto de treino balanceado (com amostras sintéticas) vs no
-     teste isolado (nunca visto, sem SMOTE). Gap grande = overfitting,
-     possivelmente inflado pelas amostras sintéticas.
-  2. Curvas de aprendizado: recall/F1 de validação em função do tamanho do
-     conjunto de treino (frações do dev set), com e sem SMOTE. Se a curva
-     com SMOTE satura cedo com gap treino-val persistente, é indício de
-     memorização de padrões sintéticos.
+Two analyses complementary to item 1.2:
+  1. Train (post-SMOTE) vs Test: metrics of the final model computed on the
+     balanced training set itself (with synthetic samples) vs on the
+     held-out test set (never seen, no SMOTE). Large gap = overfitting,
+     possibly inflated by the synthetic samples.
+  2. Learning curves: validation recall/F1 as a function of the training
+     set size (fractions of the dev set), with and without SMOTE. If the
+     with-SMOTE curve saturates early with a persistent train-val gap, it
+     suggests memorization of synthetic patterns.
 
-Reutiliza o pipeline unificado (unified_cv_pipeline) — não reimplementa
-treino/avaliação.
+Reuses the unified pipeline (unified_cv_pipeline) — does not reimplement
+training/evaluation.
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ RANDOM_STATE = 42
 def build_train_vs_test_table(
     final_results: Dict[str, FinalModelResult],
 ) -> pd.DataFrame:
-    """Tabela treino (pós-SMOTE) vs teste isolado, por modelo."""
+    """Train (post-SMOTE) vs held-out test table, per model."""
     rows: List[Dict[str, Any]] = []
     for final in final_results.values():
         for metric_key, metric_label in (
@@ -79,11 +79,11 @@ def compute_learning_curves(
     verbose: bool = True,
 ) -> List[Dict[str, Any]]:
     """
-    Curvas de aprendizado usando o primeiro fold da CV como validação fixa.
+    Learning curves using the first CV fold as the fixed validation set.
 
-    O conjunto de treino é subamostrado de forma estratificada (has_defect)
-    em frações crescentes; SMOTE (se habilitado) é aplicado após a
-    subamostragem, apenas no treino.
+    The training set is subsampled in a stratified way (has_defect)
+    at increasing fractions; SMOTE (if enabled) is applied after the
+    subsampling, to the training data only.
     """
     train_idx, val_idx = get_cv_splits(split.y_dev)[0]
     X_train_full = split.X_dev[train_idx]
@@ -99,7 +99,7 @@ def compute_learning_curves(
         if fraction >= 1.0:
             subset_idx = np.arange(len(X_train_full))
         else:
-            # Subamostragem estratificada por has_defect
+            # Subsampling stratified by has_defect
             subset_parts = []
             for label in (0, 1):
                 label_idx = np.where(has_defect == label)[0]
@@ -136,8 +136,8 @@ def compute_learning_curves(
                 pos_weights,
                 split.defect_names,
             )
-            # Métricas também no treino balanceado (com sintéticas), para
-            # evidenciar inflação por SMOTE
+            # Metrics also on the balanced training set (with synthetic samples), to
+            # expose inflation by SMOTE
             train_proba_balanced = predict_proba_any(model_type, model, X_sub_scaled)
             train_metrics_balanced = compute_multilabel_metrics(
                 y_sub_balanced, train_proba_balanced
@@ -158,11 +158,11 @@ def compute_learning_curves(
             )
             if verbose:
                 print(
-                    f"    {model_type} — fração {fraction:.0%} "
+                    f"    {model_type} — fraction {fraction:.0%} "
                     f"(n={len(X_sub):,}{' + SMOTE' if use_smote else ''}): "
                     f"Recall(val)={val_metrics['recall_micro']:.4f}, "
                     f"F1(val)={val_metrics['f1_micro']:.4f}, "
-                    f"tempo={train_time:.1f}s"
+                    f"time={train_time:.1f}s"
                 )
     return results
 
@@ -172,7 +172,7 @@ def plot_learning_curves(
     model_display_names: Dict[str, str],
     output_path: str = "figures/phase1_learning_curves.png",
 ) -> str:
-    """Gera figura com curvas de aprendizado (F1 e Recall) por modelo/condição."""
+    """Generates the figure with learning curves (F1 and Recall) per model/condition."""
     model_types = sorted({c["model_type"] for c in curves})
     conditions = sorted({c["use_smote"] for c in curves})
 
@@ -235,29 +235,29 @@ def build_smote_overfitting_markdown(
     for c in sorted(curves, key=lambda c: (c["model_type"], c["use_smote"], c["fraction"])):
         curve_rows.append(
             {
-                "Modelo": c["model_type"],
-                "Condição": "Com SMOTE" if c["use_smote"] else "Sem SMOTE",
-                "Fração treino": f"{c['fraction']:.0%}",
-                "N treino (orig.)": c["n_train_original"],
-                "N treino (efetivo)": c["n_train_effective"],
-                "F1 treino (orig.)": f"{c['train_metrics_original']['f1_micro']:.4f}",
-                "F1 treino (pós-SMOTE)": f"{c['train_metrics_balanced']['f1_micro']:.4f}",
-                "F1 validação": f"{c['val_metrics']['f1_micro']:.4f}",
-                "Recall validação": f"{c['val_metrics']['recall_micro']:.4f}",
+                "Model": c["model_type"],
+                "Condition": "With SMOTE" if c["use_smote"] else "No SMOTE",
+                "Train fraction": f"{c['fraction']:.0%}",
+                "N train (orig.)": c["n_train_original"],
+                "N train (effective)": c["n_train_effective"],
+                "F1 train (orig.)": f"{c['train_metrics_original']['f1_micro']:.4f}",
+                "F1 train (post-SMOTE)": f"{c['train_metrics_balanced']['f1_micro']:.4f}",
+                "F1 validation": f"{c['val_metrics']['f1_micro']:.4f}",
+                "Recall validation": f"{c['val_metrics']['recall_micro']:.4f}",
             }
         )
     curves_df = pd.DataFrame(curve_rows)
 
     lines = [
-        "# Fase 1.4 — Overfitting causado pelo SMOTE\n",
-        "## Treino (pós-SMOTE) vs Teste isolado\n",
-        "Métricas do modelo final calculadas no próprio conjunto de treino "
-        "balanceado (contendo amostras sintéticas) vs no teste nunca visto. "
-        "Gap grande indica overfitting, possivelmente inflado pelo SMOTE.\n",
+        "# Phase 1.4 — Overfitting Caused by SMOTE\n",
+        "## Train (post-SMOTE) vs held-out Test\n",
+        "Metrics of the final model computed on the balanced training set "
+        "itself (containing synthetic samples) vs on the never-seen test set. "
+        "A large gap indicates overfitting, possibly inflated by SMOTE.\n",
         dataframe_to_markdown(train_vs_test_df),
         "",
-        "## Curvas de aprendizado\n",
-        f"![Curvas de aprendizado]({Path(figure_path).name})\n",
+        "## Learning curves\n",
+        f"![Learning curves]({Path(figure_path).name})\n",
         dataframe_to_markdown(curves_df),
         "",
     ]

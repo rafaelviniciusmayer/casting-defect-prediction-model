@@ -1,4 +1,4 @@
-defeito,estrategia,threshold,recall,precision,f1
+defect,strategy,threshold,recall,precision,f1
 blisters_post_treatment,Recall-first,0.22000000000000003,1.0,0.4817,0.6502
 surface_blisters,Recall-first,0.060000000000000005,1.0,0.4306,0.6019
 die_sticking,Recall-first,0.4700000000000001,1.0,0.4297,0.6011

@@ -1,7 +1,7 @@
-# Checkpoint — Fase 2 (modelos estatísticos)
+# Checkpoint — Phase 2 (statistical models)
 
-- Condição oficial: sem SMOTE (herdada da Fase 1).
-- Modelos comparados: PyTorch NN, XGBoost, Random Forest, Regressão Logística L2 (Ridge), Regressão Logística L1 (Lasso).
-- Melhor recall no teste (thresholds otimizados): **Random Forest** (0.9952).
-- Melhor F1-micro no teste: **Logistic Regression (L2/Ridge)** (0.6495).
-- A Fase 3 deve usar estes 4-5 modelos finais para importância de features (3.1) e as probabilidades de teste para thresholds/ROC (3.2/3.3).
+- Official condition: without SMOTE (inherited from Phase 1).
+- Models compared: PyTorch NN, XGBoost, Random Forest, Logistic Regression L2 (Ridge), Logistic Regression L1 (Lasso).
+- Best test recall (optimized thresholds): **Random Forest** (0.9952).
+- Best test F1-micro: **Logistic Regression (L2/Ridge)** (0.6495).
+- Phase 3 must use these 4-5 final models for feature importance (3.1) and the test probabilities for thresholds/ROC (3.2/3.3).

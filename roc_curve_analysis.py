@@ -1,19 +1,19 @@
 """
-Item 3.3 (Fase 3) — Curvas ROC e AUC.
+Item 3.3 (Phase 3) — ROC curves and AUC.
 
-Pergunta da banca (Leonardo): "Como o threshold escolhido se relaciona com o
-trade-off TPR/FPR? Reportar curva ROC e AUC."
+Review committee question: "How does the chosen threshold relate to
+the TPR/FPR trade-off? Report the ROC curve and AUC."
 
-Reaproveita as probabilidades de teste do cache da Fase 3 e os thresholds da
-estratégia oficial definida no item 3.2 (reports/phase3_official_thresholds.json).
+Reuses the test probabilities from the Phase 3 cache and the thresholds of the
+official strategy defined in item 3.2 (reports/phase3_official_thresholds.json).
 
-Gera:
-  - Curva ROC por defeito para os defeitos mais frequentes, com o ponto de
-    operação do threshold oficial marcado.
-  - Curva ROC micro-average agregada por modelo.
-  - Tabela de AUC-ROC por defeito (todos os 28) e por modelo.
+Generates:
+  - Per-defect ROC curve for the most frequent defects, with the operating
+    point of the official threshold marked.
+  - Aggregated micro-average ROC curve per model.
+  - AUC-ROC table per defect (all 28) and per model.
 
-Saídas:
+Outputs:
   figures/phase3_roc_curves_top_defects.png
   figures/phase3_roc_micro_average.png
   figures/table_phase3_auc_by_defect.csv
@@ -50,8 +50,8 @@ TOP_DEFECTS_FOR_PLOT = 3
 def load_official_thresholds() -> Dict[str, Any]:
     if not OFFICIAL_THRESHOLDS_PATH.exists():
         raise FileNotFoundError(
-            "Execute threshold_selection_oof.py antes (item 3.2): "
-            f"{OFFICIAL_THRESHOLDS_PATH} não encontrado"
+            "Run threshold_selection_oof.py first (item 3.2): "
+            f"{OFFICIAL_THRESHOLDS_PATH} not found"
         )
     with open(OFFICIAL_THRESHOLDS_PATH, encoding="utf-8") as f:
         return json.load(f)
@@ -62,8 +62,8 @@ def plot_roc_top_defects(
     official: Dict[str, Any],
     path: str = "figures/phase3_roc_curves_top_defects.png",
 ) -> str:
-    """ROC por defeito (defeitos mais frequentes) para o modelo em produção (NN),
-    com o ponto de operação do threshold oficial marcado."""
+    """Per-defect ROC (most frequent defects) for the production model (NN),
+    with the operating point of the official threshold marked."""
     y_test = cache["y_test"]
     defect_names = cache["defect_names"]
     top_idx = most_frequent_defects(y_test, defect_names, TOP_DEFECTS_FOR_PLOT)
@@ -86,9 +86,9 @@ def plot_roc_top_defects(
         roc_auc = auc(fpr, tpr)
         ax.plot(fpr, tpr, color="tab:blue", lw=2,
                 label=f"ROC (AUC = {roc_auc:.3f})")
-        ax.plot([0, 1], [0, 1], "k--", lw=1, alpha=0.5, label="Aleatório")
+        ax.plot([0, 1], [0, 1], "k--", lw=1, alpha=0.5, label="Random")
 
-        # Ponto de operação do threshold oficial
+        # Operating point of the official threshold
         th_official = float(nn_thresholds[defect])
         y_pred = (y_score >= th_official).astype(int)
         tp = ((y_pred == 1) & (y_true == 1)).sum()
@@ -119,7 +119,7 @@ def plot_roc_micro_average(
     cache: Dict[str, Any],
     path: str = "figures/phase3_roc_micro_average.png",
 ) -> Dict[str, float]:
-    """ROC micro-average agregada, uma curva por modelo."""
+    """Aggregated micro-average ROC, one curve per model."""
     y_test = cache["y_test"]
     fig, ax = plt.subplots(figsize=(8, 7))
     micro_aucs: Dict[str, float] = {}
@@ -145,7 +145,7 @@ def plot_roc_micro_average(
 
 
 def build_auc_table(cache: Dict[str, Any]) -> pd.DataFrame:
-    """AUC-ROC por defeito × modelo."""
+    """AUC-ROC per defect × model."""
     y_test = cache["y_test"]
     defect_names = cache["defect_names"]
     counts = y_test.sum(axis=0).astype(int)
@@ -171,14 +171,14 @@ def build_auc_table(cache: Dict[str, Any]) -> pd.DataFrame:
 
 def main() -> None:
     print("=" * 70)
-    print("FASE 3.3 — CURVAS ROC E AUC")
+    print("PHASE 3.3 — ROC CURVES AND AUC")
     print("=" * 70)
     Path("reports").mkdir(exist_ok=True)
     Path("figures").mkdir(exist_ok=True)
 
     cache = build_or_load_final_models(verbose=True)
     official = load_official_thresholds()
-    print(f"[*] Estratégia oficial (3.2): {official['official_strategy_name']}")
+    print(f"[*] Official strategy (3.2): {official['official_strategy_name']}")
 
     fig1 = plot_roc_top_defects(cache, official)
     print(f"    [OK] {fig1}")
@@ -195,21 +195,21 @@ def main() -> None:
     mean_aucs = {col: round(float(auc_df[col].dropna().mean()), 4) for col in model_cols}
 
     md = "\n".join([
-        "# Fase 3.3 — Curvas ROC e AUC\n",
-        f"Estratégia oficial de threshold (item 3.2): "
-        f"**{official['official_strategy_name']}** — ponto de operação marcado "
-        "nas curvas dos defeitos mais frequentes.\n",
-        "## AUC micro-average por modelo\n",
+        "# Phase 3.3 — ROC curves and AUC\n",
+        f"Official threshold strategy (item 3.2): "
+        f"**{official['official_strategy_name']}** — operating point marked "
+        "on the curves of the most frequent defects.\n",
+        "## Micro-average AUC per model\n",
         dataframe_to_markdown(pd.DataFrame([
             {"Model": name, "AUC micro": f"{v:.4f}",
              "Mean AUC per defect": f"{mean_aucs[name]:.4f}"}
             for name, v in micro_aucs.items()
         ])),
-        "\n## AUC-ROC por defeito (10 mais frequentes)\n",
+        "\n## AUC-ROC per defect (10 most frequent)\n",
         dataframe_to_markdown(auc_df.head(10)),
         "",
-        "Tabela completa: `figures/table_phase3_auc_by_defect.csv`\n",
-        "![ROC defeitos frequentes](phase3_roc_curves_top_defects.png)",
+        "Full table: `figures/table_phase3_auc_by_defect.csv`\n",
+        "![ROC most frequent defects](phase3_roc_curves_top_defects.png)",
         "![ROC micro-average](phase3_roc_micro_average.png)",
         "",
     ])
@@ -228,7 +228,7 @@ def main() -> None:
             ensure_ascii=False,
         )
 
-    print("\n[*] AUC micro-average:")
+    print("\n[*] Micro-average AUC:")
     for name, v in micro_aucs.items():
         print(f"    {name:<35} {v:.4f}")
     print("[OK] reports/phase3_roc_analysis.{json,md}")

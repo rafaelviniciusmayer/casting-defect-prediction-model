@@ -1,8 +1,8 @@
-# Fase 3.3 — Curvas ROC e AUC
+# Phase 3.3 — ROC curves and AUC
 
-Estratégia oficial de threshold (item 3.2): **F-beta β=2 (recall-weighted)** — ponto de operação marcado nas curvas dos defeitos mais frequentes.
+Official threshold strategy (item 3.2): **F-beta β=2 (recall-weighted)** — operating point marked on the curves of the most frequent defects.
 
-## AUC micro-average por modelo
+## Micro-average AUC per model
 
 | Model | AUC micro | Mean AUC per defect |
 | --- | --- | --- |
@@ -12,7 +12,7 @@ Estratégia oficial de threshold (item 3.2): **F-beta β=2 (recall-weighted)** �
 | Logistic Regression (L2/Ridge) | 0.9929 | 0.9929 |
 | Logistic Regression (L1/Lasso) | 0.9932 | 0.9893 |
 
-## AUC-ROC por defeito (10 mais frequentes)
+## AUC-ROC per defect (10 most frequent)
 
 | defect | test_positives | Neural network (MLP) | XGBoost | Random Forest | Logistic Regression (L2/Ridge) | Logistic Regression (L1/Lasso) |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -27,7 +27,7 @@ Estratégia oficial de threshold (item 3.2): **F-beta β=2 (recall-weighted)** �
 | low_elongation | 84 | 0.9941 | 0.9937 | 0.9928 | 0.9938 | 0.9939 |
 | dimensional_deviation | 83 | 0.9967 | 0.9964 | 0.9961 | 0.9963 | 0.9964 |
 
-Tabela completa: `figures/table_phase3_auc_by_defect.csv`
+Full table: `figures/table_phase3_auc_by_defect.csv`
 
-![ROC defeitos frequentes](phase3_roc_curves_top_defects.png)
+![ROC most frequent defects](phase3_roc_curves_top_defects.png)
 ![ROC micro-average](phase3_roc_micro_average.png)

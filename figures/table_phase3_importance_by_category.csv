@@ -1,4 +1,4 @@
-feature_category,Neural network (MLP),XGBoost,Random Forest,Logistic Regression (L2/Ridge),Logistic Regression (L1/Lasso),importancia_media,n_features
+feature_category,Neural network (MLP),XGBoost,Random Forest,Logistic Regression (L2/Ridge),Logistic Regression (L1/Lasso),mean_importance,n_features
 Ideal-range distance,0.5204,0.1166,0.1978,0.279,0.3009,0.283,28
 Statistical aggregation,0.046,0.6635,0.5719,0.053,0.064,0.2797,4
 Range flag,0.3859,0.1504,0.1044,0.2663,0.2536,0.2321,42

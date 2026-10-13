@@ -1,174 +1,159 @@
 {
   "tree_importance_method": "native feature_importances_ (shap not installed)",
-  "answer": "A fase com maior importância agregada é **Agregada/Global**. A fase de injeção concentra 25.2% da importância total média entre os 5 modelos.",
+  "answer": "The phase with the highest aggregated importance is **Global/Aggregation**. The injection phase accounts for 25.2% of the total importance, averaged across the 5 models.",
   "injection_share": 0.2519,
   "by_phase": [
     {
-      "fase_processo": "Agregada/Global",
+      "process_phase": "Global/Aggregation",
       "Neural network (MLP)": 0.046,
       "XGBoost": 0.6635000109672546,
       "Random Forest": 0.5719,
       "Logistic Regression (L2/Ridge)": 0.053,
       "Logistic Regression (L1/Lasso)": 0.064,
-      "importancia_media": 0.2797,
-      "n_features": 4,
-      "process_phase": "Global/Aggregation"
+      "mean_importance": 0.2797,
+      "n_features": 4
     },
     {
-      "fase_processo": "Injeção",
+      "process_phase": "Injection",
       "Neural network (MLP)": 0.3818,
       "XGBoost": 0.10890000313520432,
       "Random Forest": 0.1571,
       "Logistic Regression (L2/Ridge)": 0.3122,
       "Logistic Regression (L1/Lasso)": 0.2996,
-      "importancia_media": 0.2519,
-      "n_features": 36,
-      "process_phase": "Injection"
+      "mean_importance": 0.2519,
+      "n_features": 36
     },
     {
-      "fase_processo": "Configuração/Manutenção",
+      "process_phase": "Configuration/Maintenance",
       "Neural network (MLP)": 0.1331,
       "XGBoost": 0.09359999746084213,
       "Random Forest": 0.0658,
       "Logistic Regression (L2/Ridge)": 0.2695,
       "Logistic Regression (L1/Lasso)": 0.2795,
-      "importancia_media": 0.1683,
-      "n_features": 35,
-      "process_phase": "Configuration/Maintenance"
+      "mean_importance": 0.1683,
+      "n_features": 35
     },
     {
-      "fase_processo": "Intensificação",
+      "process_phase": "Intensification",
       "Neural network (MLP)": 0.2537,
       "XGBoost": 0.06549999862909317,
       "Random Forest": 0.0844,
       "Logistic Regression (L2/Ridge)": 0.1685,
       "Logistic Regression (L1/Lasso)": 0.1666,
-      "importancia_media": 0.1477,
-      "n_features": 16,
-      "process_phase": "Intensification"
+      "mean_importance": 0.1477,
+      "n_features": 16
     },
     {
-      "fase_processo": "Resfriamento",
+      "process_phase": "Cooling",
       "Neural network (MLP)": 0.1814,
       "XGBoost": 0.05939999967813492,
       "Random Forest": 0.0996,
       "Logistic Regression (L2/Ridge)": 0.1392,
       "Logistic Regression (L1/Lasso)": 0.1396,
-      "importancia_media": 0.1238,
-      "n_features": 14,
-      "process_phase": "Cooling"
+      "mean_importance": 0.1238,
+      "n_features": 14
     },
     {
-      "fase_processo": "Múltiplas fases",
+      "process_phase": "Multiple phases",
       "Neural network (MLP)": 0.004,
       "XGBoost": 0.009200000204145908,
       "Random Forest": 0.0211,
       "Logistic Regression (L2/Ridge)": 0.0577,
       "Logistic Regression (L1/Lasso)": 0.0507,
-      "importancia_media": 0.0285,
-      "n_features": 5,
-      "process_phase": "Multiple phases"
+      "mean_importance": 0.0285,
+      "n_features": 5
     }
   ],
   "by_category": [
     {
-      "categoria_fe": "Distância de faixa ideal",
+      "feature_category": "Ideal-range distance",
       "Neural network (MLP)": 0.5204,
       "XGBoost": 0.11659999936819077,
       "Random Forest": 0.1978,
       "Logistic Regression (L2/Ridge)": 0.279,
       "Logistic Regression (L1/Lasso)": 0.3009,
-      "importancia_media": 0.283,
-      "n_features": 28,
-      "feature_category": "Ideal-range distance"
+      "mean_importance": 0.283,
+      "n_features": 28
     },
     {
-      "categoria_fe": "Agregação estatística",
+      "feature_category": "Statistical aggregation",
       "Neural network (MLP)": 0.046,
       "XGBoost": 0.6635000109672546,
       "Random Forest": 0.5719,
       "Logistic Regression (L2/Ridge)": 0.053,
       "Logistic Regression (L1/Lasso)": 0.064,
-      "importancia_media": 0.2797,
-      "n_features": 4,
-      "feature_category": "Statistical aggregation"
+      "mean_importance": 0.2797,
+      "n_features": 4
     },
     {
-      "categoria_fe": "Binária de faixa",
+      "feature_category": "Range flag",
       "Neural network (MLP)": 0.3859,
       "XGBoost": 0.15039999783039093,
       "Random Forest": 0.1044,
       "Logistic Regression (L2/Ridge)": 0.2663,
       "Logistic Regression (L1/Lasso)": 0.2536,
-      "importancia_media": 0.2321,
-      "n_features": 42,
-      "feature_category": "Range flag"
+      "mean_importance": 0.2321,
+      "n_features": 42
     },
     {
-      "categoria_fe": "Original",
+      "feature_category": "Original",
       "Neural network (MLP)": 0.0303,
       "XGBoost": 0.03139999881386757,
       "Random Forest": 0.0412,
       "Logistic Regression (L2/Ridge)": 0.151,
       "Logistic Regression (L1/Lasso)": 0.1426,
-      "importancia_media": 0.0793,
-      "n_features": 15,
-      "feature_category": "Original"
+      "mean_importance": 0.0793,
+      "n_features": 15
     },
     {
-      "categoria_fe": "Ratio",
+      "feature_category": "Ratio",
       "Neural network (MLP)": 0.0043,
       "XGBoost": 0.011099999770522118,
       "Random Forest": 0.0295,
       "Logistic Regression (L2/Ridge)": 0.103,
       "Logistic Regression (L1/Lasso)": 0.101,
-      "importancia_media": 0.0498,
-      "n_features": 6,
-      "feature_category": "Ratio"
+      "mean_importance": 0.0498,
+      "n_features": 6
     },
     {
-      "categoria_fe": "Diferença",
+      "feature_category": "Difference",
       "Neural network (MLP)": 0.0025,
       "XGBoost": 0.007499999832361937,
       "Random Forest": 0.0162,
       "Logistic Regression (L2/Ridge)": 0.0472,
       "Logistic Regression (L1/Lasso)": 0.0545,
-      "importancia_media": 0.0256,
-      "n_features": 4,
-      "feature_category": "Difference"
+      "mean_importance": 0.0256,
+      "n_features": 4
     },
     {
-      "categoria_fe": "Específica de domínio",
+      "feature_category": "Domain-specific",
       "Neural network (MLP)": 0.0043,
       "XGBoost": 0.009499999694526196,
       "Random Forest": 0.017,
       "Logistic Regression (L2/Ridge)": 0.0433,
       "Logistic Regression (L1/Lasso)": 0.0318,
-      "importancia_media": 0.0212,
-      "n_features": 5,
-      "feature_category": "Domain-specific"
+      "mean_importance": 0.0212,
+      "n_features": 5
     },
     {
-      "categoria_fe": "Produto",
+      "feature_category": "Product",
       "Neural network (MLP)": 0.0,
       "XGBoost": 0.004100000020116568,
       "Random Forest": 0.0088,
       "Logistic Regression (L2/Ridge)": 0.0294,
       "Logistic Regression (L1/Lasso)": 0.0321,
-      "importancia_media": 0.0149,
-      "n_features": 2,
-      "feature_category": "Product"
+      "mean_importance": 0.0149,
+      "n_features": 2
     },
     {
-      "categoria_fe": "Transformação matemática",
+      "feature_category": "Mathematical transform",
       "Neural network (MLP)": 0.0061,
       "XGBoost": 0.005900000222027302,
       "Random Forest": 0.0133,
       "Logistic Regression (L2/Ridge)": 0.0278,
       "Logistic Regression (L1/Lasso)": 0.0194,
-      "importancia_media": 0.0145,
-      "n_features": 4,
-      "feature_category": "Mathematical transform"
+      "mean_importance": 0.0145,
+      "n_features": 4
     }
   ],
   "top_30_features": [
@@ -179,9 +164,7 @@
       "Random Forest": 0.16818,
       "Logistic Regression (L2/Ridge)": 0.00698,
       "Logistic Regression (L1/Lasso)": 0.00789,
-      "importancia_media": 0.09845,
-      "fase_processo": "Agregada/Global",
-      "categoria_fe": "Agregação estatística",
+      "mean_importance": 0.09845,
       "process_phase": "Global/Aggregation",
       "feature_category": "Statistical aggregation"
     },
@@ -192,9 +175,7 @@
       "Random Forest": 0.13458,
       "Logistic Regression (L2/Ridge)": 0.00698,
       "Logistic Regression (L1/Lasso)": 0.00836,
-      "importancia_media": 0.09557,
-      "fase_processo": "Agregada/Global",
-      "categoria_fe": "Agregação estatística",
+      "mean_importance": 0.09557,
       "process_phase": "Global/Aggregation",
       "feature_category": "Statistical aggregation"
     },
@@ -205,9 +186,7 @@
       "Random Forest": 0.16906,
       "Logistic Regression (L2/Ridge)": 0.03344,
       "Logistic Regression (L1/Lasso)": 0.04618,
-      "importancia_media": 0.05886,
-      "fase_processo": "Agregada/Global",
-      "categoria_fe": "Agregação estatística",
+      "mean_importance": 0.05886,
       "process_phase": "Global/Aggregation",
       "feature_category": "Statistical aggregation"
     },
@@ -218,9 +197,7 @@
       "Random Forest": 0.01915,
       "Logistic Regression (L2/Ridge)": 0.01101,
       "Logistic Regression (L1/Lasso)": 0.01314,
-      "importancia_media": 0.02881,
-      "fase_processo": "Resfriamento",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.02881,
       "process_phase": "Cooling",
       "feature_category": "Ideal-range distance"
     },
@@ -231,9 +208,7 @@
       "Random Forest": 0.1001,
       "Logistic Regression (L2/Ridge)": 0.00561,
       "Logistic Regression (L1/Lasso)": 0.00156,
-      "importancia_media": 0.02679,
-      "fase_processo": "Agregada/Global",
-      "categoria_fe": "Agregação estatística",
+      "mean_importance": 0.02679,
       "process_phase": "Global/Aggregation",
       "feature_category": "Statistical aggregation"
     },
@@ -244,9 +219,7 @@
       "Random Forest": 0.01113,
       "Logistic Regression (L2/Ridge)": 0.01623,
       "Logistic Regression (L1/Lasso)": 0.01798,
-      "importancia_media": 0.02508,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.02508,
       "process_phase": "Injection",
       "feature_category": "Ideal-range distance"
     },
@@ -257,9 +230,7 @@
       "Random Forest": 0.01228,
       "Logistic Regression (L2/Ridge)": 0.00991,
       "Logistic Regression (L1/Lasso)": 0.01053,
-      "importancia_media": 0.02355,
-      "fase_processo": "Intensificação",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.02355,
       "process_phase": "Intensification",
       "feature_category": "Ideal-range distance"
     },
@@ -270,9 +241,7 @@
       "Random Forest": 0.00963,
       "Logistic Regression (L2/Ridge)": 0.00805,
       "Logistic Regression (L1/Lasso)": 0.01582,
-      "importancia_media": 0.01896,
-      "fase_processo": "Intensificação",
-      "categoria_fe": "Binária de faixa",
+      "mean_importance": 0.01896,
       "process_phase": "Intensification",
       "feature_category": "Range flag"
     },
@@ -283,9 +252,7 @@
       "Random Forest": 0.00716,
       "Logistic Regression (L2/Ridge)": 0.01127,
       "Logistic Regression (L1/Lasso)": 0.0137,
-      "importancia_media": 0.01611,
-      "fase_processo": "Intensificação",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.01611,
       "process_phase": "Intensification",
       "feature_category": "Ideal-range distance"
     },
@@ -296,9 +263,7 @@
       "Random Forest": 0.0144,
       "Logistic Regression (L2/Ridge)": 0.01309,
       "Logistic Regression (L1/Lasso)": 0.01674,
-      "importancia_media": 0.01595,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.01595,
       "process_phase": "Injection",
       "feature_category": "Ideal-range distance"
     },
@@ -309,9 +274,7 @@
       "Random Forest": 0.0058,
       "Logistic Regression (L2/Ridge)": 0.0079,
       "Logistic Regression (L1/Lasso)": 0.0079,
-      "importancia_media": 0.01591,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.01591,
       "process_phase": "Injection",
       "feature_category": "Ideal-range distance"
     },
@@ -322,9 +285,7 @@
       "Random Forest": 0.01602,
       "Logistic Regression (L2/Ridge)": 0.0096,
       "Logistic Regression (L1/Lasso)": 0.01506,
-      "importancia_media": 0.01581,
-      "fase_processo": "Resfriamento",
-      "categoria_fe": "Binária de faixa",
+      "mean_importance": 0.01581,
       "process_phase": "Cooling",
       "feature_category": "Range flag"
     },
@@ -335,9 +296,7 @@
       "Random Forest": 0.00672,
       "Logistic Regression (L2/Ridge)": 0.00654,
       "Logistic Regression (L1/Lasso)": 0.00991,
-      "importancia_media": 0.0153,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Binária de faixa",
+      "mean_importance": 0.0153,
       "process_phase": "Injection",
       "feature_category": "Range flag"
     },
@@ -348,9 +307,7 @@
       "Random Forest": 0.01097,
       "Logistic Regression (L2/Ridge)": 0.00928,
       "Logistic Regression (L1/Lasso)": 0.01575,
-      "importancia_media": 0.01411,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Binária de faixa",
+      "mean_importance": 0.01411,
       "process_phase": "Injection",
       "feature_category": "Range flag"
     },
@@ -361,9 +318,7 @@
       "Random Forest": 0.00495,
       "Logistic Regression (L2/Ridge)": 0.026,
       "Logistic Regression (L1/Lasso)": 0.02872,
-      "importancia_media": 0.01238,
-      "fase_processo": "Resfriamento",
-      "categoria_fe": "Ratio",
+      "mean_importance": 0.01238,
       "process_phase": "Cooling",
       "feature_category": "Ratio"
     },
@@ -374,9 +329,7 @@
       "Random Forest": 0.00666,
       "Logistic Regression (L2/Ridge)": 0.00776,
       "Logistic Regression (L1/Lasso)": 0.0121,
-      "importancia_media": 0.01234,
-      "fase_processo": "Intensificação",
-      "categoria_fe": "Binária de faixa",
+      "mean_importance": 0.01234,
       "process_phase": "Intensification",
       "feature_category": "Range flag"
     },
@@ -387,9 +340,7 @@
       "Random Forest": 0.00675,
       "Logistic Regression (L2/Ridge)": 0.02584,
       "Logistic Regression (L1/Lasso)": 0.02414,
-      "importancia_media": 0.01184,
-      "fase_processo": "Intensificação",
-      "categoria_fe": "Ratio",
+      "mean_importance": 0.01184,
       "process_phase": "Intensification",
       "feature_category": "Ratio"
     },
@@ -400,9 +351,7 @@
       "Random Forest": 0.01049,
       "Logistic Regression (L2/Ridge)": 0.00681,
       "Logistic Regression (L1/Lasso)": 0.01064,
-      "importancia_media": 0.01178,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Binária de faixa",
+      "mean_importance": 0.01178,
       "process_phase": "Injection",
       "feature_category": "Range flag"
     },
@@ -413,9 +362,7 @@
       "Random Forest": 0.00863,
       "Logistic Regression (L2/Ridge)": 0.01029,
       "Logistic Regression (L1/Lasso)": 0.01195,
-      "importancia_media": 0.01174,
-      "fase_processo": "Configuração/Manutenção",
-      "categoria_fe": "Original",
+      "mean_importance": 0.01174,
       "process_phase": "Configuration/Maintenance",
       "feature_category": "Original"
     },
@@ -426,9 +373,7 @@
       "Random Forest": 0.00615,
       "Logistic Regression (L2/Ridge)": 0.0133,
       "Logistic Regression (L1/Lasso)": 0.01378,
-      "importancia_media": 0.01171,
-      "fase_processo": "Resfriamento",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.01171,
       "process_phase": "Cooling",
       "feature_category": "Ideal-range distance"
     },
@@ -439,9 +384,7 @@
       "Random Forest": 0.00167,
       "Logistic Regression (L2/Ridge)": 0.00934,
       "Logistic Regression (L1/Lasso)": 0.01018,
-      "importancia_media": 0.01139,
-      "fase_processo": "Configuração/Manutenção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.01139,
       "process_phase": "Configuration/Maintenance",
       "feature_category": "Ideal-range distance"
     },
@@ -452,9 +395,7 @@
       "Random Forest": 0.00274,
       "Logistic Regression (L2/Ridge)": 0.01031,
       "Logistic Regression (L1/Lasso)": 0.01151,
-      "importancia_media": 0.01121,
-      "fase_processo": "Configuração/Manutenção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.01121,
       "process_phase": "Configuration/Maintenance",
       "feature_category": "Ideal-range distance"
     },
@@ -465,9 +406,7 @@
       "Random Forest": 0.0026,
       "Logistic Regression (L2/Ridge)": 0.00875,
       "Logistic Regression (L1/Lasso)": 0.00851,
-      "importancia_media": 0.01086,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.01086,
       "process_phase": "Injection",
       "feature_category": "Ideal-range distance"
     },
@@ -478,9 +417,7 @@
       "Random Forest": 0.00539,
       "Logistic Regression (L2/Ridge)": 0.00721,
       "Logistic Regression (L1/Lasso)": 0.01213,
-      "importancia_media": 0.00996,
-      "fase_processo": "Resfriamento",
-      "categoria_fe": "Binária de faixa",
+      "mean_importance": 0.00996,
       "process_phase": "Cooling",
       "feature_category": "Range flag"
     },
@@ -491,9 +428,7 @@
       "Random Forest": 0.00458,
       "Logistic Regression (L2/Ridge)": 0.01236,
       "Logistic Regression (L1/Lasso)": 0.01489,
-      "importancia_media": 0.00976,
-      "fase_processo": "Configuração/Manutenção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.00976,
       "process_phase": "Configuration/Maintenance",
       "feature_category": "Ideal-range distance"
     },
@@ -504,9 +439,7 @@
       "Random Forest": 0.00301,
       "Logistic Regression (L2/Ridge)": 0.01919,
       "Logistic Regression (L1/Lasso)": 0.02124,
-      "importancia_media": 0.00942,
-      "fase_processo": "Configuração/Manutenção",
-      "categoria_fe": "Ratio",
+      "mean_importance": 0.00942,
       "process_phase": "Configuration/Maintenance",
       "feature_category": "Ratio"
     },
@@ -517,9 +450,7 @@
       "Random Forest": 0.00438,
       "Logistic Regression (L2/Ridge)": 0.01855,
       "Logistic Regression (L1/Lasso)": 0.01923,
-      "importancia_media": 0.00892,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Diferença",
+      "mean_importance": 0.00892,
       "process_phase": "Injection",
       "feature_category": "Difference"
     },
@@ -530,9 +461,7 @@
       "Random Forest": 0.00242,
       "Logistic Regression (L2/Ridge)": 0.02199,
       "Logistic Regression (L1/Lasso)": 0.01754,
-      "importancia_media": 0.00877,
-      "fase_processo": "Intensificação",
-      "categoria_fe": "Original",
+      "mean_importance": 0.00877,
       "process_phase": "Intensification",
       "feature_category": "Original"
     },
@@ -543,9 +472,7 @@
       "Random Forest": 0.00639,
       "Logistic Regression (L2/Ridge)": 0.01561,
       "Logistic Regression (L1/Lasso)": 0.01766,
-      "importancia_media": 0.0084,
-      "fase_processo": "Intensificação",
-      "categoria_fe": "Produto",
+      "mean_importance": 0.0084,
       "process_phase": "Intensification",
       "feature_category": "Product"
     },
@@ -556,9 +483,7 @@
       "Random Forest": 0.00187,
       "Logistic Regression (L2/Ridge)": 0.01023,
       "Logistic Regression (L1/Lasso)": 0.01003,
-      "importancia_media": 0.00839,
-      "fase_processo": "Injeção",
-      "categoria_fe": "Distância de faixa ideal",
+      "mean_importance": 0.00839,
       "process_phase": "Injection",
       "feature_category": "Ideal-range distance"
     }

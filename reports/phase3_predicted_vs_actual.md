@@ -1,8 +1,8 @@
-# Fase 3.4 — Previsto × Realizado
+# Phase 3.4 — Predicted × Actual
 
-Adaptação para classificação multi-label: (1) diagramas de calibração (probabilidade prevista vs frequência real) e (2) matrizes de confusão normalizadas com os thresholds oficiais do item 3.2.
+Adaptation for multi-label classification: (1) calibration diagrams (predicted probability vs. observed frequency) and (2) normalized confusion matrices with the official thresholds from item 3.2.
 
-## Matrizes de confusão (NN, thresholds oficiais)
+## Confusion matrices (NN, official thresholds)
 
 | defect | threshold | tn | fp | fn | tp | recall | precision |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -10,6 +10,6 @@ Adaptação para classificação multi-label: (1) diagramas de calibração (pro
 | density_deviation | 0.4100000000000001 | 4763 | 97 | 0 | 140 | 1.0 | 0.5907 |
 | cold_shut | 0.34 | 4771 | 91 | 4 | 134 | 0.971 | 0.5956 |
 
-![Calibração por modelo](phase3_calibration_by_model.png)
-![Calibração por defeito](phase3_calibration_top_defects_nn.png)
-![Confusão normalizada](phase3_confusion_normalized_nn.png)
+![Calibration by model](phase3_calibration_by_model.png)
+![Calibration by defect](phase3_calibration_top_defects_nn.png)
+![Normalized confusion](phase3_confusion_normalized_nn.png)

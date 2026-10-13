@@ -1,38 +1,38 @@
 """
-Comentario #91 (Figura 11) - Curvas de calibracao COM vs SEM SMOTE.
+Comment #91 (Figure 11) - Calibration curves WITH vs WITHOUT SMOTE.
 
-Como rodar (dentro do clone local do repositorio
-casting-defect-prediction-model, com o ambiente ja usado para treinar
-os modelos originais):
+How to run (inside the local clone of the
+casting-defect-prediction-model repository, with the environment already
+used to train the original models):
 
-    pip install imbalanced-learn   # se ainda nao tiver
-    python gerar_calibracao_com_sem_smote.py
+    pip install imbalanced-learn   # if not installed yet
+    python generate_calibration_with_without_smote.py
 
-O que o script faz:
-  1. Carrega o split de dados oficial (mesmo random_state=42, 80/20,
-     estratificado) via unified_cv_pipeline.load_pipeline_data /
+What the script does:
+  1. Loads the official data split (same random_state=42, 80/20,
+     stratified) via unified_cv_pipeline.load_pipeline_data /
      prepare_split_data.
-  2. Para os 5 modelos, treina COM SMOTE (use_smote=True) no conjunto de
-     desenvolvimento completo e avalia no teste (run_final_test_evaluation),
-     igual ao que o proprio pipeline de voces ja faz.
-  3. As predicoes SEM SMOTE ja estao salvas em
-     models/phase3_final_models.pkl (models[<tipo>]['test_proba']) -
-     nao precisa retreinar essa parte.
-  4. Monta curvas de calibracao (reliability diagram, micro-media entre
-     os 28 defeitos, 10 bins) para as duas condicoes, no mesmo estilo
-     da Figura 11 atual, e salva em
+  2. For the 5 models, trains WITH SMOTE (use_smote=True) on the full
+     development set and evaluates on the test set (run_final_test_evaluation),
+     exactly as the project pipeline itself already does.
+  3. The predictions WITHOUT SMOTE are already saved in
+     models/phase3_final_models.pkl (models[<type>]['test_proba']) -
+     that part does not need retraining.
+  4. Builds calibration curves (reliability diagram, micro-average over
+     the 28 defects, 10 bins) for the two conditions, in the same style
+     as the current Figure 11, and saves them to
      figures/phase3_calibration_with_vs_without_smote.png
 
-Tempo esperado (rodando local, CPU comum): XGBoost e Logistic
-Regression L2 ficam prontos em 1-2 min cada; Random Forest e Logistic
-Regression L1 podem passar de 5 min (o solver liblinear fica mais
-lento com o volume extra de amostras sinteticas do SMOTE); a rede
-neural (200 epocas) deve ficar na faixa de poucos minutos. No ambiente
-de sandbox usado para o restante das edicoes este script ultrapassou o
-limite de tempo por comando antes de terminar todos os 5 modelos -
-por isso ele nao foi executado ate o fim la, mas deve rodar sem
-problema no ambiente de voces, que ja tem tudo instalado e sem esse
-limite.
+Expected time (running locally, ordinary CPU): XGBoost and Logistic
+Regression L2 finish in 1-2 min each; Random Forest and Logistic
+Regression L1 may take more than 5 min (the liblinear solver gets
+slower with the extra volume of synthetic SMOTE samples); the neural
+network (200 epochs) should take a few minutes. In the sandbox
+environment used for the rest of the edits this script exceeded the
+per-command time limit before finishing all 5 models -
+so it was not run to completion there, but it should run without
+problems in the project environment, which already has everything
+installed and no such limit.
 """
 
 import pickle
@@ -59,7 +59,7 @@ def get_without_smote_proba():
 def get_with_smote_proba(split):
     out = {}
     for model_type in MODEL_TYPES:
-        print(f"[*] Treinando {model_type} COM SMOTE...")
+        print(f"[*] Training {model_type} WITH SMOTE...")
         res = ucv.run_final_test_evaluation(model_type, split, use_smote=True, verbose=True)
         proba = ucv.predict_proba_any(model_type, res.model, res.scaler.transform(split.X_test))
         out[model_type] = proba
@@ -104,7 +104,7 @@ def main():
     fig.suptitle("Calibration curves by model architecture (micro-average): with vs. without SMOTE")
     fig.tight_layout()
     fig.savefig("figures/phase3_calibration_with_vs_without_smote.png", dpi=150, facecolor="white")
-    print("Salvo em figures/phase3_calibration_with_vs_without_smote.png")
+    print("Saved to figures/phase3_calibration_with_vs_without_smote.png")
 
 if __name__ == "__main__":
     main()

@@ -1,6 +1,6 @@
-# Fase 1.3 — Contribuição do SMOTE (ablation)
+# Phase 1.3 — SMOTE Contribution (ablation)
 
-Comparação lado a lado usando o mesmo pipeline de CV (5 folds). Em ambas as condições, cost-sensitive learning permanece ativo (pos_weight na NN, class_weight='balanced' no RF, scale_pos_weight no XGBoost).
+Side-by-side comparison using the same CV pipeline (5 folds). In both conditions, cost-sensitive learning remains active (pos_weight in the NN, class_weight='balanced' in RF, scale_pos_weight in XGBoost).
 
 | Model | Condition | Recall (CV) | Precision (CV) | F1-micro (CV) | F1-macro (CV) | CV Time (s) |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -14,16 +14,16 @@ Comparação lado a lado usando o mesmo pipeline de CV (5 folds). Em ambas as co
 | Random Forest | With SMOTE | 0.7127 ± 0.0116 | 0.5990 ± 0.0064 | 0.6508 ± 0.0024 | 0.5907 ± 0.0149 | 420.9 |
 | Random Forest | Delta (With - No) | -0.2309 | +0.0790 | -0.0196 | -0.0412 | -57120.6 |
 
-## Recomendações por modelo
+## Recommendations per model
 
-- **Neural network (MLP)**: SMOTE sem ganho relevante (ΔF1=+0.0075, ΔRecall=-0.0849) — considerar apenas cost-sensitive learning.
-- **XGBoost**: SMOTE sem ganho relevante (ΔF1=-0.0105, ΔRecall=-0.1192) — considerar apenas cost-sensitive learning.
-- **Random Forest**: SMOTE sem ganho relevante (ΔF1=-0.0196, ΔRecall=-0.2309) — considerar apenas cost-sensitive learning.
+- **Neural network (MLP)**: SMOTE brings no relevant gain (ΔF1=+0.0075, ΔRecall=-0.0849) — consider cost-sensitive learning only.
+- **XGBoost**: SMOTE brings no relevant gain (ΔF1=-0.0105, ΔRecall=-0.1192) — consider cost-sensitive learning only.
+- **Random Forest**: SMOTE brings no relevant gain (ΔF1=-0.0196, ΔRecall=-0.2309) — consider cost-sensitive learning only.
 
-## Decisão da Fase 1
+## Phase 1 decision
 
-- **SMOTE REMOVIDO** — configuração oficial passa a usar apenas cost-sensitive learning
-- Ganho médio de F1-micro: -0.0076
-- Ganho médio de recall: -0.1450
-- Aumento médio do gap treino-val: +0.0693
-- Critério: Manter SMOTE se ganho médio de F1-micro >= 0.005 ou de recall >= 0.01 na validação (CV), com aumento médio de gap treino-val <= 0.05.
+- **SMOTE REMOVED** — the official configuration now uses cost-sensitive learning only
+- Mean F1-micro gain: -0.0076
+- Mean recall gain: -0.1450
+- Mean train-val gap increase: +0.0693
+- Criterion: Keep SMOTE if the mean gain of F1-micro >= 0.005 or of recall >= 0.01 on validation (CV), with a mean train-val gap increase <= 0.05.

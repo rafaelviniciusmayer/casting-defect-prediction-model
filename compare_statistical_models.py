@@ -1,28 +1,28 @@
 """
-Item 2.1 (Fase 2) — Comparação com modelos estatísticos e de regressão.
+Item 2.1 (Phase 2) — Comparison with statistical and regression models.
 
-Pergunta da banca: "Por que só modelos de ML 'caixa-preta'? Comparar com
-modelos estatísticos/de regressão clássicos."
+Reviewer question: "Why only 'black-box' ML models? Compare with
+classical statistical/regression models."
 
-Adiciona ao comparativo (além de PyTorch NN, XGBoost e Random Forest):
-  - Regressão Logística L2/Ridge (class_weight='balanced') — baseline linear
-    interpretável, via MultiOutputClassifier como XGBoost/RF.
-  - Regressão Logística L1/Lasso — baseline estatístico regularizado formal.
+Adds to the comparison (besides PyTorch NN, XGBoost and Random Forest):
+  - L2/Ridge Logistic Regression (class_weight='balanced') — interpretable linear
+    baseline, via MultiOutputClassifier like XGBoost/RF.
+  - L1/Lasso Logistic Regression — formal regularized statistical baseline.
 
-Usa exatamente o mesmo pipeline da Fase 1 (unified_cv_pipeline):
-mesmo split 80/20, mesma CV 5-fold, SMOTE conforme decisão do item 1.3
-(lida automaticamente de reports/phase1_smote_comparison.json) e mesma
-otimização de threshold por defeito (maximizar recall) na avaliação final.
+Uses exactly the same pipeline as Phase 1 (unified_cv_pipeline):
+same 80/20 split, same 5-fold CV, SMOTE according to the item 1.3 decision
+(read automatically from reports/phase1_smote_comparison.json) and the same
+per-defect threshold optimization (maximize recall) in the final evaluation.
 
-Pré-requisito: rodar run_phase1_validation.py antes (gera a decisão do SMOTE
-e as CVs dos 3 modelos originais, reaproveitadas aqui sem retreinar).
+Prerequisite: run run_phase1_validation.py first (it generates the SMOTE decision
+and the CVs of the 3 original models, reused here without retraining).
 
-Execute: python compare_statistical_models.py
+Run: python compare_statistical_models.py
 
-Saídas:
+Outputs:
   reports/phase2_model_comparison.{json,md}
   reports/PHASE2_CHECKPOINT.md
-  figures/table_phase2_model_comparison.csv  (equivalente à Tabela 8 do artigo)
+  figures/table_phase2_model_comparison.csv  (equivalent to Table 8 of the article)
 """
 
 from __future__ import annotations
@@ -71,11 +71,11 @@ OOF_DIR = Path("models/oof_proba")
 
 
 def load_phase1_smote_decision() -> bool:
-    """Lê a decisão oficial da Fase 1 (manter SMOTE ou não)."""
+    """Reads the official Phase 1 decision (keep SMOTE or not)."""
     if not PHASE1_DECISION_PATH.exists():
         raise FileNotFoundError(
-            "Execute run_phase1_validation.py antes: decisão do SMOTE "
-            f"não encontrada em {PHASE1_DECISION_PATH}"
+            "Run run_phase1_validation.py first: SMOTE decision "
+            f"not found at {PHASE1_DECISION_PATH}"
         )
     with open(PHASE1_DECISION_PATH, encoding="utf-8") as f:
         payload = json.load(f)
@@ -84,8 +84,8 @@ def load_phase1_smote_decision() -> bool:
 
 def load_phase1_cv_stats(use_smote: bool) -> Dict[str, Dict[str, Any]]:
     """
-    Reaproveita as CVs da Fase 1 para os 3 modelos originais, na condição
-    oficial, evitando retreino.
+    Reuses the Phase 1 CVs for the 3 original models, under the official
+    condition, avoiding retraining.
     """
     with open(PHASE1_DECISION_PATH, encoding="utf-8") as f:
         smote_payload = json.load(f)
@@ -108,9 +108,9 @@ def evaluate_final_with_thresholds(
     use_smote: bool,
 ) -> Dict[str, Any]:
     """
-    Treina o modelo final nos 80% e avalia no teste com a MESMA otimização de
-    threshold por defeito do pipeline original (maximizar recall), além de
-    medir tempo de treino e de inferência (ms por 100 amostras).
+    Trains the final model on the 80% and evaluates on the test set with the SAME
+    per-defect threshold optimization as the original pipeline (maximize recall), and also
+    measures the training and inference time (ms per 100 samples).
     """
     final = run_final_test_evaluation(model_type, split, use_smote=use_smote, verbose=True)
 
@@ -132,7 +132,7 @@ def evaluate_final_with_thresholds(
         "f1_macro": macro_f1_observed(split.y_test, y_pred_binary),
     }
 
-    # Tempo de inferência: 100 repetições sobre 100 amostras
+    # Inference time: 100 repetitions over 100 samples
     X_bench = X_test_scaled[:100]
     t0 = time.perf_counter()
     if model_type == MODEL_PYTORCH:
@@ -160,18 +160,18 @@ def build_comparison_table(
     cv_stats: Dict[str, Dict[str, Any]],
     final_evals: Dict[str, Dict[str, Any]],
 ) -> pd.DataFrame:
-    """Tabela equivalente à Tabela 8 do artigo, agora com 5 modelos."""
+    """Table equivalent to Table 8 of the article, now with 5 models."""
     rows: List[Dict[str, Any]] = []
     for model_type, final in final_evals.items():
         cv = cv_stats.get(model_type)
         opt = final["test_metrics_optimized_threshold"]
         rows.append(
             {
-                "Modelo": final["model_name"],
-                "Recall (teste)": f"{opt['recall_micro']:.4f}",
-                "Precision (teste)": f"{opt['precision_micro']:.4f}",
-                "F1-micro (teste)": f"{opt['f1_micro']:.4f}",
-                "F1-macro (teste)": f"{opt['f1_macro']:.4f}",
+                "Model": final["model_name"],
+                "Recall (test)": f"{opt['recall_micro']:.4f}",
+                "Precision (test)": f"{opt['precision_micro']:.4f}",
+                "F1-micro (test)": f"{opt['f1_micro']:.4f}",
+                "F1-macro (test)": f"{opt['f1_macro']:.4f}",
                 "Recall (CV)": (
                     format_mean_std(
                         cv["cv_val_mean"]["recall_micro"], cv["cv_val_std"]["recall_micro"]
@@ -186,47 +186,79 @@ def build_comparison_table(
                     if cv
                     else "—"
                 ),
-                "Treino (s)": f"{final['train_time_sec']:.1f}",
-                "Inferência (ms/100)": f"{final['inference_time_ms_per_100']:.2f}",
+                "Train (s)": f"{final['train_time_sec']:.1f}",
+                "Inference (ms/100)": f"{final['inference_time_ms_per_100']:.2f}",
             }
         )
     return pd.DataFrame(rows)
 
 
 def build_phase2_markdown(df: pd.DataFrame, use_smote: bool) -> str:
-    smote_label = "com SMOTE" if use_smote else "sem SMOTE (apenas cost-sensitive)"
+    smote_label = "with SMOTE" if use_smote else "without SMOTE (cost-sensitive only)"
     lines = [
-        "# Fase 2.1 — Comparação com modelos estatísticos e de regressão\n",
-        f"Configuração oficial da Fase 1: **{smote_label}**. "
-        "Todos os modelos usam o mesmo split 80/20, a mesma CV 5-fold, o mesmo "
-        "pré-processamento e a mesma otimização de threshold por defeito "
-        "(maximizar recall) na avaliação final de teste.\n",
-        "Baselines estatísticos adicionados: Regressão Logística L2 (Ridge) e "
-        "L1 (Lasso), ambas com `class_weight='balanced'` via `MultiOutputClassifier`.\n",
+        "# Phase 2.1 — Comparison with statistical and regression models\n",
+        f"Official Phase 1 configuration: **{smote_label}**. "
+        "All models use the same 80/20 split, the same 5-fold CV, the same "
+        "preprocessing and the same per-defect threshold optimization "
+        "(maximize recall) in the final test evaluation.\n",
+        "Statistical baselines added: Logistic Regression L2 (Ridge) and "
+        "L1 (Lasso), both with `class_weight='balanced'` via `MultiOutputClassifier`.\n",
         dataframe_to_markdown(df),
         "",
     ]
     return "\n".join(lines)
 
 
+def build_phase2_checkpoint_markdown(
+    final_evals: Dict[str, Dict[str, Any]],
+    use_smote: bool,
+) -> str:
+    best_recall = max(
+        final_evals.values(),
+        key=lambda e: e["test_metrics_optimized_threshold"]["recall_micro"],
+    )
+    best_f1 = max(
+        final_evals.values(),
+        key=lambda e: e["test_metrics_optimized_threshold"]["f1_micro"],
+    )
+    return "\n".join(
+        [
+            "# Checkpoint — Phase 2 (statistical models)\n",
+            f"- Official condition: {'with' if use_smote else 'without'} SMOTE "
+            "(inherited from Phase 1).",
+            "- Models compared: PyTorch NN, XGBoost, Random Forest, "
+            "Logistic Regression L2 (Ridge), Logistic Regression L1 (Lasso).",
+            f"- Best test recall (optimized thresholds): "
+            f"**{best_recall['model_name']}** "
+            f"({best_recall['test_metrics_optimized_threshold']['recall_micro']:.4f}).",
+            f"- Best test F1-micro: **{best_f1['model_name']}** "
+            f"({best_f1['test_metrics_optimized_threshold']['f1_micro']:.4f}).",
+            "- Phase 3 must use these 4-5 final models for feature "
+            "importance (3.1) and the test probabilities for thresholds/ROC "
+            "(3.2/3.3).",
+            "",
+        ]
+    )
+
+
 def main() -> None:
     t_start = time.perf_counter()
     print("=" * 70)
-    print("FASE 2 — COMPARAÇÃO COM MODELOS ESTATÍSTICOS")
+    print("PHASE 2 — COMPARISON WITH STATISTICAL MODELS")
     print("=" * 70)
 
     Path("reports").mkdir(exist_ok=True)
     Path("figures").mkdir(exist_ok=True)
 
     use_smote = load_phase1_smote_decision()
-    print(f"\n[*] Decisão da Fase 1: SMOTE {'MANTIDO' if use_smote else 'REMOVIDO'} "
-          f"(condição oficial: {'com' if use_smote else 'sem'} SMOTE)")
+    print(f"\n[*] Phase 1 decision: SMOTE {'KEPT' if use_smote else 'REMOVED'} "
+          f"(official condition: {'with' if use_smote else 'without'} SMOTE)")
 
-    print("\n[*] Carregando dados (pipeline existente)...")
+    print("\n[*] Loading data (existing pipeline)...")
     data = load_pipeline_data(verbose=True)
     split = prepare_split_data(data, verbose=True)
 
-    # CV apenas para os modelos NOVOS; os 3 originais reaproveitam a Fase 1
+    # CV only for the NEW models; the 3 original ones reuse Phase 1
     cv_stats = load_phase1_cv_stats(use_smote)
     new_cv_results = {}
     for model_type in NEW_MODEL_TYPES:
@@ -239,7 +271,7 @@ def main() -> None:
             "cv_total_train_time_sec": cv_result.total_train_time_sec,
         }
 
-    # Avaliação final (teste, thresholds otimizados) para os 5 modelos
+    # Final evaluation (test, optimized thresholds) for the 5 models
     all_model_types = available_model_types() + NEW_MODEL_TYPES
     final_evals = {}
     for model_type in all_model_types:
@@ -249,7 +281,7 @@ def main() -> None:
         opt = final_evals[model_type]["test_metrics_optimized_threshold"]
         print(f"    [{MODEL_DISPLAY_NAMES[model_type]}] "
               f"Recall={opt['recall_micro']:.4f}, F1={opt['f1_micro']:.4f} "
-              f"(thresholds otimizados)")
+              f"(optimized thresholds)")
 
     df = build_comparison_table(cv_stats, final_evals)
     df.to_csv("figures/table_phase2_model_comparison.csv", index=False)
@@ -268,37 +300,12 @@ def main() -> None:
     with open("reports/phase2_model_comparison.json", "w", encoding="utf-8") as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
 
-    best_recall = max(
-        final_evals.values(),
-        key=lambda e: e["test_metrics_optimized_threshold"]["recall_micro"],
-    )
-    best_f1 = max(
-        final_evals.values(),
-        key=lambda e: e["test_metrics_optimized_threshold"]["f1_micro"],
-    )
-    checkpoint = "\n".join(
-        [
-            "# Checkpoint — Fase 2 (modelos estatísticos)\n",
-            f"- Condição oficial: {'com' if use_smote else 'sem'} SMOTE "
-            "(herdada da Fase 1).",
-            "- Modelos comparados: PyTorch NN, XGBoost, Random Forest, "
-            "Regressão Logística L2 (Ridge), Regressão Logística L1 (Lasso).",
-            f"- Melhor recall no teste (thresholds otimizados): "
-            f"**{best_recall['model_name']}** "
-            f"({best_recall['test_metrics_optimized_threshold']['recall_micro']:.4f}).",
-            f"- Melhor F1-micro no teste: **{best_f1['model_name']}** "
-            f"({best_f1['test_metrics_optimized_threshold']['f1_micro']:.4f}).",
-            "- A Fase 3 deve usar estes 4-5 modelos finais para importância de "
-            "features (3.1) e as probabilidades de teste para thresholds/ROC "
-            "(3.2/3.3).",
-            "",
-        ]
-    )
+    checkpoint = build_phase2_checkpoint_markdown(final_evals, use_smote)
     Path("reports/PHASE2_CHECKPOINT.md").write_text(checkpoint, encoding="utf-8")
 
     elapsed = time.perf_counter() - t_start
     print("\n" + "=" * 70)
-    print(f"[CONCLUÍDO] Fase 2 executada em {elapsed / 60:.1f} min")
+    print(f"[DONE] Phase 2 completed in {elapsed / 60:.1f} min")
     print("=" * 70)
     print(df.to_string(index=False))
     print("\nCheckpoint: reports/PHASE2_CHECKPOINT.md")

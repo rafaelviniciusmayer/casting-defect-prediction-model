@@ -1,15 +1,15 @@
 """
-Pipeline unificado de validação cruzada para predição de defeitos em fundição.
+Unified cross-validation pipeline for casting defect prediction.
 
-Centraliza split 80/20, CV estratificada em 5 folds, SMOTE dentro do fold de
-treino, treino dos 3 modelos comparados (PyTorch NN, XGBoost, Random Forest)
-e geração de métricas comparáveis entre modelos e condições (com/sem SMOTE).
+Centralizes the 80/20 split, the stratified 5-fold CV, SMOTE inside the training
+fold, the training of the 3 compared models (PyTorch NN, XGBoost, Random Forest)
+and the generation of metrics comparable across models and conditions (with/without SMOTE).
 
-Compatível com o pipeline existente:
-- Mesmo dataset e features (load_and_prepare_data + apply_feature_engineering)
-- Mesmo split 80/20 estratificado (random_state=42, stratify=has_defect)
-- Mesma CV estratificada em 5 folds (random_state=42)
-- SMOTE aplicado apenas no fold de treino (nunca na validação)
+Compatible with the existing pipeline:
+- Same dataset and features (load_and_prepare_data + apply_feature_engineering)
+- Same stratified 80/20 split (random_state=42, stratify=has_defect)
+- Same stratified 5-fold CV (random_state=42)
+- SMOTE applied only to the training fold (never to the validation fold)
 """
 
 from __future__ import annotations
@@ -66,7 +66,7 @@ METRIC_KEYS = ("recall_micro", "precision_micro", "f1_micro", "f1_macro")
 MODEL_PYTORCH = "pytorch_nn"
 MODEL_XGBOOST = "xgboost"
 MODEL_RANDOM_FOREST = "random_forest"
-# Fase 2 — baselines estatísticos (item 2.1)
+# Phase 2 — statistical baselines (item 2.1)
 MODEL_LOGISTIC_L2 = "logistic_regression_l2"
 MODEL_LOGISTIC_L1 = "logistic_regression_l1"
 
@@ -130,13 +130,13 @@ class FinalModelResult:
     train_time_sec: float
     model: Any = None
     scaler: Optional[StandardScaler] = None
-    # Métricas no próprio conjunto de treino usado (pós-SMOTE, se habilitado).
-    # Usado no item 1.4 (overfitting inflado por amostras sintéticas).
+    # Metrics on the training set actually used (post-SMOTE, if enabled).
+    # Used in item 1.4 (overfitting inflated by synthetic samples).
     train_metrics_on_balanced: Dict[str, float] = field(default_factory=dict)
 
 
 def load_pipeline_data(verbose: bool = True) -> PipelineData:
-    """Carrega dados com o mesmo pipeline do train_model.py."""
+    """Loads the data with the same pipeline as train_model.py."""
     X, y, feature_names, defect_names, pos_weights = load_and_prepare_data()
     X, feature_names = apply_feature_engineering(X, feature_names)
     if not verbose:
@@ -150,7 +150,7 @@ def stratified_split(
     test_size: float = TEST_SIZE,
     random_state: int = RANDOM_STATE,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-    """Split 80/20 estratificado por has_defect."""
+    """80/20 split stratified by has_defect."""
     has_defect = (y.sum(axis=1) > 0).astype(int)
     return train_test_split(
         X, y, test_size=test_size, random_state=random_state, stratify=has_defect
@@ -158,11 +158,11 @@ def stratified_split(
 
 
 def prepare_split_data(data: PipelineData, verbose: bool = True) -> SplitData:
-    """Prepara split dev/test idêntico ao pipeline existente."""
+    """Prepares a dev/test split identical to the existing pipeline."""
     X_dev, X_test, y_dev, y_test = stratified_split(data.X, data.y)
     if verbose:
-        print(f"    Desenvolvimento: {X_dev.shape[0]:,} amostras (80%)")
-        print(f"    Teste final: {X_test.shape[0]:,} amostras (20%)")
+        print(f"    Development: {X_dev.shape[0]:,} samples (80%)")
+        print(f"    Final test: {X_test.shape[0]:,} samples (20%)")
     return SplitData(
         X_dev=X_dev,
         X_test=X_test,
@@ -179,14 +179,14 @@ def get_cv_splits(
     n_splits: int = N_FOLDS,
     random_state: int = RANDOM_STATE,
 ) -> List[Tuple[np.ndarray, np.ndarray]]:
-    """Retorna índices da CV estratificada em 5 folds sobre o dev set."""
+    """Returns the indices of the stratified 5-fold CV over the dev set."""
     has_defect_dev = (y_dev.sum(axis=1) > 0).astype(int)
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
     return list(skf.split(y_dev, has_defect_dev))
 
 
 def compute_pos_weights(y_train: np.ndarray) -> List[float]:
-    """Calcula pesos de classe a partir do fold/conjunto de treino."""
+    """Computes class weights from the training fold/set."""
     pos_weights = []
     for i in range(y_train.shape[1]):
         pos_count = y_train[:, i].sum()
@@ -215,7 +215,7 @@ def compute_multilabel_metrics(
     y_pred_proba: np.ndarray,
     threshold: float = 0.5,
 ) -> Dict[str, float]:
-    """Métricas micro/macro com threshold fixo (sem otimização)."""
+    """Micro/macro metrics with a fixed threshold (no optimization)."""
     y_pred_binary = (y_pred_proba >= threshold).astype(int)
     return {
         "recall_micro": recall_score(y_true, y_pred_binary, average="micro", zero_division=0),
@@ -235,7 +235,7 @@ def preprocess_fold(
     use_smote: bool = True,
     verbose: bool = False,
 ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, StandardScaler]:
-    """Escala (fit no treino) e aplica SMOTE opcionalmente apenas no treino."""
+    """Scales (fit on train) and optionally applies SMOTE to the training data only."""
     scaler = StandardScaler()
     X_train_scaled = scaler.fit_transform(X_train).astype(np.float32)
     X_eval_scaled = scaler.transform(X_eval).astype(np.float32)
@@ -249,7 +249,7 @@ def preprocess_fold(
 
 
 def _extract_proba_positive(proba_list, model) -> np.ndarray:
-    """Extrai P(classe=1) de MultiOutputClassifier."""
+    """Extracts P(class=1) from a MultiOutputClassifier."""
     proba_cols = []
     for i, p in enumerate(proba_list):
         if p.shape[1] == 2:
@@ -261,7 +261,7 @@ def _extract_proba_positive(proba_list, model) -> np.ndarray:
 
 
 class MultiLabelXGBoost:
-    """XGBoost multi-label com scale_pos_weight por defeito."""
+    """Multi-label XGBoost with a per-defect scale_pos_weight."""
 
     def __init__(self, random_state: int = RANDOM_STATE):
         self.random_state = random_state
@@ -296,7 +296,7 @@ def _build_xgboost_model(
     y_train: np.ndarray,
     use_cost_sensitive: bool = True,
 ) -> MultiLabelXGBoost | MultiOutputClassifier:
-    """Cria XGBoost multi-label; scale_pos_weight por defeito quando solicitado."""
+    """Creates a multi-label XGBoost; per-defect scale_pos_weight when requested."""
     if use_cost_sensitive:
         return MultiLabelXGBoost(random_state=RANDOM_STATE)
 
@@ -314,7 +314,7 @@ def _build_xgboost_model(
 
 
 class _ConstantProbaEstimator:
-    """Fallback para defeitos com classe única no treino (defeitos raríssimos)."""
+    """Fallback for defects with a single class in the training data (extremely rare defects)."""
 
     def __init__(self, constant_class: int):
         self.classes_ = np.array([constant_class])
@@ -326,10 +326,10 @@ class _ConstantProbaEstimator:
 
 class MultiLabelLogisticRegression:
     """
-    Regressão Logística multi-label com class_weight='balanced' (item 2.1).
+    Multi-label Logistic Regression with class_weight='balanced' (item 2.1).
 
-    Implementação one-vs-rest própria (em vez de MultiOutputClassifier) para
-    tolerar defeitos sem exemplos positivos no fold de treino.
+    Custom one-vs-rest implementation (instead of MultiOutputClassifier) to
+    tolerate defects with no positive examples in the training fold.
     """
 
     def __init__(self, penalty: str = "l2", random_state: int = RANDOM_STATE):
@@ -379,10 +379,10 @@ def _build_random_forest_model() -> MultiOutputClassifier:
 
 
 def _build_sklearn_model(model_type: str, y_train: np.ndarray) -> Any:
-    """Fábrica de modelos sklearn-like por tipo (exceto PyTorch)."""
+    """Factory of sklearn-like models by type (except PyTorch)."""
     if model_type == MODEL_XGBOOST:
         if not XGBOOST_AVAILABLE:
-            raise ImportError("xgboost não instalado. Execute: pip install xgboost")
+            raise ImportError("xgboost is not installed. Run: pip install xgboost")
         return _build_xgboost_model(y_train, use_cost_sensitive=True)
     if model_type == MODEL_RANDOM_FOREST:
         return _build_random_forest_model()
@@ -390,7 +390,7 @@ def _build_sklearn_model(model_type: str, y_train: np.ndarray) -> Any:
         return _build_logistic_model(penalty="l2")
     if model_type == MODEL_LOGISTIC_L1:
         return _build_logistic_model(penalty="l1")
-    raise ValueError(f"Modelo desconhecido: {model_type}")
+    raise ValueError(f"Unknown model: {model_type}")
 
 
 def _predict_pytorch(model: DefectPredictionNN, X_scaled: np.ndarray) -> np.ndarray:
@@ -401,7 +401,7 @@ def _predict_pytorch(model: DefectPredictionNN, X_scaled: np.ndarray) -> np.ndar
 
 
 def predict_proba_any(model_type: str, model: Any, X_scaled: np.ndarray) -> np.ndarray:
-    """Probabilidades P(defeito=1) para qualquer um dos 3 modelos."""
+    """Probabilities P(defect=1) for any of the 3 models."""
     if model_type == MODEL_PYTORCH:
         return _predict_pytorch(model, X_scaled)
     return _extract_proba_positive(model.predict_proba(X_scaled), model)
@@ -419,9 +419,9 @@ def fit_fold_model(
     defect_names: List[str],
 ) -> Tuple[Any, Dict[str, float], Dict[str, float], float]:
     """
-    Treina um modelo em um fold e retorna métricas de treino e validação.
+    Trains a model on one fold and returns the training and validation metrics.
 
-    Métricas de treino são calculadas no fold original (sem amostras SMOTE).
+    Training metrics are computed on the original fold (no SMOTE samples).
     """
     t0 = time.perf_counter()
 
@@ -462,7 +462,7 @@ def fit_final_model(
     pos_weights: List[float],
     defect_names: List[str],
 ) -> Tuple[Any, Dict[str, float], float]:
-    """Treina modelo final nos 80% completos e avalia no teste (threshold 0.5)."""
+    """Trains the final model on the full 80% and evaluates on the test set (threshold 0.5)."""
     t0 = time.perf_counter()
 
     if model_type == MODEL_PYTORCH:
@@ -491,7 +491,7 @@ def fit_final_model(
 def _aggregate_fold_metrics(
     fold_metrics: List[FoldMetrics],
 ) -> Tuple[Dict[str, float], Dict[str, float], Dict[str, float], Dict[str, float]]:
-    """Calcula média e desvio-padrão das métricas de treino e validação."""
+    """Computes the mean and standard deviation of the training and validation metrics."""
     train_mean: Dict[str, float] = {}
     train_std: Dict[str, float] = {}
     val_mean: Dict[str, float] = {}
@@ -515,17 +515,17 @@ def run_cross_validation(
     verbose: bool = True,
 ) -> CVResult:
     """
-    Executa CV estratificada em 5 folds sobre o dev set para um modelo.
+    Runs the stratified 5-fold CV over the dev set for one model.
 
-    SMOTE (se habilitado) é aplicado apenas dentro de cada fold de treino.
+    SMOTE (if enabled) is applied only inside each training fold.
     """
     model_name = MODEL_DISPLAY_NAMES[model_type]
     cv_splits = get_cv_splits(split.y_dev)
     fold_results: List[FoldMetrics] = []
 
     if verbose:
-        smote_label = "com SMOTE" if use_smote else "sem SMOTE"
-        print(f"\n[*] CV 5-fold — {model_name} ({smote_label})")
+        smote_label = "with SMOTE" if use_smote else "without SMOTE"
+        print(f"\n[*] 5-fold CV — {model_name} ({smote_label})")
 
     for fold_idx, (train_idx, val_idx) in enumerate(cv_splits):
         X_train_fold = split.X_dev[train_idx]
@@ -574,14 +574,14 @@ def run_cross_validation(
                 f"Recall(val)={val_metrics['recall_micro']:.4f}, "
                 f"Precision(val)={val_metrics['precision_micro']:.4f}, "
                 f"F1(val)={val_metrics['f1_micro']:.4f}, "
-                f"tempo={train_time:.1f}s"
+                f"time={train_time:.1f}s"
             )
 
     train_mean, train_std, val_mean, val_std = _aggregate_fold_metrics(fold_results)
     total_time = sum(f.train_time_sec for f in fold_results)
 
     if verbose:
-        print(f"    Média CV (validação): Recall={val_mean['recall_micro']:.4f} "
+        print(f"    CV mean (validation): Recall={val_mean['recall_micro']:.4f} "
               f"(±{val_std['recall_micro']:.4f}), "
               f"Precision={val_mean['precision_micro']:.4f} "
               f"(±{val_std['precision_micro']:.4f}), "
@@ -606,7 +606,7 @@ def run_final_test_evaluation(
     use_smote: bool = True,
     verbose: bool = True,
 ) -> FinalModelResult:
-    """Treina nos 80% completos e avalia no teste final (20%), threshold 0.5."""
+    """Trains on the full 80% and evaluates on the final test set (20%), threshold 0.5."""
     model_name = MODEL_DISPLAY_NAMES[model_type]
     pos_weights = compute_pos_weights(split.y_dev)
 
@@ -620,8 +620,8 @@ def run_final_test_evaluation(
     )
 
     if verbose:
-        smote_label = "com SMOTE" if use_smote else "sem SMOTE"
-        print(f"\n[*] Avaliação final — {model_name} ({smote_label})")
+        smote_label = "with SMOTE" if use_smote else "without SMOTE"
+        print(f"\n[*] Final evaluation — {model_name} ({smote_label})")
 
     model, test_metrics, train_time = fit_final_model(
         model_type,
@@ -633,15 +633,15 @@ def run_final_test_evaluation(
         split.defect_names,
     )
 
-    # Métricas no conjunto de treino efetivo (pós-SMOTE) — item 1.4
+    # Metrics on the effective training set (post-SMOTE) — item 1.4
     train_proba = predict_proba_any(model_type, model, X_dev_scaled)
     train_metrics_on_balanced = compute_multilabel_metrics(y_dev_balanced, train_proba)
 
     if verbose:
         print(
-            f"    Teste: Recall={test_metrics['recall_micro']:.4f}, "
+            f"    Test: Recall={test_metrics['recall_micro']:.4f}, "
             f"Precision={test_metrics['precision_micro']:.4f}, "
-            f"F1={test_metrics['f1_micro']:.4f}, tempo={train_time:.1f}s"
+            f"F1={test_metrics['f1_micro']:.4f}, time={train_time:.1f}s"
         )
 
     return FinalModelResult(
@@ -663,8 +663,8 @@ def run_overfitting_analysis(
     verbose: bool = True,
 ) -> Dict[str, Any]:
     """
-    Análise formal de overfitting: métricas de treino (CV), validação (CV)
-    e teste final para cada um dos 3 modelos.
+    Formal overfitting analysis: training (CV), validation (CV) and final
+    test metrics for each of the 3 models.
     """
     results = []
     for model_type in (MODEL_PYTORCH, MODEL_XGBOOST, MODEL_RANDOM_FOREST):
@@ -713,7 +713,7 @@ def run_smote_comparison(
     verbose: bool = True,
 ) -> Dict[str, Any]:
     """
-    Compara cada modelo com e sem SMOTE usando o mesmo pipeline de CV.
+    Compares each model with and without SMOTE using the same CV pipeline.
     """
     comparison = []
     for model_type in (MODEL_PYTORCH, MODEL_XGBOOST, MODEL_RANDOM_FOREST):
@@ -764,7 +764,7 @@ def format_mean_std(mean: float, std: float, decimals: int = 4) -> str:
 
 
 def dataframe_to_markdown(df) -> str:
-    """Converte DataFrame para tabela markdown sem depender de tabulate."""
+    """Converts a DataFrame to a markdown table without depending on tabulate."""
     headers = list(df.columns)
     lines = [
         "| " + " | ".join(str(h) for h in headers) + " |",
@@ -776,7 +776,7 @@ def dataframe_to_markdown(df) -> str:
 
 
 def available_model_types() -> List[str]:
-    """Modelos disponíveis no ambiente (exclui XGBoost se não instalado)."""
+    """Models available in the environment (excludes XGBoost if not installed)."""
     models = [MODEL_PYTORCH, MODEL_XGBOOST, MODEL_RANDOM_FOREST]
     if not XGBOOST_AVAILABLE:
         models.remove(MODEL_XGBOOST)

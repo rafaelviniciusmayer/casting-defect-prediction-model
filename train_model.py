@@ -10,7 +10,7 @@ This script implements the complete ML workflow for defect prediction in casting
 Objective: Maximize prediction accuracy to reduce industrial risks.
 Each defective part that passes through represents a risk to the customer.
 
-Execute: python train_model.py
+Run: python train_model.py
 """
 
 import pandas as pd

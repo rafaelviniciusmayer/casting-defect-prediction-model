@@ -1,6 +1,6 @@
 # Feature sets – Feature Engineering
 
-Conjuntos de variáveis utilizadas no pipeline de predição de defeitos (fundição de alumínio). Total de **115 features**, derivadas das **15 variáveis de processo** originais.
+Feature sets used in the defect prediction pipeline (aluminum die casting). **115 features** in total, derived from the **15 original process variables**.
 
 ---
 

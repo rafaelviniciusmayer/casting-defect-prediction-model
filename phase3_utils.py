@@ -1,14 +1,14 @@
 """
-Utilitários compartilhados da Fase 3 — Diagnósticos e interpretação.
+Shared utilities for Phase 3 — Diagnostics and interpretation.
 
-Responsabilidades:
-  - Treinar UMA vez os 5 modelos finais na configuração oficial da Fase 1
-    (sem SMOTE, apenas cost-sensitive) e cachear modelos + probabilidades de
-    teste em disco, para que os itens 3.1-3.4 não retreinem nada.
-  - Mapear cada feature para a fase do processo (injeção, intensificação,
-    resfriamento, configuração/manutenção) e para a categoria de feature
-    engineering (ratio, produto, diferença, distância, binária de faixa,
-    agregação, domínio, transformação matemática) — usado no item 3.1.
+Responsibilities:
+  - Train the 5 final models ONCE in the official Phase 1 configuration
+    (without SMOTE, cost-sensitive only) and cache the models + test
+    probabilities on disk, so that items 3.1-3.4 do not retrain anything.
+  - Map each feature to its process phase (injection, intensification,
+    cooling, configuration/maintenance) and to its feature engineering
+    category (ratio, product, difference, distance, range flag,
+    aggregation, domain, mathematical transform) — used in item 3.1.
 """
 
 from __future__ import annotations
@@ -47,15 +47,15 @@ PHASE3_MODEL_TYPES = [
 ]
 
 # ---------------------------------------------------------------------------
-# Mapeamento fase do processo / categoria de feature engineering (item 3.1)
+# Process phase / feature engineering category mapping (item 3.1)
 # ---------------------------------------------------------------------------
 
-PHASE_INJECTION = "Injeção"
-PHASE_INTENSIFICATION = "Intensificação"
-PHASE_COOLING = "Resfriamento"
-PHASE_CONFIG = "Configuração/Manutenção"
-PHASE_MULTIPLE = "Múltiplas fases"
-PHASE_AGGREGATE = "Agregada/Global"
+PHASE_INJECTION = "Injection"
+PHASE_INTENSIFICATION = "Intensification"
+PHASE_COOLING = "Cooling"
+PHASE_CONFIG = "Configuration/Maintenance"
+PHASE_MULTIPLE = "Multiple phases"
+PHASE_AGGREGATE = "Global/Aggregation"
 
 BASE_VAR_PHASES = {
     "piston_velocity_phase1": PHASE_INJECTION,
@@ -75,7 +75,7 @@ BASE_VAR_PHASES = {
     "plunger_temperature": PHASE_CONFIG,
 }
 
-# Features derivadas sem correspondência direta por substring
+# Derived features with no direct substring match
 EXPLICIT_PHASE_OVERRIDES = {
     "velocity_ratio": PHASE_INJECTION,
     "velocity_distance": PHASE_INJECTION,
@@ -102,43 +102,13 @@ EXPLICIT_PHASE_OVERRIDES = {
 
 CATEGORY_ORIGINAL = "Original"
 CATEGORY_RATIO = "Ratio"
-CATEGORY_PRODUCT = "Produto"
-CATEGORY_DIFFERENCE = "Diferença"
-CATEGORY_DISTANCE = "Distância de faixa ideal"
-CATEGORY_RANGE_FLAG = "Binária de faixa"
-CATEGORY_AGGREGATION = "Agregação estatística"
-CATEGORY_DOMAIN = "Específica de domínio"
-CATEGORY_MATH = "Transformação matemática"
-
-PHASE_LABELS_EN = {
-    PHASE_INJECTION: "Injection",
-    PHASE_INTENSIFICATION: "Intensification",
-    PHASE_COOLING: "Cooling",
-    PHASE_CONFIG: "Configuration/Maintenance",
-    PHASE_MULTIPLE: "Multiple phases",
-    PHASE_AGGREGATE: "Global/Aggregation",
-}
-
-CATEGORY_LABELS_EN = {
-    CATEGORY_ORIGINAL: "Original",
-    CATEGORY_RATIO: "Ratio",
-    CATEGORY_PRODUCT: "Product",
-    CATEGORY_DIFFERENCE: "Difference",
-    CATEGORY_DISTANCE: "Ideal-range distance",
-    CATEGORY_RANGE_FLAG: "Range flag",
-    CATEGORY_AGGREGATION: "Statistical aggregation",
-    CATEGORY_DOMAIN: "Domain-specific",
-    CATEGORY_MATH: "Mathematical transform",
-}
-
-
-def phase_label_en(phase: str) -> str:
-    return PHASE_LABELS_EN.get(phase, phase)
-
-
-def category_label_en(category: str) -> str:
-    return CATEGORY_LABELS_EN.get(category, category)
-
+CATEGORY_PRODUCT = "Product"
+CATEGORY_DIFFERENCE = "Difference"
+CATEGORY_DISTANCE = "Ideal-range distance"
+CATEGORY_RANGE_FLAG = "Range flag"
+CATEGORY_AGGREGATION = "Statistical aggregation"
+CATEGORY_DOMAIN = "Domain-specific"
+CATEGORY_MATH = "Mathematical transform"
 
 DOMAIN_FEATURES = {
     "sleeve_volume_estimate",
@@ -157,13 +127,13 @@ AGGREGATION_FEATURES = {
 
 
 def get_feature_phase(feature_name: str) -> str:
-    """Fase do processo à qual a feature pertence."""
+    """Process phase the feature belongs to."""
     if feature_name in EXPLICIT_PHASE_OVERRIDES:
         return EXPLICIT_PHASE_OVERRIDES[feature_name]
     if feature_name in BASE_VAR_PHASES:
         return BASE_VAR_PHASES[feature_name]
-    # Derivadas: casa por substring da variável base (nomes mais longos primeiro
-    # para evitar que 'fill_time' case com 'fill_time_ratio' errado etc.)
+    # Derived features: match by base-variable substring (longest names first
+    # so that 'fill_time' does not wrongly match 'fill_time_ratio' etc.)
     matched_phases = set()
     for base_var in sorted(BASE_VAR_PHASES, key=len, reverse=True):
         if base_var in feature_name:
@@ -176,7 +146,7 @@ def get_feature_phase(feature_name: str) -> str:
 
 
 def get_feature_category(feature_name: str) -> str:
-    """Categoria de feature engineering."""
+    """Feature engineering category."""
     if feature_name in BASE_VAR_PHASES:
         return CATEGORY_ORIGINAL
     if feature_name in DOMAIN_FEATURES:
@@ -199,7 +169,7 @@ def get_feature_category(feature_name: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Cache de modelos finais + probabilidades (evita retreino nos itens 3.1-3.4)
+# Cache of final models + probabilities (avoids retraining in items 3.1-3.4)
 # ---------------------------------------------------------------------------
 
 def load_official_use_smote() -> bool:
@@ -209,16 +179,16 @@ def load_official_use_smote() -> bool:
 
 def build_or_load_final_models(force: bool = False, verbose: bool = True) -> Dict[str, Any]:
     """
-    Treina os 5 modelos finais (config oficial da Fase 1) e cacheia em disco.
+    Train the 5 final models (official Phase 1 config) and cache them on disk.
 
-    Retorna dict com:
+    Returns a dict with:
       'use_smote', 'feature_names', 'defect_names', 'y_test', 'y_dev',
       'X_test_scaled', 'X_dev_scaled', 'scaler',
       'models': {model_type: {'model', 'test_proba', 'train_time_sec'}}
     """
     if CACHE_PATH.exists() and not force:
         if verbose:
-            print(f"[*] Carregando cache de modelos finais: {CACHE_PATH}")
+            print(f"[*] Loading final models cache: {CACHE_PATH}")
         with open(CACHE_PATH, "rb") as f:
             return pickle.load(f)
     if not force:
@@ -229,8 +199,8 @@ def build_or_load_final_models(force: bool = False, verbose: bool = True) -> Dic
 
     use_smote = load_official_use_smote()
     if verbose:
-        print(f"[*] Treinando modelos finais (config oficial: "
-              f"{'com' if use_smote else 'sem'} SMOTE)...")
+        print(f"[*] Training final models (official config: "
+              f"{'with' if use_smote else 'without'} SMOTE)...")
 
     data = load_pipeline_data(verbose=verbose)
     split = prepare_split_data(data, verbose=verbose)
@@ -265,18 +235,18 @@ def build_or_load_final_models(force: bool = False, verbose: bool = True) -> Dic
             "train_time_sec": final.train_time_sec,
         }
         if verbose:
-            print(f"    [{MODEL_DISPLAY_NAMES[model_type]}] pronto "
+            print(f"    [{MODEL_DISPLAY_NAMES[model_type]}] done "
                   f"({time.perf_counter() - t0:.1f}s)")
 
     CACHE_PATH.parent.mkdir(exist_ok=True)
     with open(CACHE_PATH, "wb") as f:
         pickle.dump(cache, f)
     if verbose:
-        print(f"[OK] Cache salvo em {CACHE_PATH}")
+        print(f"[OK] Cache saved to {CACHE_PATH}")
     return cache
 
 
 def most_frequent_defects(y: np.ndarray, defect_names: List[str], top_n: int = 3) -> List[int]:
-    """Índices dos defeitos mais frequentes (para ROC/calibração)."""
+    """Indices of the most frequent defects (for ROC/calibration)."""
     counts = y.sum(axis=0)
     return list(np.argsort(counts)[::-1][:top_n])
